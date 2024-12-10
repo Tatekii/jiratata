@@ -1,0 +1,9 @@
+.logo-wrapper {
+	position: relative;
+    width: 70px;
+    height: 56px;
+	img[alt="logo"] {
+		height: 56px;
+		width: auto;
+	}
+}
