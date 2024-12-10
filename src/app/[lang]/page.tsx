@@ -1,8 +1,11 @@
+
+import LocaleSwitcher from "@/components/LocalSwitcher"
 import { Button } from "@/components/ui/button"
 
 export default function Home() {
 	return (
 		<div className="flex gap-4 p-4">
+			<LocaleSwitcher/>
 			<Button>default</Button>
 			<Button variant={"destructive"}>destructive</Button>
 			<Button variant={"ghost"}>ghost</Button>
