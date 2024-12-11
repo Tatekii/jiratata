@@ -1,3 +1,15 @@
 {
-	"auth": { "signin": "Sign In", "signup": "Sign Up" }
+	"auth": {
+		"signin": "Login",
+		"signup": "Sign Up",
+		"welcomeback": "Welcome back",
+		"donthaveaccount": "Don't have a account",
+		"form": {
+			"enteremail": "Enter email address",
+			"enterpassword": "Enter password",
+			"required": "Required",
+			"minium8": "Minimum of 8 characters required",
+			"emailFormat": "Invalid email format"
+		}
+	}
 }

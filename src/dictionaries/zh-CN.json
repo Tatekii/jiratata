@@ -1,3 +1,15 @@
 {
-	"auth": { "signin": "登陆", "signup": "注册" }
+	"auth": {
+		"signin": "登陆",
+		"signup": "注册",
+		"welcomeback": "欢迎",
+		"donthaveaccount": "还没有账号",
+		"form": {
+			"enteremail": "输入邮箱地址",
+			"enterpassword": "输入密码",
+			"required": "不能为空",
+			"minium8": "长度至少为8位",
+			"emailFormat": "邮箱地址有误"
+		}
+	}
 }
