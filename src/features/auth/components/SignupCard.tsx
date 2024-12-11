@@ -14,7 +14,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input"
 import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form"
 
-import { buildRegisterSchema } from "../form.schema"
+import { buildRegisterSchema } from "../schema"
 import { useDictionary } from "@/context/DictionaryProvider"
 // import { useRegister } from "../api/use-register";
 

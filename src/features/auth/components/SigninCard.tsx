@@ -14,7 +14,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form"
 
-import { buildLoginSchema } from "../form.schema"
+import { buildLoginSchema } from "../schema"
 // import { useLogin } from "../api/use-login"
 import { useDictionary } from "@/context/DictionaryProvider"
 import { FC } from "react"

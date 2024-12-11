@@ -6,6 +6,7 @@ import "../globals.css"
 import DictionaryProvider from "@/context/DictionaryProvider"
 import { getDictionary } from "@/lib/get-dictionary"
 import LocaleProvider from "@/context/LocaleProvider"
+import { QueryProvider } from "@/context/QueryProvider"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -33,7 +34,9 @@ export default async function RootLayout({
 		<html lang={lang}>
 			<body className={cn(inter.className, "antialiased min-h-screen")}>
 				<LocaleProvider locale={lang}>
-					<DictionaryProvider dictionary={dictionary}>{children}</DictionaryProvider>
+					<DictionaryProvider dictionary={dictionary}>
+						<QueryProvider>{children}</QueryProvider>
+					</DictionaryProvider>
 				</LocaleProvider>
 			</body>
 		</html>

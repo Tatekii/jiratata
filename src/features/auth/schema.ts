@@ -1,12 +1,12 @@
-import { useDictionary } from "@/context/DictionaryProvider"
+import { TDictionary } from "@/context/DictionaryProvider"
 import { z } from "zod"
 
-export const buildLoginSchema = (dic: ReturnType<typeof useDictionary>) =>
+export const buildLoginSchema = (dic: TDictionary) =>
 	z.object({
 		email: z.string().email(dic.auth.form.emailFormat),
 		password: z.string().min(1, dic.auth.form.required),
 	})
-export const buildRegisterSchema = (dic: ReturnType<typeof useDictionary>) =>
+export const buildRegisterSchema = (dic: TDictionary) =>
 	z.object({
 		name: z.string().trim().min(1, dic.auth.form.required),
 		email: z.string().email(),
