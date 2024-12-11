@@ -11,11 +11,11 @@ function getLocale(request: NextRequest): string | undefined {
 	const negotiatorHeaders: Record<string, string> = {}
 	request.headers.forEach((value, key) => (negotiatorHeaders[key] = value))
 
-	// @ts-ignore locales are readonly
+	// @ts-expect-error locales are readonly
 	const locales: string[] = i18n.locales
 
 	// Use negotiator and intl-localematcher to get best locale
-	let languages = new Negotiator({ headers: negotiatorHeaders }).languages(locales)
+	const languages = new Negotiator({ headers: negotiatorHeaders }).languages(locales)
 
 	const locale = matchLocale(languages, locales, i18n.defaultLocale)
 
@@ -55,5 +55,8 @@ export function middleware(request: NextRequest) {
 
 export const config = {
 	// Matcher ignoring `/_next/` and `/api/`
-	matcher: ["/((?!api|_next/static|_next/image|favicon.ico).*)"],
+	matcher: [
+		"/((?!api|_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt|image/logo.svg).*)"
+
+	]
 }

@@ -1,27 +1,26 @@
-import { FC, PropsWithChildren, ReactNode } from "react"
+"use client"
+import { FC, PropsWithChildren } from "react"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import style from "./styles.module.css"
-import { Locale } from "@/lib/i18n-config"
-import { getDictionary } from "@/lib/get-dictionary"
+import LocaleSwitcher from "@/components/LocaleSwitcher"
+import { useDictionary } from "@/context/DictionaryProvider"
 
-const AuthLayout: FC<
-	PropsWithChildren<{
-		params: Promise<{ lang: Locale }>
-	}>
-> = async ({ children, params }) => {
-	const { lang } = await params
+const AuthLayout: FC<PropsWithChildren> = ({ children }) => {
 
-	const dictionary = await getDictionary(lang)
+	const dic = useDictionary()
 
 	return (
 		<main className="bg-neutral-100 min-h-screen">
 			<div className="mx-auto max-w-screen-2xl p-4">
 				<nav className="flex justify-between items-center">
 					<div className={style["logo-wrapper"]}>
-						<Image src="/logo.svg" alt={"logo"} objectFit={"cover"} fill={true} />
+						<Image src="/image/logo.svg" alt={"logo"} fill={true} priority={true} />
 					</div>
-					<Button variant={"secondary"}>{dictionary.auth.signup}</Button>
+					<div className="flex gap-2">
+						<Button variant={"secondary"}>{dic.auth.signup}</Button>
+						<LocaleSwitcher />
+					</div>
 				</nav>
 			</div>
 			<div className="flex flex-col items-center justify-center pt-4 md:pt-14 ">{children}</div>

@@ -4,8 +4,16 @@ import { usePathname, useRouter } from "next/navigation"
 import { i18n, type Locale } from "../lib/i18n-config"
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "./ui/select"
 import { useCallback } from "react"
+import { useLocale } from "@/context/LocaleProvider"
+
+// interface ILocaleSwitcher {
+// 	defaultLang: Locale
+// }
 
 export default function LocaleSwitcher() {
+
+	const lang = useLocale()
+	
 	const pathname = usePathname()
 	const router = useRouter()
 
@@ -20,7 +28,7 @@ export default function LocaleSwitcher() {
 	)
 
 	return (
-		<Select defaultValue={'en'} onValueChange={(locale: Locale) => handleChangeLang(locale)}>
+		<Select defaultValue={lang} onValueChange={(locale: Locale) => handleChangeLang(locale)}>
 			<SelectTrigger className="w-[100px]">
 				<SelectValue placeholder={"i18n"} />
 			</SelectTrigger>

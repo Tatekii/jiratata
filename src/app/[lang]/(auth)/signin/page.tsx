@@ -1,5 +1,8 @@
+// import { SignInCard } from "@/features/auth/components/SigninCard"
+
 const SigninPage = () => {
-	return <h1>Signin Page</h1>
+	// return <SignInCard lang={lang}>
+	return <h1>Signin </h1>
 }
 
 export default SigninPage
