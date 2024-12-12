@@ -15,13 +15,12 @@ import { Input } from "@/components/ui/input"
 import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form"
 
 import { buildLoginSchema } from "../schema"
-// import { useLogin } from "../api/use-login"
 import { useDictionary } from "@/context/DictionaryProvider"
 import { FC, useEffect } from "react"
-import { useLogin } from "../hooks/useLogin"
+import useLogin from "../hooks/useLogin"
 import { client } from "@/lib/rpc"
 
-export const SignInCard: FC = () => {
+const SignInCard: FC = () => {
 	const { mutate, isPending } = useLogin()
 
 	const dic = useDictionary()
@@ -120,3 +119,5 @@ export const SignInCard: FC = () => {
 		</Card>
 	)
 }
+
+export default SignInCard

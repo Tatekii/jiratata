@@ -4,12 +4,20 @@
 		"signup": "Sign Up",
 		"welcomeback": "Welcome back",
 		"donthaveaccount": "Don't have a account",
+		"haveaccount": "Already have an account",
 		"form": {
 			"enteremail": "Enter email address",
 			"enterpassword": "Enter password",
+			"enterconfirmpassword": "Enter confirm password",
+			"enterusername": "Enter user name",
 			"required": "Required",
 			"minium8": "Minimum of 8 characters required",
-			"emailFormat": "Invalid email format"
-		}
-	}
+			"emailFormat": "Invalid email format",
+			"confirmpasswordfail":"Confirm password did not match"
+		},
+		"privactploicy": "Privacy Policy",
+		"termsofservice": "Terms of Service",
+		"agreetermnotice": "By signing up, you agree to our"
+	},
+	"and": "and"
 }

@@ -16,15 +16,14 @@ import { Form, FormControl, FormField, FormItem, FormMessage } from "@/component
 
 import { buildRegisterSchema } from "../schema"
 import { useDictionary } from "@/context/DictionaryProvider"
-// import { useRegister } from "../api/use-register";
+import useRegister from "../hooks/useRegister"
 
-export const SignUpCard = () => {
+const SignUpCard = () => {
 	const dic = useDictionary()
 
 	const registerSchema = buildRegisterSchema(dic)
 
-	const isPending = false
-	// const { mutate, isPending } = useRegister();
+	const { mutate, isPending } = useRegister()
 
 	const form = useForm<z.infer<typeof registerSchema>>({
 		resolver: zodResolver(registerSchema),
@@ -32,25 +31,26 @@ export const SignUpCard = () => {
 			name: "",
 			email: "",
 			password: "",
+			password2: "",
 		},
 	})
 
 	const onSubmit = (values: z.infer<typeof registerSchema>) => {
-		// mutate({ json: values });
+		mutate({ json: values })
 	}
 
 	return (
 		<Card className="w-full h-full md:w-[487px] border-none shadow-none">
 			<CardHeader className="flex items-center justify-center text-center p-7">
-				<CardTitle className="text-2xl">Sign Up</CardTitle>
+				<CardTitle className="text-2xl">{dic.auth.signup}</CardTitle>
 				<CardDescription>
-					By signing up, you agree to our{" "}
+					{dic.auth.agreetermnotice + " "}
 					<Link href="/privacy">
-						<span className="text-blue-700">Privacy Policy</span>
+						<span className="text-blue-700">{dic.auth.privactploicy}</span>
 					</Link>{" "}
-					and{" "}
+					{dic.and + " "}
 					<Link href="/terms">
-						<span className="text-blue-700">Terms of Service</span>
+						<span className="text-blue-700">{dic.auth.termsofservice}</span>
 					</Link>
 				</CardDescription>
 			</CardHeader>
@@ -66,7 +66,7 @@ export const SignUpCard = () => {
 							render={({ field }) => (
 								<FormItem>
 									<FormControl>
-										<Input {...field} type="text" placeholder="Enter your name" />
+										<Input {...field} type="text" placeholder={dic.auth.form.enterusername} />
 									</FormControl>
 									<FormMessage />
 								</FormItem>
@@ -78,7 +78,7 @@ export const SignUpCard = () => {
 							render={({ field }) => (
 								<FormItem>
 									<FormControl>
-										<Input {...field} type="email" placeholder="Enter email address" />
+										<Input {...field} type="email" placeholder={dic.auth.form.enteremail} />
 									</FormControl>
 									<FormMessage />
 								</FormItem>
@@ -90,14 +90,30 @@ export const SignUpCard = () => {
 							render={({ field }) => (
 								<FormItem>
 									<FormControl>
-										<Input {...field} type="password" placeholder="Enter your password" />
+										<Input {...field} type="password" placeholder={dic.auth.form.enterpassword} />
+									</FormControl>
+									<FormMessage />
+								</FormItem>
+							)}
+						/>
+						<FormField
+							name="password2"
+							control={form.control}
+							render={({ field }) => (
+								<FormItem>
+									<FormControl>
+										<Input
+											{...field}
+											type="password"
+											placeholder={dic.auth.form.enterconfirmpassword}
+										/>
 									</FormControl>
 									<FormMessage />
 								</FormItem>
 							)}
 						/>
 						<Button disabled={isPending} size="lg" className="w-full">
-							Register
+							{dic.auth.signup}
 						</Button>
 					</form>
 				</Form>
@@ -114,7 +130,7 @@ export const SignUpCard = () => {
 					className="w-full"
 				>
 					<FcGoogle className="mr-2 size-5" />
-					Login with Google
+					Google {dic.auth.signin}
 				</Button>
 				<Button
 					// onClick={() => signUpWithGithub()}
@@ -124,7 +140,7 @@ export const SignUpCard = () => {
 					className="w-full"
 				>
 					<FaGithub className="mr-2 size-5" />
-					Login with Github
+					Github {dic.auth.signin}
 				</Button>
 			</CardContent>
 			<div className="px-7">
@@ -132,12 +148,14 @@ export const SignUpCard = () => {
 			</div>
 			<CardContent className="p-7 flex items-center justify-center">
 				<p>
-					Already have an account?
+					{dic.auth.haveaccount}?
 					<Link href="/sign-in">
-						<span className="text-blue-700">&nbsp;Sign In</span>
+						<span className="text-blue-700">&nbsp;{dic.auth.signin}</span>
 					</Link>
 				</p>
 			</CardContent>
 		</Card>
 	)
 }
+
+export default SignUpCard

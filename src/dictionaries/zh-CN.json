@@ -3,13 +3,21 @@
 		"signin": "登陆",
 		"signup": "注册",
 		"welcomeback": "欢迎回来",
-		"donthaveaccount": "还没有账号",
+		"donthaveaccount": "还没有账户",
+		"haveaccount": "已经拥有账户",
 		"form": {
 			"enteremail": "输入邮箱地址",
 			"enterpassword": "输入密码",
+			"enterconfirmpassword": "再次输入密码",
+			"enterusername": "输入用户名",
 			"required": "不能为空",
 			"minium8": "长度至少为8位",
-			"emailFormat": "邮箱地址有误"
-		}
-	}
+			"emailFormat": "邮箱地址有误",
+			"confirmpasswordfail":"确认密码不一致"
+		},
+		"privactploicy": "隐私策略",
+		"termsofservice": "服务条款",
+		"agreetermnotice": "注册则视为同意我们的"
+	},
+	"and": "和"
 }
