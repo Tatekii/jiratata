@@ -17,11 +17,12 @@ import { Form, FormControl, FormField, FormItem, FormMessage } from "@/component
 import { buildLoginSchema } from "../schema"
 // import { useLogin } from "../api/use-login"
 import { useDictionary } from "@/context/DictionaryProvider"
-import { FC } from "react"
+import { FC, useEffect } from "react"
+import { useLogin } from "../hooks/useLogin"
+import { client } from "@/lib/rpc"
 
 export const SignInCard: FC = () => {
-	// const { mutate, isPending } = useLogin()
-	const isPending = false
+	const { mutate, isPending } = useLogin()
 
 	const dic = useDictionary()
 
@@ -36,7 +37,7 @@ export const SignInCard: FC = () => {
 	})
 
 	const onSubmit = (values: z.infer<typeof loginSchema>) => {
-		// mutate({ json: values })
+		mutate({ json: values })
 	}
 
 	return (

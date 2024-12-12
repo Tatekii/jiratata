@@ -25,6 +25,7 @@ export const localeValidator = <
 	//   hook?: Hook<z.infer<T>, E, P, Target>
 ) =>
 	validator(target, async (value, c) => {
+
 		const dic = c.get("dic")
 
 		const result = await schemaBuilder(dic).safeParseAsync(value)

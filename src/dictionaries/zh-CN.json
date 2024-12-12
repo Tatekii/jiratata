@@ -2,7 +2,7 @@
 	"auth": {
 		"signin": "登陆",
 		"signup": "注册",
-		"welcomeback": "欢迎",
+		"welcomeback": "欢迎回来",
 		"donthaveaccount": "还没有账号",
 		"form": {
 			"enteremail": "输入邮箱地址",
