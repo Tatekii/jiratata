@@ -3,12 +3,7 @@
  */
 import { createMiddleware } from "hono/factory"
 import { cookies } from "next/headers"
-import {
-	Account,
-	Client,
-	Databases,
-	Storage,
-} from "node-appwrite"
+import { Account, Client, Databases, Storage } from "node-appwrite"
 import { AUTH_COOKIE } from "../features/auth/constans"
 
 export const authSessionMiddleware = createMiddleware(async (c, next) => {
@@ -21,7 +16,7 @@ export const authSessionMiddleware = createMiddleware(async (c, next) => {
 	if (!session || !session.value) {
 		return c.json(
 			{
-				message: "Unauthorized",
+				error: "Unauthorized",
 			},
 			401
 		)

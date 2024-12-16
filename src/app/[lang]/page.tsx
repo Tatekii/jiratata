@@ -1,23 +1,18 @@
-"use client"
-import { Button } from "@/components/ui/button"
-import { client } from "@/lib/rpc"
+import { UserButton } from "@/features/auth/components/UserButton"
+import { getCurrent } from "@/features/auth/queries"
+import { redirect } from "next/navigation"
 
-export default function Home() {
+export default async function Home() {
+	const user = await getCurrent()
+
+	
+	if (!user) {
+		redirect("/signin")
+	}
+
 	return (
 		<div className="flex gap-4 p-4">
-			<Button>default</Button>
-			<Button variant={"destructive"}>destructive</Button>
-			<Button variant={"ghost"}>ghost</Button>
-			<Button variant={"link"}>link</Button>
-			<Button variant={"outline"}>outline</Button>
-			<Button variant={"secondary"}>secondary</Button>
-			<Button
-				onClick={async () => {
-					await client.api.auth.logout.$post()
-				}}
-			>
-				logout
-			</Button>
+			<UserButton />
 		</div>
 	)
 }

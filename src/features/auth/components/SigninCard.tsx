@@ -16,9 +16,8 @@ import { Form, FormControl, FormField, FormItem, FormMessage } from "@/component
 
 import { buildLoginSchema } from "../schema"
 import { useDictionary } from "@/context/DictionaryProvider"
-import { FC, useEffect } from "react"
+import { FC } from "react"
 import useLogin from "../hooks/useLogin"
-import { client } from "@/lib/rpc"
 
 const SignInCard: FC = () => {
 	const { mutate, isPending } = useLogin()
