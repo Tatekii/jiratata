@@ -19,6 +19,7 @@ import { useDictionary } from "@/context/DictionaryProvider"
 import useRegister from "../hooks/useRegister"
 
 const SignUpCard = () => {
+	
 	const dic = useDictionary()
 
 	const registerSchema = buildRegisterSchema(dic)

@@ -1,5 +1,6 @@
-
+"use client"
 import { Button } from "@/components/ui/button"
+import { client } from "@/lib/rpc"
 
 export default function Home() {
 	return (
@@ -10,6 +11,13 @@ export default function Home() {
 			<Button variant={"link"}>link</Button>
 			<Button variant={"outline"}>outline</Button>
 			<Button variant={"secondary"}>secondary</Button>
+			<Button
+				onClick={async () => {
+					await client.api.auth.logout.$post()
+				}}
+			>
+				logout
+			</Button>
 		</div>
 	)
 }

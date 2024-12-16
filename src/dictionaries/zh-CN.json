@@ -13,11 +13,17 @@
 			"required": "不能为空",
 			"minium8": "长度至少为8位",
 			"emailFormat": "邮箱地址有误",
-			"confirmpasswordfail":"确认密码不一致"
+			"confirmpasswordfail": "确认密码不一致"
 		},
 		"privactploicy": "隐私策略",
 		"termsofservice": "服务条款",
-		"agreetermnotice": "注册则视为同意我们的"
+		"agreetermnotice": "注册则视为同意我们的",
+		"failInLogin": "登陆失败",
+		"failInRegister": "注册失败",
+		"failInLogout": "登出失败",
+		"successfulLogin": "登陆成功",
+		"successfulRegister": "注册成功",
+		"successfulLogout": "登出成功"
 	},
 	"and": "和"
 }

@@ -1,8 +1,16 @@
 // import { SignInCard } from "@/features/auth/components/SigninCard"
 
 import SignInCard from "@/features/auth/components/SigninCard"
+import { getCurrent } from "@/features/auth/queries"
+import { redirect } from "next/navigation"
 
-const SigninPage = () => {
+const SigninPage = async () => {
+	const currentUser = await getCurrent()
+	// 已经登录就跳走
+	if (currentUser) {
+		redirect("/")
+	}
+
 	return <SignInCard />
 }
 

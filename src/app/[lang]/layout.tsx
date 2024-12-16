@@ -7,6 +7,7 @@ import DictionaryProvider from "@/context/DictionaryProvider"
 import { getDictionary } from "@/lib/get-dictionary"
 import LocaleProvider from "@/context/LocaleProvider"
 import { QueryProvider } from "@/context/QueryProvider"
+import { Toaster } from "sonner"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -35,7 +36,10 @@ export default async function RootLayout({
 			<body className={cn(inter.className, "antialiased min-h-screen")}>
 				<LocaleProvider locale={lang}>
 					<DictionaryProvider dictionary={dictionary}>
-						<QueryProvider>{children}</QueryProvider>
+						<QueryProvider>
+							<Toaster />
+							{children}
+						</QueryProvider>
 					</DictionaryProvider>
 				</LocaleProvider>
 			</body>

@@ -13,11 +13,17 @@
 			"required": "Required",
 			"minium8": "Minimum of 8 characters required",
 			"emailFormat": "Invalid email format",
-			"confirmpasswordfail":"Confirm password did not match"
+			"confirmpasswordfail": "Confirm password did not match"
 		},
 		"privactploicy": "Privacy Policy",
 		"termsofservice": "Terms of Service",
-		"agreetermnotice": "By signing up, you agree to our"
+		"agreetermnotice": "By signing up, you agree to our",
+		"failInLogin": "Failed to Login",
+		"failInRegister": "Failed to Register",
+		"failInLogout": "Failed to Logout",
+		"successfulLogin": "Login successful",
+		"successfulRegister": "Register successful",
+		"successfulLogout": "Logout successful"
 	},
 	"and": "and"
 }
