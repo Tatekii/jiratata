@@ -2,6 +2,7 @@
 	"auth": {
 		"signin": "Login",
 		"signup": "Sign Up",
+		"logout": "Log Out",
 		"welcomeback": "Welcome back",
 		"donthaveaccount": "Don't have a account",
 		"haveaccount": "Already have an account",
@@ -25,5 +26,13 @@
 		"successfulRegister": "Register successful",
 		"successfulLogout": "Logout successful"
 	},
-	"and": "and"
+	"and": "and",
+	"home": "Home",
+	"homedesc": "Monitor all of your projects and tasks here",
+	"mytasks": "My Tasks",
+	"mytasksdesc": "View all of your tasks here",
+	"settings": "Settings",
+	"members": "Members",
+	"myprojects": "My Project",
+	"myprojectsdesc": "View tasks of your project here"
 }

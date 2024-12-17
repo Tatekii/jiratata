@@ -6,10 +6,12 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import useLogout from "../hooks/useLogout"
 import useCurrent from "../hooks/useCurrent"
 import { DottedSeparator } from "@/components/DottedSeparator"
+import { useDictionary } from "@/context/DictionaryProvider"
 
 export const UserButton = () => {
 	const { mutate: logout } = useLogout()
 	const { data: user, isLoading } = useCurrent()
+	const dic = useDictionary()
 
 	if (isLoading) {
 		return (
@@ -54,7 +56,7 @@ export const UserButton = () => {
 					className="h-10 flex items-center justify-center text-amber-700 font-medium cursor-pointer"
 				>
 					<LogOut className="size-4 mr-2" />
-					Log out
+					{dic.auth.logout}
 				</DropdownMenuItem>
 			</DropdownMenuContent>
 		</DropdownMenu>
