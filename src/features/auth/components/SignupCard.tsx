@@ -16,7 +16,7 @@ import { Form, FormControl, FormField, FormItem, FormMessage } from "@/component
 
 import { buildRegisterSchema } from "../schema"
 import { useDictionary } from "@/context/DictionaryProvider"
-import useRegister from "../hooks/useRegister"
+import useRegister from "../api/useRegister"
 
 const SignUpCard = () => {
 	

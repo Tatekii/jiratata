@@ -11,7 +11,7 @@
 			"enterpassword": "输入密码",
 			"enterconfirmpassword": "再次输入密码",
 			"enterusername": "输入用户名",
-			"required": "不能为空",
+
 			"minium8": "长度至少为8位",
 			"emailFormat": "邮箱地址有误",
 			"confirmpasswordfail": "确认密码不一致"
@@ -34,5 +34,22 @@
 	"settings": "设置",
 	"members": "成员",
 	"myprojects": "项目",
-	"myprojectsdesc": "管理您的所有项目"
+	"myprojectsdesc": "管理您的所有项目",
+	"form": { "required": "不能为空", "minium1": "长度至少为1位" },
+	"workspaces": {
+		"form": {
+			"createTitle": "创建新的工作区",
+			"name": "工作区名称",
+			"icon": "工作区图标",
+			"entername": "输入工作区名称",
+			"failInCreate": "工作区创建失败",
+			"succefulCreate": "成功创建工作区",
+			"imageNotice": "JPG, PNG, SVG or jpeg,不超过1mb"
+		}
+	},
+	"cancel": "取消",
+	"submit": "提交",
+	"upload": "上传",
+	"delete": "删除",
+	"chooselang": "切换语言"
 }

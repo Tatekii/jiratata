@@ -11,7 +11,7 @@
 			"enterpassword": "Enter password",
 			"enterconfirmpassword": "Enter confirm password",
 			"enterusername": "Enter user name",
-			"required": "Required",
+
 			"minium8": "Minimum of 8 characters required",
 			"emailFormat": "Invalid email format",
 			"confirmpasswordfail": "Confirm password did not match"
@@ -34,5 +34,22 @@
 	"settings": "Settings",
 	"members": "Members",
 	"myprojects": "My Project",
-	"myprojectsdesc": "View tasks of your project here"
+	"myprojectsdesc": "View tasks of your project here",
+	"form": { "required": "Required", "minium1": "Minimum of 1 characters required" },
+	"workspaces": {
+		"form": {
+			"createTitle": "Create new workspace",
+			"name": "Workspace Name",
+			"icon": "Workspace Icon",
+			"entername": "Enter workspace name",
+			"failInCreate": "Failed to create workspaces",
+			"succefulCreate": "Workspace created",
+			"imageNotice": "JPG, PNG, SVG or jpeg, max 1 mb"
+		}
+	},
+	"cancel": "Cancel",
+	"submit": "Submit",
+	"upload": "Upload",
+	"delete": "Delete",
+	"chooselang": "Choose Lang"
 }

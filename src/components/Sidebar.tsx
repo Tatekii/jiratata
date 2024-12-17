@@ -7,7 +7,10 @@ const BaseSidebar = () => {
 	return (
 		<aside className="h-full bg-neutral-100 p-4 w-full">
 			<Link href="/">
-				<Image src="/image/logo.svg" alt={"logo"} width={60} height={48} />
+				<div className="flex justify-start gap-4 items-center">
+					<Image src="/image/logo.svg" alt={"logo"} width={60} height={48} />
+					<h1 className="font-bold ">JIRATATA</h1>
+				</div>
 			</Link>
 			<DottedSeparator className="my-4" />
 			<Navigation />

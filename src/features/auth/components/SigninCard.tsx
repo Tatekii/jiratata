@@ -17,7 +17,7 @@ import { Form, FormControl, FormField, FormItem, FormMessage } from "@/component
 import { buildLoginSchema } from "../schema"
 import { useDictionary } from "@/context/DictionaryProvider"
 import { FC } from "react"
-import useLogin from "../hooks/useLogin"
+import useLogin from "../api/useLogin"
 
 const SignInCard: FC = () => {
 	const { mutate, isPending } = useLogin()

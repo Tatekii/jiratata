@@ -3,10 +3,11 @@
 import { Loader, LogOut } from "lucide-react"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import useLogout from "../hooks/useLogout"
-import useCurrent from "../hooks/useCurrent"
+import useLogout from "../api/useLogout"
+import useCurrent from "../api/useCurrent"
 import { DottedSeparator } from "@/components/DottedSeparator"
 import { useDictionary } from "@/context/DictionaryProvider"
+import LocaleSwitcher from "@/components/LocaleSwitcher"
 
 export const UserButton = () => {
 	const { mutate: logout } = useLogout()
@@ -49,6 +50,12 @@ export const UserButton = () => {
 						<p className="text-sm font-medium text-neutral-900">{name || "User"}</p>
 						<p className="text-xs text-neutral-500">{email}</p>
 					</div>
+				</div>
+				<DottedSeparator />
+
+				<div className="flex items-center justify-evenly px-2 py-1.5">
+					<div>{dic.chooselang}:</div>
+					<LocaleSwitcher />
 				</div>
 				<DottedSeparator className="mb-1" />
 				<DropdownMenuItem
