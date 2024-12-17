@@ -23,6 +23,7 @@ const useLogout = () => {
 			toast.success(dic.auth.successfulLogout)
 			router.refresh()
 			queryClient.invalidateQueries({ queryKey: ["current"] })
+			queryClient.invalidateQueries({ queryKey: ["workspaces"] })
 		},
 		onError: () => {
 			toast.error(dic.auth.failInLogout)

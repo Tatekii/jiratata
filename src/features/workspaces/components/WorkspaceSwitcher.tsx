@@ -34,6 +34,7 @@ const WorkspaceAvatar: FC<WorkspaceAvatarProps> = ({ image, name, className }) =
 	)
 }
 
+// TODO 默认进入工作区
 const WorkspaceSwitcher = () => {
 	// const workspaceId = useWorkspaceId()
 	// const router = useRouter()
@@ -57,7 +58,7 @@ const WorkspaceSwitcher = () => {
 			</div>
 			{/* <Select onValueChange={onSelect} value={workspaceId}> */}
 			<Select>
-				<SelectTrigger className="w-full bg-neutral-200 font-medium p-1 h-min">
+				<SelectTrigger className="w-full bg-neutral-200 font-medium p-1">
 					<SelectValue placeholder={dic.workspaces.switcher.noselect} />
 				</SelectTrigger>
 				<SelectContent>
