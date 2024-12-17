@@ -45,7 +45,11 @@
 			"failInCreate": "工作区创建失败",
 			"succefulCreate": "成功创建工作区",
 			"imageNotice": "JPG, PNG, SVG or jpeg,不超过1mb"
-		}
+		},
+		"switcher": {
+			"noselect": "未选择工作区"
+		},
+		"name": "工作区"
 	},
 	"cancel": "取消",
 	"submit": "提交",

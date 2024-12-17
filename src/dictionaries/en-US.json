@@ -45,7 +45,11 @@
 			"failInCreate": "Failed to create workspaces",
 			"succefulCreate": "Workspace created",
 			"imageNotice": "JPG, PNG, SVG or jpeg, max 1 mb"
-		}
+		},
+		"switcher": {
+			"noselect": "No workspaces selected"
+		},
+		"name": "Workspaces"
 	},
 	"cancel": "Cancel",
 	"submit": "Submit",
