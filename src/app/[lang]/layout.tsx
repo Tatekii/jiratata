@@ -7,6 +7,7 @@ import DictionaryProvider from "@/context/DictionaryProvider"
 import { getDictionary } from "@/lib/get-dictionary"
 import LocaleProvider from "@/context/LocaleProvider"
 import { QueryProvider } from "@/context/QueryProvider"
+import { NuqsAdapter } from "nuqs/adapters/next/app"
 import { Toaster } from "sonner"
 
 const inter = Inter({ subsets: ["latin"] })
@@ -38,7 +39,7 @@ export default async function RootLayout({
 					<DictionaryProvider dictionary={dictionary}>
 						<QueryProvider>
 							<Toaster />
-							{children}
+							<NuqsAdapter>{children}</NuqsAdapter>
 						</QueryProvider>
 					</DictionaryProvider>
 				</LocaleProvider>

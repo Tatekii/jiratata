@@ -13,6 +13,7 @@ import { useDictionary } from "@/context/DictionaryProvider"
 import useGetWorkspaces from "../api/useGetWorkspaces"
 import useWorkspaceId from "../hooks/useWorkspaceId"
 import { useRouter } from "next/navigation"
+import useCreateWorkspaceModal from "../hooks/useCreateWorkspaceModal"
 
 interface WorkspaceAvatarProps extends HtmlHTMLAttributes<HTMLDivElement> {
 	image?: string
@@ -42,7 +43,7 @@ const WorkspaceSwitcher = () => {
 	const workspaceId = useWorkspaceId()
 	const router = useRouter()
 	const { data: workspaces, isLoading } = useGetWorkspaces()
-	// const { open } = useCreateWorkspaceModal()
+	const { open } = useCreateWorkspaceModal()
 
 	const onSelect = (id: string) => {
 		router.push(`/workspaces/${id}`)
@@ -60,7 +61,7 @@ const WorkspaceSwitcher = () => {
 					/>
 				) : (
 					<RiAddCircleFill
-						// onClick={open}
+						onClick={open}
 						className="size-5 text-neutral-500 cursor-pointer hover:opacity-75 transition"
 					/>
 				)}
