@@ -8,7 +8,7 @@ import { ArrowLeftIcon } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
-// import { useConfirm } from "@/hooks/use-confirm";
+import useConfirm from "@/hooks/useConfirm"
 import { DottedSeparator } from "@/components/DottedSeparator"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Form } from "@/components/ui/form"
@@ -16,11 +16,10 @@ import { Form } from "@/components/ui/form"
 import { Workspace } from "../types"
 import { buildUpdateWorkspaceSchema } from "../schema"
 import { useDictionary } from "@/context/DictionaryProvider"
-import useUpdateWorkspace from "../api/useUpdateWorkspace"
 import CommonWorkspaceFormControl from "./CommonWorkspaceFormControl"
 import { useMemo } from "react"
-// import { useUpdateWorkspace } from "../api/use-update-workspace";
-// import { useDeleteWorkspace } from "../api/use-delete-workspace";
+import useUpdateWorkspace from "../api/useUpdateWorkspace"
+import useDeleteWorkspace from "../api/useDeleteWorkspace"
 // import { useResetInviteCode } from "../api/use-reset-invite-code";
 
 interface EditWorkspaceFormProps {
@@ -37,20 +36,14 @@ export const EditWorkspaceForm = ({ onCancel, initialValues }: EditWorkspaceForm
 
 	const router = useRouter()
 	const { mutate, isPending } = useUpdateWorkspace()
-	//   const {
-	//     mutate: deleteWorkspace,
-	//     isPending: isDeletingWorkspace
-	//   } = useDeleteWorkspace();
+
+	const { mutate: deleteWorkspace, isPending: isDeletingWorkspace } = useDeleteWorkspace()
 	//   const {
 	//     mutate: resetInviteCode,
 	//     isPending: isResettingInviteCode
 	//   } = useResetInviteCode();
 
-	//   const [DeleteDialog, confirmDelete] = useConfirm(
-	//     "Delete Workspace",
-	//     "This action cannot be undone.",
-	//     "destructive",
-	//   );
+	const [DeleteDialog, confirmDelete] = useConfirm(dic.workspaces.dangerzone.delete, dic.canundonotice, "destructive")
 
 	//   const [ResetDialog, confirmReset] = useConfirm(
 	//     "Reset invite link",
@@ -66,19 +59,22 @@ export const EditWorkspaceForm = ({ onCancel, initialValues }: EditWorkspaceForm
 		},
 	})
 
-	//   const handleDelete = async () => {
-	// const ok = await confirmDelete();
+	const handleDelete = async () => {
+		const ok = await confirmDelete()
 
-	// if (!ok) return;
+		if (!ok) return
 
-	// deleteWorkspace({
-	//   param: { workspaceId: initialValues.$id },
-	// }, {
-	//   onSuccess: () => {
-	//     window.location.href = "/";
-	//   },
-	// });
-	//   };
+		deleteWorkspace(
+			{
+				param: { workspaceId: initialValues.$id },
+			},
+			{
+				onSuccess: () => {
+					window.location.href = "/"
+				},
+			}
+		)
+	}
 
 	//   const handleResetInviteCode = async () => {
 	// const ok = await confirmReset();
@@ -111,8 +107,8 @@ export const EditWorkspaceForm = ({ onCancel, initialValues }: EditWorkspaceForm
 
 	return (
 		<div className="flex flex-col gap-y-4">
-			{/* <DeleteDialog />
-      <ResetDialog /> */}
+			<DeleteDialog />
+			{/* <ResetDialog />  */}
 			<Card className="w-full h-full border-none shadow-none">
 				<CardHeader className="flex flex-row items-center gap-x-4 p-7 space-y-0">
 					<Button
@@ -155,7 +151,8 @@ export const EditWorkspaceForm = ({ onCancel, initialValues }: EditWorkspaceForm
 				</CardContent>
 			</Card>
 
-			{/* <Card className="w-ful h-full border-none shadow-none">
+			{
+				/* <Card className="w-ful h-full border-none shadow-none">
         <CardContent className="p-7">
           <div className="flex flex-col">
            <h3 className="font-bold">Invite Members</h3>
@@ -189,27 +186,28 @@ export const EditWorkspaceForm = ({ onCancel, initialValues }: EditWorkspaceForm
         </CardContent>
       </Card>
 
-      <Card className="w-ful h-full border-none shadow-none">
-        <CardContent className="p-7">
-          <div className="flex flex-col">
-           <h3 className="font-bold">Danger Zone</h3>
-           <p className="text-sm text-muted-foreground">
-             Deleting a workspace is irreversible and will remove all associated data.
-           </p>
-           <DottedSeparator className="py-7" />
-           <Button
-            className="mt-6 w-fit ml-auto"
-            size="sm"
-            variant="destructive"
-            type="button"
-            disabled={isPending || isDeletingWorkspace}
-            onClick={handleDelete}
-           >
-            Delete Workspace
-           </Button>
-          </div>
-        </CardContent>
-      </Card> */}
+	  */
+
+				<Card className="w-ful h-full border-none shadow-none">
+					<CardContent className="p-7">
+						<div className="flex flex-col">
+							<h3 className="font-bold">{dic.workspaces.dangerzone.name}</h3>
+							<p className="text-sm text-muted-foreground">{dic.workspaces.dangerzone.notice}</p>
+							<DottedSeparator className="py-7" />
+							<Button
+								className="mt-6 w-fit ml-auto"
+								size="sm"
+								variant="destructive"
+								type="button"
+								disabled={isPending || isDeletingWorkspace}
+								onClick={handleDelete}
+							>
+								{dic.workspaces.dangerzone.delete}
+							</Button>
+						</div>
+					</CardContent>
+				</Card>
+			}
 		</div>
 	)
 }

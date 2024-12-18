@@ -29,7 +29,6 @@ const Navbar = () => {
 	const dic = useDictionary()
 
 	const { title, description } = pathnameMap[pathnameKey] || defaultMap
-console.log(title,description);
 
 	return (
 		<nav className="pt-4 px-6 flex items-center justify-between">

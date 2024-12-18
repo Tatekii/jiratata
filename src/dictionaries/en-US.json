@@ -49,13 +49,20 @@
 		"switcher": {
 			"noselect": "No workspaces selected"
 		},
-		"name": "Workspaces"
+		"name": "Workspaces",
+		"dangerzone": {
+			"name": "Danger Zone",
+			"notice": "Deleting a workspace is irreversible and will remove all associated data.",
+			"delete": "Delete Workspace"
+		}
 	},
 	"cancel": "Cancel",
+	"confirm": "Confirm",
 	"submit": "Submit",
 	"upload": "Upload",
 	"delete": "Delete",
 	"chooselang": "Choose Lang",
 	"back": "Back",
-	"savechanges":"Save Changes"
+	"savechanges": "Save Changes",
+	"canundonotice": "This action cannot be undone."
 }

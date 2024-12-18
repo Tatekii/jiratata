@@ -49,13 +49,20 @@
 		"switcher": {
 			"noselect": "未选择工作区"
 		},
-		"name": "工作区"
+		"name": "工作区",
+		"dangerzone": {
+			"name": "危险区",
+			"notice": "删除工作区不可逆且会丢失所有数据。",
+			"delete": "删除工作区"
+		}
 	},
 	"cancel": "取消",
+	"confirm": "确认",
 	"submit": "提交",
 	"upload": "上传",
 	"delete": "删除",
 	"chooselang": "切换语言",
 	"back": "返回",
-	"savechanges": "保存修改"
+	"savechanges": "保存修改",
+	"canundonotice": "此操作不可逆。"
 }
