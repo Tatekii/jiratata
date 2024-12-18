@@ -1,7 +1,8 @@
 "use client"
 
-import { useRouter } from "next/navigation"
 import { RiAddCircleFill } from "react-icons/ri"
+import { AiOutlineLoading } from "react-icons/ai"
+
 import Image from "next/image"
 import { cn } from "@/lib/utils"
 
@@ -10,6 +11,8 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { FC, HtmlHTMLAttributes } from "react"
 import { useDictionary } from "@/context/DictionaryProvider"
 import useGetWorkspaces from "../api/useGetWorkspaces"
+import useWorkspaceId from "../hooks/useWorkspaceId"
+import { useRouter } from "next/navigation"
 
 interface WorkspaceAvatarProps extends HtmlHTMLAttributes<HTMLDivElement> {
 	image?: string
@@ -34,16 +37,16 @@ const WorkspaceAvatar: FC<WorkspaceAvatarProps> = ({ image, name, className }) =
 	)
 }
 
-// TODO 默认进入工作区
+
 const WorkspaceSwitcher = () => {
-	// const workspaceId = useWorkspaceId()
-	// const router = useRouter()
-	const { data: workspaces } = useGetWorkspaces()
+	const workspaceId = useWorkspaceId()
+	const router = useRouter()
+	const { data: workspaces, isLoading } = useGetWorkspaces()
 	// const { open } = useCreateWorkspaceModal()
 
-	// const onSelect = (id: string) => {
-	// 	router.push(`/workspaces/${id}`)
-	// }
+	const onSelect = (id: string) => {
+		router.push(`/workspaces/${id}`)
+	}
 
 	const dic = useDictionary()
 
@@ -51,13 +54,18 @@ const WorkspaceSwitcher = () => {
 		<div className="flex flex-col gap-y-2">
 			<div className="flex items-center justify-between">
 				<p className="text-xs uppercase text-neutral-500">{dic.workspaces.name}</p>
-				<RiAddCircleFill
-					// onClick={open}
-					className="size-5 text-neutral-500 cursor-pointer hover:opacity-75 transition"
-				/>
+				{isLoading ? (
+					<AiOutlineLoading
+						className="size-5 text-neutral-500 animate-spin "
+					/>
+				) : (
+					<RiAddCircleFill
+						// onClick={open}
+						className="size-5 text-neutral-500 cursor-pointer hover:opacity-75 transition"
+					/>
+				)}
 			</div>
-			{/* <Select onValueChange={onSelect} value={workspaceId}> */}
-			<Select>
+			<Select onValueChange={onSelect} value={workspaceId} disabled={isLoading}>
 				<SelectTrigger className="w-full bg-neutral-200 font-medium p-1">
 					<SelectValue placeholder={dic.workspaces.switcher.noselect} />
 				</SelectTrigger>

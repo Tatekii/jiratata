@@ -5,7 +5,7 @@ import { PropsWithChildren } from "react"
 
 interface DashboardLayoutProps extends PropsWithChildren {}
 
-const DashboardLayout = ({ children }: DashboardLayoutProps) => {
+const DashboardLayout = async ({ children }: DashboardLayoutProps) => {
 	return (
 		<div className="min-h-screen">
 			<div className="flex w-full h-full">

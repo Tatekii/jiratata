@@ -1,17 +1,18 @@
 import { getCurrent } from "@/features/auth/queries"
-import CreateWorkspaceForm from "@/features/workspaces/components/CreateWorkspaceForm"
+import { getWorkspaces } from "@/features/workspaces/queries"
 import { redirect } from "next/navigation"
 
 export default async function Home() {
-	
 	const user = await getCurrent()
 	if (!user) {
 		redirect("/signin")
 	}
 
-	return (
-		<>
-			<CreateWorkspaceForm />
-		</>
-	)
+	const workspaces = await getWorkspaces()
+
+	if (!workspaces || !workspaces.total || !workspaces.documents.length) {
+		redirect("/workspaces/create")
+	} else {
+		redirect(`/workspaces/${workspaces.documents[0].$id}`)
+	}
 }
