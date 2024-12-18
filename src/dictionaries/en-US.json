@@ -55,5 +55,7 @@
 	"submit": "Submit",
 	"upload": "Upload",
 	"delete": "Delete",
-	"chooselang": "Choose Lang"
+	"chooselang": "Choose Lang",
+	"back": "Back",
+	"savechanges":"Save Changes"
 }
