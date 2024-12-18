@@ -54,6 +54,10 @@
 			"name": "Danger Zone",
 			"notice": "Deleting a workspace is irreversible and will remove all associated data.",
 			"delete": "Delete Workspace"
+		},
+		"invitelink": {
+			"name": "Invite Members",
+			"notice": "Use the invite link to add members to your workspace."
 		}
 	},
 	"cancel": "Cancel",

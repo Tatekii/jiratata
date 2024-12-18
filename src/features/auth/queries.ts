@@ -1,3 +1,4 @@
+import "server-only"
 import { createSessionClient } from "@/lib/hono"
 
 export const getCurrent = async () => {

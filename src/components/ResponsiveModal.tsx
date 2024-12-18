@@ -4,6 +4,8 @@ import { Dialog, DialogContent } from "@/components/ui/dialog"
 
 import { Drawer, DrawerContent } from "@/components/ui/drawer"
 
+import "./ResponsiveModal.css"
+
 interface ResponsiveModalProps {
 	children: React.ReactNode
 	open: boolean

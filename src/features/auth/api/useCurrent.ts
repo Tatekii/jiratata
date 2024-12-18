@@ -1,6 +1,7 @@
 import { client } from "@/lib/rpc"
 import { useQuery } from "@tanstack/react-query"
 
+// TODO 记录登陆前想前往的路径，from=xxxx
 const useCurrent = () => {
 	const query = useQuery({
 		queryKey: ["current"],
