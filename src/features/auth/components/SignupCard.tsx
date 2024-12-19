@@ -150,7 +150,7 @@ const SignUpCard = () => {
 			<CardContent className="p-7 flex items-center justify-center">
 				<p>
 					{dic.auth.haveaccount}?
-					<Link href="/sign-in">
+					<Link href="/signin">
 						<span className="text-blue-700">&nbsp;{dic.auth.signin}</span>
 					</Link>
 				</p>

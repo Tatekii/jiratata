@@ -6,7 +6,7 @@ import WorkspaceIdSettingsClient from "./client"
 
 const WorkspaceIdSettingsPage = async () => {
 	const user = await getCurrent()
-	if (!user) redirect("/sign-in")
+	if (!user) redirect("/signin")
 
 	return <WorkspaceIdSettingsClient />
 }

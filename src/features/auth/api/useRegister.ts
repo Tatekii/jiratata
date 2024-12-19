@@ -1,20 +1,22 @@
 import { toast } from "sonner"
 import { useRouter } from "next/navigation"
-import { InferRequestType, InferResponseType } from "hono"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 
 import { client } from "@/lib/rpc"
 import { useDictionary } from "@/context/DictionaryProvider"
+import { MyResponseSuccessType, MyResponseFailType, MyRequestType, handleOnError } from "@/lib/utils"
 
-type ResponseType = InferResponseType<(typeof client.api.auth.register)["$post"]>
-type RequestType = InferRequestType<(typeof client.api.auth.register)["$post"]>
+type TCurFetch = (typeof client.api.auth.register)["$post"]
+type ResponseSuccessType = MyResponseSuccessType<TCurFetch>
+type ResponseFailType = MyResponseFailType
+type RequestType = MyRequestType<TCurFetch>
 
 export default function UseRegister() {
 	const queryClient = useQueryClient()
 	const router = useRouter()
 	const dic = useDictionary()
 
-	const mutation = useMutation<ResponseType, Error, RequestType>({
+	const mutation = useMutation<ResponseSuccessType, ResponseFailType, RequestType>({
 		mutationFn: async ({ json }) => {
 			const response = await client.api.auth.register["$post"]({ json })
 
@@ -29,10 +31,11 @@ export default function UseRegister() {
 			router.refresh()
 			queryClient.invalidateQueries({ queryKey: ["current"] })
 		},
-		onError: () => {
-			toast.error(dic.auth.failInRegister)
+		onError: (err) => {
+			handleOnError(err, () => {
+				toast.error(dic.auth.failInRegister)
+			})
 		},
-		onSettled: () => {},
 	})
 
 	return mutation

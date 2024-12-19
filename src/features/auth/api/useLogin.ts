@@ -1,19 +1,21 @@
 import { toast } from "sonner"
 import { useRouter } from "next/navigation"
-import { InferRequestType, InferResponseType } from "hono"
 import { useMutation } from "@tanstack/react-query"
 
 import { client } from "@/lib/rpc"
 import { useDictionary } from "@/context/DictionaryProvider"
+import { handleOnError, MyRequestType, MyResponseFailType, MyResponseSuccessType } from "@/lib/utils"
 
-type ResponseType = InferResponseType<(typeof client.api.auth.login)["$post"]>
-type RequestType = InferRequestType<(typeof client.api.auth.login)["$post"]>
+type TCurFetch = (typeof client.api.auth.login)["$post"]
+type ResponseSuccessType = MyResponseSuccessType<TCurFetch>
+type ResponseFailType = MyResponseFailType
+type RequestType = MyRequestType<TCurFetch>
 
 export default function UseLogin() {
 	const router = useRouter()
 	const dic = useDictionary()
 
-	const mutation = useMutation<ResponseType, Error, RequestType>({
+	const mutation = useMutation<ResponseSuccessType, ResponseFailType, RequestType>({
 		mutationFn: async ({ json }) => {
 			await client.api.auth.login.$post({ json })
 
@@ -29,8 +31,10 @@ export default function UseLogin() {
 			toast.success(dic.auth.successfulLogin)
 			router.refresh()
 		},
-		onError: () => {
-			toast.error(dic.auth.failInLogin)
+		onError: (err) => {
+			handleOnError(err, () => {
+				toast.error(dic.auth.failInLogin)
+			})
 		},
 	})
 

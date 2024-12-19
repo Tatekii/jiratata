@@ -5,7 +5,7 @@ import CreateWorkspaceForm from "@/features/workspaces/components/CreateWorkspac
 
 const WorkspaceCreatePage = async () => {
 	const user = await getCurrent()
-	if (!user) redirect("/sign-in")
+	if (!user) redirect("/signin")
 
 	return (
 		<div className="w-full lg:max-w-xl">

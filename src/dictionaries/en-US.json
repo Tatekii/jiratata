@@ -55,9 +55,30 @@
 			"notice": "Deleting a workspace is irreversible and will remove all associated data.",
 			"delete": "Delete Workspace"
 		},
-		"invitelink": {
+		"invite": {
 			"name": "Invite Members",
 			"notice": "Use the invite link to add members to your workspace."
+		},
+		"join": {
+			"notice": "You've been invited to join",
+			"name": "Join Workspace",
+			"success": "Joined workspace",
+			"fail": "Failed to join workspace"
+		},
+		"fetch": {
+			"error": "Failed to fetch workspace info"
+		},
+		"delete": {
+			"success": "Workspace delete",
+			"fail": "Failed to delete workspace"
+		},
+		"create": {
+			"success": "Workspace create",
+			"fail": "Failed to create workspace"
+		},
+		"update": {
+			"success": "Workspace update",
+			"fail": "Failed to update workspace"
 		}
 	},
 	"cancel": "Cancel",
@@ -68,5 +89,6 @@
 	"chooselang": "Choose Lang",
 	"back": "Back",
 	"savechanges": "Save Changes",
-	"canundonotice": "This action cannot be undone."
+	"canundonotice": "This action cannot be undone.",
+	"pagenotfound": "Page Not Found"
 }

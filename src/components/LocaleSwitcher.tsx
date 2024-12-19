@@ -11,9 +11,8 @@ import { useLocale } from "@/context/LocaleProvider"
 // }
 
 export default function LocaleSwitcher() {
-
 	const lang = useLocale()
-	
+
 	const pathname = usePathname()
 	const router = useRouter()
 
@@ -29,7 +28,7 @@ export default function LocaleSwitcher() {
 
 	return (
 		<Select defaultValue={lang} onValueChange={(locale: Locale) => handleChangeLang(locale)}>
-			<SelectTrigger className="w-[100px]">
+			<SelectTrigger className="w-[100px] h-10">
 				<SelectValue placeholder={"i18n"} />
 			</SelectTrigger>
 			<SelectContent>

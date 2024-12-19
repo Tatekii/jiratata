@@ -3,17 +3,17 @@ import { useQuery } from "@tanstack/react-query"
 import { client } from "@/lib/rpc"
 import { useDictionary } from "@/context/DictionaryProvider"
 
-interface UseGetWorkspaceProps {
+interface UseGetWorkspaceInfoProps {
 	workspaceId: string
 }
 
-const useGetWorkspace = ({ workspaceId }: UseGetWorkspaceProps) => {
+export const useGetWorkspaceInfo = ({ workspaceId }: UseGetWorkspaceInfoProps) => {
 	const dic = useDictionary()
 
 	const query = useQuery({
-		queryKey: ["workspace", workspaceId],
+		queryKey: ["workspace-info", workspaceId],
 		queryFn: async () => {
-			const response = await client.api.workspaces[":workspaceId"].$get({
+			const response = await client.api.workspaces[":workspaceId"]["info"].$get({
 				param: { workspaceId },
 			})
 
@@ -29,5 +29,3 @@ const useGetWorkspace = ({ workspaceId }: UseGetWorkspaceProps) => {
 
 	return query
 }
-
-export default useGetWorkspace

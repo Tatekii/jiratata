@@ -1,7 +1,7 @@
 "use client"
 
-import PageError from "@/components/PageError"
 import { PageLoader } from "@/components/PageLoader"
+import PageNotFound from "@/components/PageNotFound"
 import useGetWorkspace from "@/features/workspaces/api/useGetWorkspace"
 import { EditWorkspaceForm } from "@/features/workspaces/components/EditWorkspaceForm"
 import useWorkspaceId from "@/features/workspaces/hooks/useWorkspaceId"
@@ -15,7 +15,7 @@ const WorkspaceIdSettingsClient = () => {
 	}
 
 	if (!initialValues) {
-		return <PageError message="Project not found" />
+		return <PageNotFound />
 	}
 
 	return (

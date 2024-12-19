@@ -55,9 +55,30 @@
 			"notice": "删除工作区不可逆且会丢失所有数据。",
 			"delete": "删除工作区"
 		},
-		"invitelink": {
+		"invite": {
 			"name": "邀请成员",
 			"notice": "使用邀请链接加入此工作区。"
+		},
+		"join": {
+			"notice": "您被受邀加入",
+			"name": "加入工作区",
+			"success": "成功加入工作区",
+			"fail": "加入工作区失败"
+		},
+		"fetch": {
+			"error": "获取工作区信息失败"
+		},
+		"delete": {
+			"success": "工作区已删除",
+			"fail": "删除工作区失败"
+		},
+		"create": {
+			"success": "创建工作区",
+			"fail": "创建工作区失败"
+		},
+		"update": {
+			"success": "更新工作区信息",
+			"fail": "更新工作区失败"
 		}
 	},
 	"cancel": "取消",
@@ -68,5 +89,6 @@
 	"chooselang": "切换语言",
 	"back": "返回",
 	"savechanges": "保存修改",
-	"canundonotice": "此操作不可逆。"
+	"canundonotice": "此操作不可逆。",
+	"pagenotfound": "页面未找到"
 }
