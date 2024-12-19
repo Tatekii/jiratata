@@ -20,7 +20,7 @@ interface WorkspaceAvatarProps extends HtmlHTMLAttributes<HTMLDivElement> {
 	name: string
 }
 
-const WorkspaceAvatar: FC<WorkspaceAvatarProps> = ({ image, name, className }) => {
+export const WorkspaceAvatar: FC<WorkspaceAvatarProps> = ({ image, name, className }) => {
 	if (image) {
 		return (
 			<div className={cn("size-10 relative rounded-md overflow-hidden p-2", className)}>

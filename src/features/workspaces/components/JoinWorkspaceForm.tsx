@@ -11,11 +11,11 @@ import useInviteCode from "../hooks/useInviteCode"
 import useWorkspaceId from "../hooks/useWorkspaceId"
 import { useJoinWorkspace } from "../api/useJoinWorkspace"
 import { useDictionary } from "@/context/DictionaryProvider"
+import { useGetWorkspaceInfo } from "../api/useGetWorkspaceInfo"
+import { WorkspaceAvatar } from "./WorkspaceSwitcher"
 
 interface JoinWorkspaceFormProps {
-	initialValues: {
-		name: string
-	}
+	initialValues: ReturnType<typeof useGetWorkspaceInfo>["data"]
 }
 
 const JoinWorkspaceForm = ({ initialValues }: JoinWorkspaceFormProps) => {
@@ -43,9 +43,12 @@ const JoinWorkspaceForm = ({ initialValues }: JoinWorkspaceFormProps) => {
 	return (
 		<Card className="w-full h-full border-none shadow-none">
 			<CardHeader className="p-7">
-				<CardTitle className="text-xl font-bold">Join workspace</CardTitle>
+				<CardTitle className="text-xl font-bold flex justify-between">
+					{dic.workspaces.join.name}{" "}
+					<WorkspaceAvatar name={initialValues?.name || ""} image={initialValues?.imageUrl} />
+				</CardTitle>
 				<CardDescription>
-					{dic.workspaces.join.notice} <strong>{initialValues.name}</strong> {dic.workspaces.name}
+					{dic.workspaces.join.notice} <strong>{initialValues?.name}</strong> {dic.workspaces.name}
 				</CardDescription>
 			</CardHeader>
 			<div className="px-7">
