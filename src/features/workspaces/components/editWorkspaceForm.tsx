@@ -13,20 +13,20 @@ import { DottedSeparator } from "@/components/DottedSeparator"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Form } from "@/components/ui/form"
 
-import { Workspace } from "../types"
+import { EMemberRole, TWorkspace } from "@/features/types"
 import { buildUpdateWorkspaceSchema } from "../schema"
 import { useDictionary } from "@/context/DictionaryProvider"
 import CommonWorkspaceFormControl from "./CommonWorkspaceFormControl"
-import { useMemo } from "react"
+import { useMemo, useState } from "react"
 import useUpdateWorkspace from "../api/useUpdateWorkspace"
 import useDeleteWorkspace from "../api/useDeleteWorkspace"
 import { Input } from "@/components/ui/input"
 import { toast } from "sonner"
-// import { useResetInviteCode } from "../api/use-reset-invite-code";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 
 interface EditWorkspaceFormProps {
 	onCancel?: () => void
-	initialValues: Workspace
+	initialValues: TWorkspace
 }
 
 export const EditWorkspaceForm = ({ onCancel, initialValues }: EditWorkspaceFormProps) => {
@@ -52,6 +52,8 @@ export const EditWorkspaceForm = ({ onCancel, initialValues }: EditWorkspaceForm
 	//     "This will invalidate the current invite link",
 	//     "destructive",
 	//   );
+
+	const [inviteRole, setInviteRole] = useState<EMemberRole>(EMemberRole.MEMBER)
 
 	const form = useForm<z.infer<typeof updateWorkspaceSchema>>({
 		resolver: zodResolver(updateWorkspaceSchema),
@@ -100,7 +102,7 @@ export const EditWorkspaceForm = ({ onCancel, initialValues }: EditWorkspaceForm
 		})
 	}
 
-	const fullInviteLink = `${window.location.origin}/workspaces/${initialValues.$id}/join/${initialValues.inviteCode}`
+	const fullInviteLink = `${window.location.origin}/workspaces/${initialValues.$id}/join/${initialValues.inviteCode}?role=${inviteRole}`
 
 	const handleCopyInviteLink = () => {
 		navigator.clipboard.writeText(fullInviteLink).then(() => toast.success("Invite link copied to clipboard"))
@@ -143,7 +145,7 @@ export const EditWorkspaceForm = ({ onCancel, initialValues }: EditWorkspaceForm
 								>
 									{dic.cancel}
 								</Button>
-								<Button disabled={isPending} type="submit" size="lg">
+								<Button disabled={isPending} type="submit">
 									{dic.savechanges}
 								</Button>
 							</div>
@@ -160,7 +162,27 @@ export const EditWorkspaceForm = ({ onCancel, initialValues }: EditWorkspaceForm
 						<div className="mt-4">
 							<div className="flex items-center gap-x-2">
 								<Input disabled value={fullInviteLink} />
-								<Button onClick={handleCopyInviteLink} variant="secondary" className="size-12">
+
+								<Select
+									value={inviteRole}
+									onValueChange={(role: EMemberRole) => {
+										setInviteRole(role)
+									}}
+								>
+									<SelectTrigger className="w-[100px] h-10">
+										<SelectValue placeholder={"role"} />
+									</SelectTrigger>
+									<SelectContent>
+										<SelectItem key={EMemberRole.MEMBER} value={EMemberRole.MEMBER}>
+											{dic.workspaces.invite.member}
+										</SelectItem>
+										<SelectItem key={EMemberRole.GUEST} value={EMemberRole.GUEST}>
+											{dic.workspaces.invite.guest}
+										</SelectItem>
+									</SelectContent>
+								</Select>
+
+								<Button onClick={handleCopyInviteLink} variant="secondary">
 									<CopyIcon className="size-5" />
 								</Button>
 							</div>
@@ -188,7 +210,6 @@ export const EditWorkspaceForm = ({ onCancel, initialValues }: EditWorkspaceForm
 						<DottedSeparator className="py-7" />
 						<Button
 							className="mt-6 w-fit ml-auto"
-							size="sm"
 							variant="destructive"
 							type="button"
 							disabled={isPending || isDeletingWorkspace}

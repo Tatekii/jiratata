@@ -29,7 +29,7 @@ const routes = [
 		activeIcon: SettingsIcon,
 	},
 	{
-		label: "members",
+		label: "navmembers",
 		href: "/members",
 		icon: UsersIcon,
 		activeIcon: UsersIcon,

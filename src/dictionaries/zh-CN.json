@@ -26,13 +26,13 @@
 		"successfulRegister": "注册成功",
 		"successfulLogout": "登出成功"
 	},
+	"navmembers": "成员",
 	"and": "和",
 	"home": "主页",
 	"homedesc": "管理您的所有项目和任务",
 	"mytasks": "我的任务",
 	"mytasksdesc": "管理您的所有任务",
 	"settings": "设置",
-	"members": "成员",
 	"myprojects": "项目",
 	"myprojectsdesc": "管理您的所有项目",
 	"form": { "required": "不能为空", "minium1": "长度至少为1位" },
@@ -57,7 +57,9 @@
 		},
 		"invite": {
 			"name": "邀请成员",
-			"notice": "使用邀请链接加入此工作区。"
+			"notice": "使用邀请链接加入此工作区。",
+			"member": "成员",
+			"guest": "访客"
 		},
 		"join": {
 			"notice": "您被受邀加入",
@@ -81,6 +83,24 @@
 			"fail": "更新工作区失败"
 		}
 	},
+	"members": {
+		"name": "成员",
+		"fetch": {
+			"error": "获取成员失败",
+			"empty": "无成员"
+		},
+		"delete": {
+			"success": "成员已删除",
+			"fail": "删删除成员失败"
+		},
+		"update": {
+			"success": "更新成员信息",
+			"fail": "更新成员信息失败",
+			"toadmin": "设置为管理员",
+			"tomember": "设置为成员",
+			"toguest": "设置为访客"
+		}
+	},
 	"cancel": "取消",
 	"confirm": "确认",
 	"submit": "提交",
@@ -88,6 +108,8 @@
 	"delete": "删除",
 	"chooselang": "切换语言",
 	"back": "返回",
+	"remove": "删除",
+	"list": "列表",
 	"savechanges": "保存修改",
 	"canundonotice": "此操作不可逆。",
 	"pagenotfound": "页面未找到"

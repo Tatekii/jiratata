@@ -8,7 +8,7 @@ import { DATABASE_ID, WORKSPACES_ID, IMAGE_BUCKET_ID, MEMBERS_ID } from "@/confi
 import { localeMiddleware, localeValidatorMiddleware } from "@/app/api/[[...route]]/middlewares"
 import { buildCreateWorkspaceSchema, buildUpdateWorkspaceSchema } from "../schema"
 import { AppVariables } from "@/app/api/[[...route]]/route"
-import { EMemberRole, Workspace } from "../types"
+import { EMemberRole, TWorkspace } from "@/features/types"
 import { generateInviteCode } from "@/lib/utils"
 import { getMember } from "@/features/members/utils"
 import { z } from "zod"
@@ -50,7 +50,7 @@ const app = new Hono<{ Variables: AppVariables }>()
 			return c.json({ error: "Unauthorized" }, 401)
 		}
 
-		const workspace = await databases.getDocument<Workspace>(DATABASE_ID, WORKSPACES_ID, workspaceId)
+		const workspace = await databases.getDocument<TWorkspace>(DATABASE_ID, WORKSPACES_ID, workspaceId)
 
 		return c.json({ data: workspace })
 	})
@@ -58,7 +58,7 @@ const app = new Hono<{ Variables: AppVariables }>()
 		const databases = c.get("databases")
 		const { workspaceId } = c.req.param()
 
-		const workspace = await databases.getDocument<Workspace>(DATABASE_ID, WORKSPACES_ID, workspaceId)
+		const workspace = await databases.getDocument<TWorkspace>(DATABASE_ID, WORKSPACES_ID, workspaceId)
 
 		return c.json({
 			data: {
@@ -176,11 +176,11 @@ const app = new Hono<{ Variables: AppVariables }>()
 	.post(
 		"/:workspaceId/join",
 		authSessionMiddleware,
-		zValidator("json", z.object({ code: z.string() })),
+		zValidator("json", z.object({ code: z.string(), role: z.nativeEnum(EMemberRole) })),
 		async (c) => {
 			const { workspaceId } = c.req.param()
 
-			const { code } = c.req.valid("json")
+			const { code, role } = c.req.valid("json")
 
 			const databases = c.get("databases")
 
@@ -196,7 +196,7 @@ const app = new Hono<{ Variables: AppVariables }>()
 				return c.json({ error: "Already a member" }, 400)
 			}
 
-			const workspace = await databases.getDocument<Workspace>(DATABASE_ID, WORKSPACES_ID, workspaceId)
+			const workspace = await databases.getDocument<TWorkspace>(DATABASE_ID, WORKSPACES_ID, workspaceId)
 
 			if (workspace.inviteCode !== code) {
 				return c.json({ error: "Invalid invite code" }, 400)
@@ -205,7 +205,7 @@ const app = new Hono<{ Variables: AppVariables }>()
 			await databases.createDocument(DATABASE_ID, MEMBERS_ID, ID.unique(), {
 				workspaceId,
 				userId: user.$id,
-				role: EMemberRole.MEMBER,
+				role,
 			})
 
 			return c.json({ data: workspace })

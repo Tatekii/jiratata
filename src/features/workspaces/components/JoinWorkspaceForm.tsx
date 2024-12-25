@@ -13,6 +13,7 @@ import { useJoinWorkspace } from "../api/useJoinWorkspace"
 import { useDictionary } from "@/context/DictionaryProvider"
 import { useGetWorkspaceInfo } from "../api/useGetWorkspaceInfo"
 import { WorkspaceAvatar } from "./WorkspaceSwitcher"
+import useInviteRole from "../hooks/useInviteRole"
 
 interface JoinWorkspaceFormProps {
 	initialValues: ReturnType<typeof useGetWorkspaceInfo>["data"]
@@ -22,6 +23,8 @@ const JoinWorkspaceForm = ({ initialValues }: JoinWorkspaceFormProps) => {
 	const router = useRouter()
 	const workspaceId = useWorkspaceId()
 	const inviteCode = useInviteCode()
+	const inviteRole = useInviteRole()
+
 	const { mutate, isPending } = useJoinWorkspace()
 
 	const dic = useDictionary()
@@ -30,7 +33,7 @@ const JoinWorkspaceForm = ({ initialValues }: JoinWorkspaceFormProps) => {
 		mutate(
 			{
 				param: { workspaceId },
-				json: { code: inviteCode },
+				json: { code: inviteCode, role: inviteRole },
 			},
 			{
 				onSuccess: ({ data }) => {

@@ -26,13 +26,13 @@
 		"successfulRegister": "Register successful",
 		"successfulLogout": "Logout successful"
 	},
+	"navmembers": "Members",
 	"and": "and",
 	"home": "Home",
 	"homedesc": "Monitor all of your projects and tasks here",
 	"mytasks": "My Tasks",
 	"mytasksdesc": "View all of your tasks here",
 	"settings": "Settings",
-	"members": "Members",
 	"myprojects": "My Project",
 	"myprojectsdesc": "View tasks of your project here",
 	"form": { "required": "Required", "minium1": "Minimum of 1 characters required" },
@@ -57,7 +57,9 @@
 		},
 		"invite": {
 			"name": "Invite Members",
-			"notice": "Use the invite link to add members to your workspace."
+			"notice": "Use the invite link to add members to your workspace.",
+			"member": "Member",
+			"guest": "Guest"
 		},
 		"join": {
 			"notice": "You've been invited to join",
@@ -81,6 +83,24 @@
 			"fail": "Failed to update workspace"
 		}
 	},
+	"members": {
+		"name": "Members",
+		"fetch": {
+			"error": "Failed to fetch members",
+			"empty": "No members found"
+		},
+		"delete": {
+			"success": "Member deleted",
+			"fail": "Failed to delete member"
+		},
+		"update": {
+			"success": "Member updated",
+			"fail": "Failed to update member",
+			"toadmin": "Set to Administrator",
+			"tomember": "Set to Member",
+			"toguest": "Set to Guest"
+		}
+	},
 	"cancel": "Cancel",
 	"confirm": "Confirm",
 	"submit": "Submit",
@@ -88,6 +108,8 @@
 	"delete": "Delete",
 	"chooselang": "Choose Lang",
 	"back": "Back",
+	"remove": "Remove",
+	"list": "List",
 	"savechanges": "Save Changes",
 	"canundonotice": "This action cannot be undone.",
 	"pagenotfound": "Page Not Found"
