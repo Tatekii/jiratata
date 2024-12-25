@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation"
 
-import { getCurrent } from "@/features/auth/queries"
+import { getCurrent } from "@/features/auth/service/queries"
 import WorkspaceIdSettingsClient from "./client"
 
 
