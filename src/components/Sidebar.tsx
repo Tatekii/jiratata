@@ -3,7 +3,7 @@ import { DottedSeparator } from "./DottedSeparator"
 import Navigation from "./Navigation"
 import Image from "next/image"
 import WorkspaceSwitcher from "../features/workspaces/components/WorkspaceSwitcher"
-import Projects from "./Projects"
+import ProjectsSwitcher from "../features/projects/components/ProjectsSwitcher"
 
 const BaseSidebar = () => {
 	return (
@@ -22,7 +22,7 @@ const BaseSidebar = () => {
 			<Navigation />
 			{/* 项目栏 */}
 			<DottedSeparator className="my-4" />
-			<Projects />
+			<ProjectsSwitcher />
 		</aside>
 	)
 }

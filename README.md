@@ -37,3 +37,10 @@
 | workspaceId | string | Y | 工作区id($id) |
 | imageUrl | string |  | 项目图标 |
 | $id | string | Y | 自动创建id |
+
+
+## Project Structure
+1. [lang]
+在第一层路径控制多语言，并通过next middleware切换
+1. (dashboard)和(standalone)
+控制不同路径深度使用带控制面板侧边栏的layout

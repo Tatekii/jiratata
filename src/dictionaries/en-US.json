@@ -95,6 +95,8 @@
 			"empty": "No members found"
 		},
 		"delete": {
+			"name": "Remove Member",
+			"modalnotice": "This member will be removed from the workspace",
 			"success": "Member deleted",
 			"fail": "Failed to delete member"
 		},
@@ -132,6 +134,11 @@
 		},
 		"edit": {
 			"title": "Edit Project"
+		},
+		"dangerzone": {
+			"name": "Danger Zone",
+			"notice": "Deleting a project is irreversible and will remove all associated data.",
+			"delete": "Delete Project"
 		}
 	},
 	"cancel": "Cancel",

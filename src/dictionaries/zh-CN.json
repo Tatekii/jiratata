@@ -91,8 +91,10 @@
 			"empty": "无成员"
 		},
 		"delete": {
+			"name": "移除成员",
+			"modalnotice": "该成员将被移出次工作区",
 			"success": "成员已删除",
-			"fail": "删删除成员失败"
+			"fail": "删除成员失败"
 		},
 		"update": {
 			"success": "更新成员信息",
@@ -128,6 +130,11 @@
 		},
 		"edit": {
 			"title": "编辑项目"
+		},
+		"dangerzone": {
+			"name": "危险区",
+			"notice": "删除项目不可逆且会丢失所有数据。",
+			"delete": "删除项目"
 		}
 	},
 	"cancel": "取消",

@@ -5,18 +5,18 @@ import { client } from "@/lib/rpc"
 import { MyResponseSuccessType, MyResponseFailType, MyRequestType, handleOnError } from "@/lib/utils"
 import { useDictionary } from "@/context/DictionaryProvider"
 
-type TCurFetch = (typeof client.api.projects)["$post"]
+type TCurFetch = (typeof client.api.projects)[":projectId"]["$delete"]
 type ResponseSuccessType = MyResponseSuccessType<TCurFetch>
 type ResponseFailType = MyResponseFailType
 type RequestType = MyRequestType<TCurFetch>
 
-const useCreateProject = () => {
+const useDeleteProject = () => {
 	const queryClient = useQueryClient()
 	const dic = useDictionary()
 
 	const mutation = useMutation<ResponseSuccessType, ResponseFailType, RequestType>({
-		mutationFn: async ({ form }) => {
-			const response = await client.api.projects["$post"]({ form })
+		mutationFn: async ({ param }) => {
+			const response = await client.api.projects[":projectId"]["$delete"]({ param })
 
 			if (!response.ok) {
 				throw await response.json()
@@ -24,13 +24,15 @@ const useCreateProject = () => {
 
 			return await response.json()
 		},
-		onSuccess: () => {
-			toast.success(dic.projects.create.success)
+		onSuccess: ({ data }) => {
+			toast.success(dic.projects.delete.success)
+
 			queryClient.invalidateQueries({ queryKey: ["projects"] })
+			queryClient.invalidateQueries({ queryKey: ["project", data.$id] })
 		},
 		onError: (err) => {
 			handleOnError(err, () => {
-				toast.error(dic.projects.create.fail)
+				toast.error(dic.projects.delete.fail)
 			})
 		},
 	})
@@ -38,4 +40,4 @@ const useCreateProject = () => {
 	return mutation
 }
 
-export default useCreateProject
+export default useDeleteProject

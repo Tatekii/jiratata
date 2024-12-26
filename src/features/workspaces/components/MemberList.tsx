@@ -19,18 +19,13 @@ import { EMemberRole } from "@/features/types"
 import { useDictionary } from "@/context/DictionaryProvider"
 
 interface IMemberListProps {
-	data: ReturnType<typeof useGetMembers>['data']
+	data: ReturnType<typeof useGetMembers>["data"]
 }
 const MembersList: FC<IMemberListProps> = ({ data }) => {
 	const workspaceId = useWorkspaceId()
 	const dic = useDictionary()
 
-	// TODO locale
-	const [ConfirmDialog, confirm] = useConfirm(
-		"Remove member",
-		"This member will be removed from the workspace",
-		"destructive"
-	)
+	const [ConfirmDialog, confirm] = useConfirm(dic.members.delete.name, dic.members.delete.modalnotice, "destructive")
 
 	const { mutate: deleteMember, isPending: isDeletingMember } = useDeleteMember()
 	const { mutate: updateMember, isPending: isUpdatingMember } = useUpdateMember()

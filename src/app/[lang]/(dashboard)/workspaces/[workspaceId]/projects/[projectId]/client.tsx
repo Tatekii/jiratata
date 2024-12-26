@@ -1,7 +1,7 @@
 "use client"
 
 import Link from "next/link"
-import { PencilIcon } from "lucide-react"
+import { BoltIcon } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import PageError from "@/components/PageError"
@@ -38,8 +38,8 @@ const ProjectIdClient = () => {
 				<div>
 					<Button variant="secondary" size="sm" asChild>
 						<Link href={`/workspaces/${project.workspaceId}/projects/${project.$id}/settings`}>
-							<PencilIcon className="size-4 mr-2" />
-							{dic.projects.edit.title}
+							<BoltIcon className="size-4 mr-2" />
+							{dic.settings}
 						</Link>
 					</Button>
 				</div>
