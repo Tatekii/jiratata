@@ -4,7 +4,7 @@ import { ID, Query } from "node-appwrite"
 import { authSessionMiddleware } from "@/lib/hono-middleware"
 import { zValidator } from "@hono/zod-validator"
 
-import { DATABASE_ID, WORKSPACES_ID, IMAGE_BUCKET_ID, MEMBERS_ID } from "@/config"
+import { DATABASE_ID, WORKSPACES_ID, IMAGES_BUCKET_ID, MEMBERS_ID } from "@/config"
 import { localeMiddleware, localeValidatorMiddleware } from "@/app/api/[[...route]]/middlewares"
 import { buildCreateWorkspaceSchema, buildUpdateWorkspaceSchema } from "../schema"
 import { AppVariables } from "@/app/api/[[...route]]/route"
@@ -83,9 +83,9 @@ const app = new Hono<{ Variables: AppVariables }>()
 			let uploadedImageUrl: string | undefined
 
 			if (image instanceof File) {
-				const file = await storage.createFile(IMAGE_BUCKET_ID, ID.unique(), image)
+				const file = await storage.createFile(IMAGES_BUCKET_ID, ID.unique(), image)
 
-				const arrayBuffer = await storage.getFilePreview(IMAGE_BUCKET_ID, file.$id)
+				const arrayBuffer = await storage.getFilePreview(IMAGES_BUCKET_ID, file.$id)
 
 				uploadedImageUrl = `data:image/png;base64,${Buffer.from(arrayBuffer).toString("base64")}`
 			}
@@ -134,9 +134,9 @@ const app = new Hono<{ Variables: AppVariables }>()
 			let uploadedImageUrl: string | undefined
 
 			if (image instanceof File) {
-				const file = await storage.createFile(IMAGE_BUCKET_ID, ID.unique(), image)
+				const file = await storage.createFile(IMAGES_BUCKET_ID, ID.unique(), image)
 
-				const arrayBuffer = await storage.getFilePreview(IMAGE_BUCKET_ID, file.$id)
+				const arrayBuffer = await storage.getFilePreview(IMAGES_BUCKET_ID, file.$id)
 
 				uploadedImageUrl = `data:image/png;base64,${Buffer.from(arrayBuffer).toString("base64")}`
 			} else {

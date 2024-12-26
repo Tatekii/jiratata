@@ -1,4 +1,8 @@
 {
+	"error": {
+		"title": "Oops,Something went wrong"
+	},
+	"returnhome": "Back to home",
 	"auth": {
 		"signin": "Login",
 		"signup": "Sign Up",
@@ -35,16 +39,17 @@
 	"settings": "Settings",
 	"myprojects": "My Project",
 	"myprojectsdesc": "View tasks of your project here",
-	"form": { "required": "Required", "minium1": "Minimum of 1 characters required" },
+	"form": {
+		"required": "Required",
+		"minium1": "Minimum of 1 characters required",
+		"iconnotice": "JPG, PNG, SVG or jpeg, max 1 mb"
+	},
 	"workspaces": {
 		"form": {
 			"createTitle": "Create new workspace",
 			"name": "Workspace Name",
 			"icon": "Workspace Icon",
-			"entername": "Enter workspace name",
-			"failInCreate": "Failed to create workspaces",
-			"succefulCreate": "Workspace created",
-			"imageNotice": "JPG, PNG, SVG or jpeg, max 1 mb"
+			"entername": "Enter workspace name"
 		},
 		"switcher": {
 			"noselect": "No workspaces selected"
@@ -99,6 +104,34 @@
 			"toadmin": "Set to Administrator",
 			"tomember": "Set to Member",
 			"toguest": "Set to Guest"
+		}
+	},
+	"projects": {
+		"name": "Projects",
+		"create": {
+			"success": "Project created",
+			"fail": "Failed to create project"
+		},
+		"fetch": {
+			"error": "Failed to fetch projects",
+			"empty": "No project found"
+		},
+		"delete": {
+			"success": "Project deleted",
+			"fail": "Failed to delete project"
+		},
+		"update": {
+			"success": "Project updated",
+			"fail": "Failed to update project"
+		},
+		"form": {
+			"createTitle": "Create new project",
+			"name": "Project Name",
+			"icon": "Project Icon",
+			"entername": "Enter project name"
+		},
+		"edit": {
+			"title": "Edit Project"
 		}
 	},
 	"cancel": "Cancel",

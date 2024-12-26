@@ -7,7 +7,9 @@ const WorkspaceIdPage = async () => {
 	const user = await getCurrent()
 	if (!user) redirect("/signin")
 
-	return <WorkspaceIdClient />
+	return <h1>FIXME </h1>
+
+	// return <WorkspaceIdClient />
 }
 
 export default WorkspaceIdPage

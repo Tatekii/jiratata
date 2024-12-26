@@ -17,3 +17,11 @@ export type TWorkspace = Models.Document & {
 	inviteCode: string
 	userId: string
 }
+
+
+export type TProject = Models.Document & {
+	name: string;
+	imageUrl: string;
+	workspaceId: string;
+  };
+  

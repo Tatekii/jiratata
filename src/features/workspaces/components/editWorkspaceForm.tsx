@@ -6,23 +6,22 @@ import { useRouter } from "next/navigation"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { ArrowLeftIcon, CopyIcon } from "lucide-react"
 
-import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import useConfirm from "@/hooks/useConfirm"
 import { DottedSeparator } from "@/components/DottedSeparator"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Form } from "@/components/ui/form"
+
 
 import { EMemberRole, TWorkspace } from "@/features/types"
 import { buildUpdateWorkspaceSchema } from "../schema"
 import { useDictionary } from "@/context/DictionaryProvider"
-import CommonWorkspaceFormControl from "./CommonWorkspaceFormControl"
 import { useMemo, useState } from "react"
 import useUpdateWorkspace from "../api/useUpdateWorkspace"
 import useDeleteWorkspace from "../api/useDeleteWorkspace"
 import { Input } from "@/components/ui/input"
 import { toast } from "sonner"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import CommonEditFormControls from "@/components/CommonEditFormCard"
 
 interface EditWorkspaceFormProps {
 	onCancel?: () => void
@@ -128,29 +127,19 @@ export const EditWorkspaceForm = ({ onCancel, initialValues }: EditWorkspaceForm
 					<DottedSeparator />
 				</div>
 				<CardContent className="p-7">
-					<Form {...form}>
-						<form onSubmit={form.handleSubmit(onSubmit)}>
-							<div className="flex flex-col gap-y-4">
-								<CommonWorkspaceFormControl isPending={isPending} form={form} dic={dic} />
-							</div>
-							<DottedSeparator className="py-7" />
-							<div className="flex items-center justify-between">
-								<Button
-									type="button"
-									size="lg"
-									variant="secondary"
-									onClick={onCancel}
-									disabled={isPending}
-									className={cn(!onCancel && "invisible")}
-								>
-									{dic.cancel}
-								</Button>
-								<Button disabled={isPending} type="submit">
-									{dic.savechanges}
-								</Button>
-							</div>
-						</form>
-					</Form>
+					<CommonEditFormControls
+						titleText={dic.workspaces.form.createTitle}
+						nameText={dic.workspaces.form.name}
+						enternameText={dic.workspaces.form.entername}
+						iconText={dic.workspaces.form.icon}
+						iconNotice={dic.form.iconnotice}
+						onSubmit={onSubmit}
+						onCancel={onCancel}
+						submitText={dic.savechanges}
+						cancelText={dic.cancel}
+						form={form}
+						isPending={isPending}
+					/>
 				</CardContent>
 			</Card>
 

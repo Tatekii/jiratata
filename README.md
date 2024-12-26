@@ -29,3 +29,11 @@
 | workspaceId | string | Y | 工作区id($id) |
 | role | emum | Y | 成员角色 |
 | $id | string | Y | 自动创建id |
+
+### project
+| Attr | Type | Required | Desc |
+| :----:| :----: | :----: | :----: |
+| name | string | Y | 名称 |
+| workspaceId | string | Y | 工作区id($id) |
+| imageUrl | string |  | 项目图标 |
+| $id | string | Y | 自动创建id |

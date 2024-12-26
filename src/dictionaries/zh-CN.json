@@ -1,4 +1,8 @@
 {
+	"error": {
+		"title": "Oops,出错了"
+	},
+	"returnhome": "返回首页",
 	"auth": {
 		"signin": "登陆",
 		"signup": "注册",
@@ -35,16 +39,13 @@
 	"settings": "设置",
 	"myprojects": "项目",
 	"myprojectsdesc": "管理您的所有项目",
-	"form": { "required": "不能为空", "minium1": "长度至少为1位" },
+	"form": { "required": "不能为空", "minium1": "长度至少为1位", "iconnotice": "JPG, PNG, SVG or jpeg,不超过1mb" },
 	"workspaces": {
 		"form": {
 			"createTitle": "创建新的工作区",
 			"name": "工作区名称",
 			"icon": "工作区图标",
-			"entername": "输入工作区名称",
-			"failInCreate": "工作区创建失败",
-			"succefulCreate": "成功创建工作区",
-			"imageNotice": "JPG, PNG, SVG or jpeg,不超过1mb"
+			"entername": "输入工作区名称"
 		},
 		"switcher": {
 			"noselect": "未选择工作区"
@@ -99,6 +100,34 @@
 			"toadmin": "设置为管理员",
 			"tomember": "设置为成员",
 			"toguest": "设置为访客"
+		}
+	},
+	"projects": {
+		"name": "项目",
+		"create": {
+			"success": "成功创建项目",
+			"fail": "创建项目失败"
+		},
+		"fetch": {
+			"error": "获取项目失败",
+			"empty": "无项目"
+		},
+		"delete": {
+			"success": "项目已删除",
+			"fail": "删除项目失败"
+		},
+		"update": {
+			"success": "更新项目信息",
+			"fail": "更新项目信息失败"
+		},
+		"form": {
+			"createTitle": "创建新的项目",
+			"name": "项目名称",
+			"icon": "项目图标",
+			"entername": "输入项目名称"
+		},
+		"edit": {
+			"title": "编辑项目"
 		}
 	},
 	"cancel": "取消",
