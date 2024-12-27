@@ -18,10 +18,27 @@ export type TWorkspace = Models.Document & {
 	userId: string
 }
 
-
 export type TProject = Models.Document & {
-	name: string;
-	imageUrl: string;
-	workspaceId: string;
-  };
-  
+	name: string
+	imageUrl: string
+	workspaceId: string
+}
+
+export enum ETaskStatus {
+	BACKLOG = "BACKLOG",
+	TODO = "TODO",
+	IN_PROGRESS = "IN_PROGRESS",
+	IN_REVIEW = "IN_REVIEW",
+	DONE = "DONE",
+}
+
+export type TTask = Models.Document & {
+	name: string
+	status: ETaskStatus
+	workspaceId: string
+	assigneeId: string
+	projectId: string
+	position: number
+	dueDate: string
+	description?: string
+}

@@ -7,6 +7,7 @@ import authService from "@/features/auth/service"
 import workspaceService from "@/features/workspaces/service"
 import memberService from "@/features/members/service"
 import projectService from "@/features/projects/service"
+import taskService from "@/features/tasks/service"
 import { TDictionary } from "@/context/DictionaryProvider"
 import { Account, Databases, Models, Storage, Users } from "node-appwrite"
 
@@ -26,7 +27,8 @@ const routes = app
 	.route("/auth", authService)
 	.route("/workspaces", workspaceService)
 	.route("/members", memberService)
-	.route("projects", projectService)
+	.route("/projects", projectService)
+	.route("/tasks", taskService)
 
 export const GET = handle(app)
 export const POST = handle(app)

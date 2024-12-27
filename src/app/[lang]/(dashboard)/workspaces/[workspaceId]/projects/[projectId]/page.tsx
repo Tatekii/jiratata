@@ -1,12 +1,8 @@
-import { getCurrent } from "@/features/auth/service/queries";
-import { redirect } from "next/navigation";
 import ProjectIdClient from "./client";
-
-
+import { authGuard } from "@/features/auth/utils";
 
 const ProjectIdPage = async () => {
-  const user = await getCurrent();
-  if (!user) redirect("/signin");
+  await authGuard()
 
   return <ProjectIdClient />
 };

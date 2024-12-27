@@ -1,13 +1,10 @@
-import { getCurrent } from "@/features/auth/service/queries";
-import { redirect } from "next/navigation";
-import WorkspaceIdMemberClient from "./client";
-
+import WorkspaceIdMemberClient from "./client"
+import { authGuard } from "@/features/auth/utils"
 
 const WorkspaceIdMembersPage = async () => {
-  const user = await getCurrent();
-  if (!user) redirect("/signin");
+	await authGuard()
 
-  return <WorkspaceIdMemberClient/>
-};
- 
-export default WorkspaceIdMembersPage;
+	return <WorkspaceIdMemberClient />
+}
+
+export default WorkspaceIdMembersPage

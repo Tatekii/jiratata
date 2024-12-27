@@ -1,11 +1,8 @@
-import { getCurrent } from "@/features/auth/service/queries"
-import { redirect } from "next/navigation"
 import ProjectIdSettingsClient from "./client"
-
+import { authGuard } from "@/features/auth/utils"
 
 const ProjectIdSettingsPage = async () => {
-	const user = await getCurrent()
-	if (!user) redirect("/signin")
+	await authGuard()
 
 	return <ProjectIdSettingsClient />
 }

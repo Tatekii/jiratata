@@ -1,12 +1,9 @@
-import { getCurrent } from "@/features/auth/service/queries"
+import { authGuard } from "@/features/auth/utils"
 import { getWorkspaces } from "@/features/workspaces/service/queries"
 import { redirect } from "next/navigation"
 
 export default async function Home() {
-	const user = await getCurrent()
-	if (!user) {
-		redirect("/signin")
-	}
+	await authGuard()
 
 	const workspaces = await getWorkspaces()
 

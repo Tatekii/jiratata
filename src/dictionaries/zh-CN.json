@@ -137,6 +137,60 @@
 			"delete": "删除项目"
 		}
 	},
+	"tasks": {
+		"name": "任务",
+		"create": {
+			"name": "新建",
+			"success": "成功创建任务",
+			"fail": "创建任务失败"
+		},
+		"fetch": {
+			"error": "获取任务失败",
+			"empty": "无任务"
+		},
+		"delete": {
+			"success": "任务已删除",
+			"fail": "删除任务失败"
+		},
+		"update": {
+			"success": "更新任务信息",
+			"fail": "更新任务信息失败"
+		},
+		"form": {
+			"createTitle": "创建新的任务",
+			"name": "任务名称",
+			"icon": "任务图标",
+			"entername": "输入任务名称",
+			"due": "到期日",
+			"assign": "负责人",
+			"project": "项目",
+			"status": "状态"
+		},
+		"edit": {
+			"title": "编辑任务"
+		},
+		"dangerzone": {
+			"name": "危险区",
+			"notice": "删除任务不可逆且会丢失所有数据。",
+			"delete": "删除任务"
+		},
+		"kanban": "看板",
+		"table": "表格",
+		"calender": "日历",
+		"status": {
+			"todo": "待办",
+			"inreview": "审阅中",
+			"inprogress": "进行中",
+			"done": "完成",
+			"backlog": "归档"
+		},
+		"filter": {
+			"allstatus": "所有状态",
+			"allassignees": "所有负责人",
+			"allprojects": "所有项目",
+			"duedate": "到期日"
+		}
+	},
 	"cancel": "取消",
 	"confirm": "确认",
 	"submit": "提交",
@@ -148,5 +202,6 @@
 	"list": "列表",
 	"savechanges": "保存修改",
 	"canundonotice": "此操作不可逆。",
-	"pagenotfound": "页面未找到"
+	"pagenotfound": "页面未找到",
+	"select": "选择"
 }

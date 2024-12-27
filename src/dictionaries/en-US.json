@@ -141,6 +141,60 @@
 			"delete": "Delete Project"
 		}
 	},
+	"tasks": {
+		"name": "Tasks",
+		"create": {
+			"name": "New",
+			"success": "Task created",
+			"fail": "Failed to create task"
+		},
+		"fetch": {
+			"error": "Failed to fetch tasks",
+			"empty": "No task found"
+		},
+		"delete": {
+			"success": "Task deleted",
+			"fail": "Failed to delete task"
+		},
+		"update": {
+			"success": "Task updated",
+			"fail": "Failed to update task"
+		},
+		"form": {
+			"createTitle": "Create new task",
+			"name": "Task Name",
+			"icon": "Task Icon",
+			"entername": "Enter task name",
+			"due": "Due Date",
+			"assign": "Assignee",
+			"project": "Project",
+			"status": "Status"
+		},
+		"edit": {
+			"title": "Edit Task"
+		},
+		"dangerzone": {
+			"name": "Danger Zone",
+			"notice": "Deleting a task is irreversible and will remove all associated data.",
+			"delete": "Delete Task"
+		},
+		"kanban": "Kanban",
+		"table": "Table",
+		"calender": "Calender",
+		"status": {
+			"todo": "Todo",
+			"inreview": "In Review",
+			"inprogress": "In Progress",
+			"done": "Done",
+			"backlog": "Backlog"
+		},
+		"filter": {
+			"allstatus": "All status",
+			"allassignees": "All assignees",
+			"allprojects": "All projects",
+			"duedate": "Due date"
+		}
+	},
 	"cancel": "Cancel",
 	"confirm": "Confirm",
 	"submit": "Submit",
@@ -152,5 +206,6 @@
 	"list": "List",
 	"savechanges": "Save Changes",
 	"canundonotice": "This action cannot be undone.",
-	"pagenotfound": "Page Not Found"
+	"pagenotfound": "Page Not Found",
+	"select": "Select"
 }

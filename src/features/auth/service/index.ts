@@ -9,8 +9,9 @@ import { createAdminClient } from "@/lib/hono"
 import { ID } from "node-appwrite"
 
 const app = new Hono<{ Variables: AppVariables }>()
-	.get("/current", authSessionMiddleware, (c) => {
+	.get("/current", authSessionMiddleware, async (c) => {
 		const user = c.get("user")
+
 		return c.json({ data: user })
 	})
 	.post("/login", localeMiddleware, localeValidatorMiddleware("json", buildLoginSchema), async (c) => {
@@ -36,21 +37,21 @@ const app = new Hono<{ Variables: AppVariables }>()
 		const { account } = await createAdminClient()
 
 		// try {
-			await account.create(ID.unique(), email, password, name)
+		await account.create(ID.unique(), email, password, name)
 
-			const session = await account.createEmailPasswordSession(email, password)
+		const session = await account.createEmailPasswordSession(email, password)
 
-			setCookie(c, AUTH_COOKIE, session.secret, {
-				path: "/",
-				httpOnly: true,
-				secure: true,
-				sameSite: "strict",
-				maxAge: 60 * 60 * 24 * 30,
-			})
+		setCookie(c, AUTH_COOKIE, session.secret, {
+			path: "/",
+			httpOnly: true,
+			secure: true,
+			sameSite: "strict",
+			maxAge: 60 * 60 * 24 * 30,
+		})
 
-			console.log("print error", c.error)
+		console.log("print error", c.error)
 
-			return c.json({ success: true })
+		return c.json({ success: true })
 		// } catch (error) {
 		// 	// TODO 统一appwrite错误处理
 		// 	return c.json({ success: false })

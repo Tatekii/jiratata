@@ -11,12 +11,12 @@ import useGetProject from "@/features/projects/api/useGetProject"
 import ProjectAvatar from "@/features/projects/components/ProjectAvatar"
 import useProjectId from "@/features/projects/hooks/useProjectId"
 import { useDictionary } from "@/context/DictionaryProvider"
+import TaskViewSwitcher from "@/features/tasks/components/TaskViewSwitcher"
 
 const ProjectIdClient = () => {
 	const dic = useDictionary()
 	const projectId = useProjectId()
 	const { data: project, isLoading: isLoadingProject } = useGetProject({ projectId })
-	// const { data: analytics, isLoading: isLoadingAnalytics } = useGetProjectAnalytics({ projectId })
 
 	const isLoading = isLoadingProject
 
@@ -44,8 +44,7 @@ const ProjectIdClient = () => {
 					</Button>
 				</div>
 			</div>
-			{/* {analytics ? <Analytics data={analytics} /> : null} */}
-			{/* <TaskViewSwitcher hideProjectFilter /> */}
+			<TaskViewSwitcher hideProjectFilter />
 		</div>
 	)
 }

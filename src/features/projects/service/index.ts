@@ -15,7 +15,6 @@ import { authSessionMiddleware } from "@/lib/hono-middleware"
 import { localeMiddleware, localeValidatorMiddleware } from "@/app/api/[[...route]]/middlewares"
 import { TProject } from "@/features/types"
 
-
 // TODO 多语言气切换
 const app = new Hono<{ Variables: AppVariables }>()
 	.post(

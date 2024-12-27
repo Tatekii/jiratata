@@ -6,7 +6,8 @@ import { i18n, Locale } from "@/lib/i18n-config"
 import { getDictionary } from "@/lib/get-dictionary"
 import { ValidationTargets } from "hono"
 import { validator } from "hono/validator"
-import { ZodSchema, z } from "zod"
+import { ZodObject, z } from "zod"
+import { TDictionary } from "@/context/DictionaryProvider"
 
 // 获取请求中的语言accept-language
 export const localeMiddleware = createMiddleware(async (c, next) => {
@@ -29,19 +30,18 @@ export const localeMiddleware = createMiddleware(async (c, next) => {
 /**
  * 多语言校验信息
  */
-export const localeValidatorMiddleware = <
-	T extends ZodSchema,
-	Target extends keyof ValidationTargets,
-	K = Record<string, z.ZodString>
->(
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const localeValidatorMiddleware = <T extends ZodObject<any>, Target extends keyof ValidationTargets>(
 	target: Target,
-	schemaBuilder: (raw: K) => T
-	//   hook?: Hook<z.infer<T>, E, P, Target>
+	schemaBuilder: (dic: TDictionary) => T,
+	partial = false
 ) =>
 	validator(target, async (value, c) => {
 		const dic = c.get("dic")
 
-		const result = await schemaBuilder(dic).safeParseAsync(value)
+		const result = partial
+			? await schemaBuilder(dic).partial().safeParseAsync(value)
+			: await schemaBuilder(dic).safeParseAsync(value)
 
 		if (!result.success) {
 			return c.json(result, 400)
