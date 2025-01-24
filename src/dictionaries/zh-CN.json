@@ -203,5 +203,10 @@
 	"savechanges": "保存修改",
 	"canundonotice": "此操作不可逆。",
 	"pagenotfound": "页面未找到",
-	"select": "选择"
+	"select": "选择",
+	"table": {
+		"previous": "上一页",
+		"next": "下一页",
+		"empty": "无数据"
+	}
 }

@@ -207,5 +207,10 @@
 	"savechanges": "Save Changes",
 	"canundonotice": "This action cannot be undone.",
 	"pagenotfound": "Page Not Found",
-	"select": "Select"
+	"select": "Select",
+	"table": {
+		"previous": "Previous",
+		"next": "Next",
+		"empty": "No Result."
+	}
 }

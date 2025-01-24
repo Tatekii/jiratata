@@ -18,9 +18,10 @@ interface DatePickerProps {
 	onChange: (date: Date) => void
 	className?: string
 	placeholder?: string
+	disabled?: boolean
 }
 
-const DatePicker = ({ value, onChange, className, placeholder = "Select date" }: DatePickerProps) => {
+const DatePicker = ({ disabled = false, value, onChange, className, placeholder = "Select date" }: DatePickerProps) => {
 	const lang = useCurLang()
 
 	return (
@@ -34,6 +35,7 @@ const DatePicker = ({ value, onChange, className, placeholder = "Select date" }:
 						!value && "text-muted-foreground",
 						className
 					)}
+					disabled={disabled}
 				>
 					<CalendarIcon className="mr-2 h-4 w-4" />
 					{value ? format(value, "PPP") : <span>{placeholder}</span>}
@@ -47,6 +49,7 @@ const DatePicker = ({ value, onChange, className, placeholder = "Select date" }:
 					onSelect={(date) => onChange(date as Date)}
 					initialFocus
 					lang="cn"
+					disabled={disabled}
 				/>
 			</PopoverContent>
 		</Popover>

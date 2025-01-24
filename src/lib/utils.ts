@@ -42,3 +42,11 @@ export const handleOnError = (err: any, defaultAction: () => void)=>() => {
 		defaultAction()
 	}
 }
+
+
+export function snakeCaseToTitleCase(str: string) {
+	return str.toLowerCase()
+	  .replace(/_/g, " ")
+	  .replace(/\b\w/g, (char) => char.toUpperCase())
+  };
+  

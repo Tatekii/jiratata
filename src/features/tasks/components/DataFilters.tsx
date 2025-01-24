@@ -12,9 +12,10 @@ import { useDictionary } from "@/context/DictionaryProvider"
 
 interface DataFiltersProps {
 	hideProjectFilter?: boolean
+	disabled?: boolean
 }
 
-const DataFilters = ({ hideProjectFilter }: DataFiltersProps) => {
+const DataFilters = ({ hideProjectFilter, disabled = false }: DataFiltersProps) => {
 	const workspaceId = useWorkspaceId()
 	const dic = useDictionary()
 
@@ -51,7 +52,7 @@ const DataFilters = ({ hideProjectFilter }: DataFiltersProps) => {
 
 	return (
 		<div className="flex flex-col lg:flex-row gap-2">
-			<Select defaultValue={status ?? "all"} onValueChange={(value) => onStatusChange(value)}>
+			<Select defaultValue={status ?? "all"} onValueChange={(value) => onStatusChange(value)} disabled={disabled}>
 				<SelectTrigger className="w-full lg:w-auto h-8">
 					<div className="flex items-center pr-2">
 						<ListChecksIcon className="size-4 mr-2" />
@@ -68,7 +69,11 @@ const DataFilters = ({ hideProjectFilter }: DataFiltersProps) => {
 					<SelectItem value={ETaskStatus.DONE}>{dic.tasks.status.done}</SelectItem>
 				</SelectContent>
 			</Select>
-			<Select defaultValue={assigneeId ?? 'all'} onValueChange={(value) => onAssigneeChange(value)}>
+			<Select
+				defaultValue={assigneeId ?? "all"}
+				onValueChange={(value) => onAssigneeChange(value)}
+				disabled={disabled}
+			>
 				<SelectTrigger className="w-full lg:w-auto h-8">
 					<div className="flex items-center pr-2">
 						<UserIcon className="size-4 mr-2" />
@@ -86,7 +91,11 @@ const DataFilters = ({ hideProjectFilter }: DataFiltersProps) => {
 				</SelectContent>
 			</Select>
 			{!hideProjectFilter && (
-				<Select defaultValue={projectId ?? 'all'} onValueChange={(value) => onProjectChange(value)}>
+				<Select
+					defaultValue={projectId ?? "all"}
+					onValueChange={(value) => onProjectChange(value)}
+					disabled={disabled}
+				>
 					<SelectTrigger className="w-full lg:w-auto h-8">
 						<div className="flex items-center pr-2">
 							<FolderIcon className="size-4 mr-2" />
@@ -105,6 +114,7 @@ const DataFilters = ({ hideProjectFilter }: DataFiltersProps) => {
 				</Select>
 			)}
 			<DatePicker
+				disabled={disabled}
 				placeholder={dic.tasks.filter.duedate}
 				className="h-8 w-full lg:w-auto"
 				value={dueDate ? new Date(dueDate) : undefined}

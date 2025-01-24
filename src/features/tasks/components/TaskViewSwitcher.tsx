@@ -16,6 +16,9 @@ import { useDictionary } from "@/context/DictionaryProvider"
 
 import useGetTasks from "../api/useGetTasks"
 import useCreateTaskModal from "../hooks/useCreateTaskModal"
+import { DataTable } from "./DataTable"
+import TaekColumns from "./TaskColumns"
+import { useMemo } from "react"
 
 interface TaskViewSwitcherProps {
 	hideProjectFilter?: boolean
@@ -41,6 +44,10 @@ const TaskViewSwitcher = ({ hideProjectFilter }: TaskViewSwitcherProps) => {
 		dueDate,
 	})
 
+	const columns = useMemo(() => {
+		return TaekColumns(dic)
+	}, [dic])
+
 	return (
 		<Tabs defaultValue={view} onValueChange={setView} className="flex-1 w-full border rounded-lg">
 			<div className="h-full flex flex-col overflow-auto p-4">
@@ -62,7 +69,7 @@ const TaskViewSwitcher = ({ hideProjectFilter }: TaskViewSwitcherProps) => {
 					</Button>
 				</div>
 				<DottedSeparator className="my-4" />
-				<DataFilters hideProjectFilter={hideProjectFilter} />
+				<DataFilters hideProjectFilter={hideProjectFilter} disabled={isLoadingTasks} />
 				<DottedSeparator className="my-4" />
 				{isLoadingTasks ? (
 					<div className="w-full border rounded-lg h-[200px] flex flex-col items-center justify-center">
@@ -71,8 +78,7 @@ const TaskViewSwitcher = ({ hideProjectFilter }: TaskViewSwitcherProps) => {
 				) : (
 					<>
 						<TabsContent value="table" className="mt-0">
-							{/* // TODO */}
-							table
+							<DataTable columns={columns} data={tasks?.documents ?? []} />
 						</TabsContent>
 						<TabsContent value="kanban" className="mt-0">
 							{/* // TODO */}
