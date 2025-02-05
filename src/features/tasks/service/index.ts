@@ -285,6 +285,8 @@ const app = new Hono<{ Variables: AppVariables }>()
 			])
 
 			const workspaceIds = new Set(tasksToUpdate.documents.map((task) => task.workspaceId))
+			
+			// 检查工作区一致
 			if (workspaceIds.size !== 1) {
 				return c.json({ error: "All tasks must belong to the same workspace" })
 			}

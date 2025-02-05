@@ -18,7 +18,10 @@ import useGetTasks from "../api/useGetTasks"
 import useCreateTaskModal from "../hooks/useCreateTaskModal"
 import { DataTable } from "./DataTable"
 import TaekColumns from "./TaskColumns"
-import { useMemo } from "react"
+import { useCallback, useMemo } from "react"
+import DataKanban from "./DataKanban"
+import { ETaskStatus } from "@/features/types"
+import useBulkUpdateTasks from "../api/useBulkUpdateTasks"
 
 interface TaskViewSwitcherProps {
 	hideProjectFilter?: boolean
@@ -47,6 +50,17 @@ const TaskViewSwitcher = ({ hideProjectFilter }: TaskViewSwitcherProps) => {
 	const columns = useMemo(() => {
 		return TaekColumns(dic)
 	}, [dic])
+
+	const { mutate: bulkUpdate } = useBulkUpdateTasks()
+
+	const onKanbanChange = useCallback(
+		(tasks: { $id: string; status: ETaskStatus; position: number }[]) => {
+			bulkUpdate({
+				json: { tasks },
+			})
+		},
+		[bulkUpdate]
+	)
 
 	return (
 		<Tabs defaultValue={view} onValueChange={setView} className="flex-1 w-full border rounded-lg">
@@ -81,8 +95,7 @@ const TaskViewSwitcher = ({ hideProjectFilter }: TaskViewSwitcherProps) => {
 							<DataTable columns={columns} data={tasks?.documents ?? []} />
 						</TabsContent>
 						<TabsContent value="kanban" className="mt-0">
-							{/* // TODO */}
-							kanban
+							<DataKanban data={tasks?.documents ?? []} onChange={onKanbanChange} />
 						</TabsContent>
 						<TabsContent value="calendar" className="mt-0 h-full pb-4">
 							{/* // TODO */}
