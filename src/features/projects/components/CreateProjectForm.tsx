@@ -10,7 +10,7 @@ import useCreateProject from "../api/useCreateProject"
 import useWorkspaceId from "@/features/workspaces/hooks/useWorkspaceId"
 import { useDictionary } from "@/context/DictionaryProvider"
 import { buildCreateProjectSchema } from "../schema"
-import CommonEditFormControls from "@/components/CommonEditFormCard"
+import CommonNameImageForm from "@/components/CommonNameImageForm"
 import { DottedSeparator } from "@/components/DottedSeparator"
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
 
@@ -62,7 +62,7 @@ const CreateProjectForm = ({ onCancel }: CreateProjectFormProps) => {
 				<DottedSeparator />
 			</div>
 			<CardContent className="p-7">
-				<CommonEditFormControls
+				<CommonNameImageForm
 					nameText={dic.projects.form.name}
 					enternameText={dic.projects.form.entername}
 					iconText={dic.projects.form.icon}

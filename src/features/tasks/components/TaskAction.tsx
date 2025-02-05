@@ -8,6 +8,7 @@ import useWorkspaceId from "@/features/workspaces/hooks/useWorkspaceId"
 import useConfirm from "@/hooks/useConfirm"
 import useDeleteTask from "../api/useDeleteTask"
 import useEditTaskModal from "../hooks/useEditTaskModal"
+import { useDictionary } from "@/context/DictionaryProvider"
 
 interface TaskActionsProps {
 	id: string
@@ -16,9 +17,10 @@ interface TaskActionsProps {
 }
 
 const TaskActions = ({ id, projectId, children }: TaskActionsProps) => {
-    // TODO i18n
 	const workspaceId = useWorkspaceId()
 	const router = useRouter()
+
+	const dic = useDictionary()
 
 	const { open } = useEditTaskModal()
 
@@ -48,15 +50,15 @@ const TaskActions = ({ id, projectId, children }: TaskActionsProps) => {
 				<DropdownMenuContent align="end" className="w-48">
 					<DropdownMenuItem onClick={onOpenTask} className="font-medium p-[10px]">
 						<ExternalLinkIcon className="size-4 mr-2 stroke-2" />
-						Task Details
+						{dic.tasks.jump.task}
 					</DropdownMenuItem>
 					<DropdownMenuItem onClick={onOpenProject} className="font-medium p-[10px]">
 						<ExternalLinkIcon className="size-4 mr-2 stroke-2" />
-						Open Project
+						{dic.tasks.jump.project}
 					</DropdownMenuItem>
 					<DropdownMenuItem onClick={() => open(id)} className="font-medium p-[10px]">
 						<PencilIcon className="size-4 mr-2 stroke-2" />
-						Edit Task
+						{dic.tasks.edit.title}
 					</DropdownMenuItem>
 					<DropdownMenuItem
 						onClick={onDelete}
@@ -64,7 +66,7 @@ const TaskActions = ({ id, projectId, children }: TaskActionsProps) => {
 						className="text-amber-700 focus:text-amber-700 font-medium p-[10px]"
 					>
 						<TrashIcon className="size-4 mr-2 stroke-2" />
-						Delete Task
+						{dic.tasks.delete.title}
 					</DropdownMenuItem>
 				</DropdownMenuContent>
 			</DropdownMenu>

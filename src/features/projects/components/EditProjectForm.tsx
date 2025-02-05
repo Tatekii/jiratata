@@ -17,7 +17,7 @@ import useDeleteProject from "../api/useDeleteProject"
 import { TProject } from "@/features/types"
 import useConfirm from "@/hooks/useConfirm"
 import { useDictionary } from "@/context/DictionaryProvider"
-import CommonEditFormControls from "@/components/CommonEditFormCard"
+import CommonNameImageForm from "@/components/CommonNameImageForm"
 
 interface EditProjectFormProps {
 	onCancel?: () => void
@@ -99,7 +99,7 @@ export const EditProjectForm = ({ onCancel, initialValues }: EditProjectFormProp
 					<DottedSeparator />
 				</div>
 				<CardContent className="p-7">
-					<CommonEditFormControls
+					<CommonNameImageForm
 						nameText={dic.projects.form.name}
 						enternameText={dic.projects.form.entername}
 						iconText={dic.projects.form.icon}

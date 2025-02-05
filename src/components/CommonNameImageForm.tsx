@@ -5,7 +5,7 @@
 import { useRef } from "react"
 import { DottedSeparator } from "./DottedSeparator"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "./ui/form"
-import { FieldValues, UseFormReturn } from "react-hook-form"
+import { UseFormReturn } from "react-hook-form"
 import { Input } from "./ui/input"
 import Image from "next/image"
 import { Avatar, AvatarFallback } from "./ui/avatar"
@@ -14,14 +14,7 @@ import { Button } from "./ui/button"
 import { cn } from "@/lib/utils"
 import { useDictionary } from "@/context/DictionaryProvider"
 
-interface IFormData extends FieldValues {
-	name: string
-	image?: File | string
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	[x: string]: any
-}
-
-interface ICommonEditFormControlsProps<T extends FieldValues = IFormData> {
+interface ICommonNameImageFormProps {
 	nameText: string
 	enternameText: string
 	iconText: string
@@ -31,11 +24,17 @@ interface ICommonEditFormControlsProps<T extends FieldValues = IFormData> {
 	submitText: string
 	onCancel?: () => void
 	cancelText: string
-	form: UseFormReturn<T>
+	form: UseFormReturn<
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		{ [x: string]: any },
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		any,
+		undefined
+	>
 	isPending: boolean
 }
 
-const CommonEditFormControls = ({
+const CommonNameImageForm = ({
 	nameText,
 	enternameText,
 	iconText,
@@ -46,7 +45,7 @@ const CommonEditFormControls = ({
 	cancelText,
 	form,
 	isPending,
-}: ICommonEditFormControlsProps) => {
+}: ICommonNameImageFormProps) => {
 	const inputRef = useRef<HTMLInputElement>(null)
 
 	const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -167,4 +166,4 @@ const CommonEditFormControls = ({
 	)
 }
 
-export default CommonEditFormControls
+export default CommonNameImageForm

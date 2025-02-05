@@ -21,7 +21,7 @@ import useDeleteWorkspace from "../api/useDeleteWorkspace"
 import { Input } from "@/components/ui/input"
 import { toast } from "sonner"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import CommonEditFormControls from "@/components/CommonEditFormCard"
+import CommonNameImageForm from "@/components/CommonNameImageForm"
 
 interface EditWorkspaceFormProps {
 	onCancel?: () => void
@@ -127,8 +127,7 @@ export const EditWorkspaceForm = ({ onCancel, initialValues }: EditWorkspaceForm
 					<DottedSeparator />
 				</div>
 				<CardContent className="p-7">
-					<CommonEditFormControls
-						titleText={dic.workspaces.form.createTitle}
+					<CommonNameImageForm
 						nameText={dic.workspaces.form.name}
 						enternameText={dic.workspaces.form.entername}
 						iconText={dic.workspaces.form.icon}

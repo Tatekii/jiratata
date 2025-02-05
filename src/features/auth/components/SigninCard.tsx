@@ -111,7 +111,7 @@ const SignInCard: FC = () => {
 				<p>
 					{dic.auth.donthaveaccount}?
 					<Button asChild variant={"link"} className="text-base">
-						<Link href="/sign-up">{dic.auth.signup}</Link>
+						<Link href="/signup">{dic.auth.signup}</Link>
 					</Button>
 				</p>
 			</CardContent>

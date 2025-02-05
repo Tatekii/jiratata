@@ -12,7 +12,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { useDictionary } from "@/context/DictionaryProvider"
 import { buildCreateWorkspaceSchema } from "../schema"
 import { useCreateWorkspace } from "../api/useCreateWorkspace"
-import CommonEditFormControls from "@/components/CommonEditFormCard"
+import CommonNameImageForm from "@/components/CommonNameImageForm"
 
 interface CreateWorkspaceFormProps {
 	onCancel?: () => void
@@ -61,7 +61,7 @@ const CreateWorkspaceForm = ({ onCancel }: CreateWorkspaceFormProps) => {
 				<DottedSeparator />
 			</div>
 			<CardContent className="p-7">
-				<CommonEditFormControls
+				<CommonNameImageForm
 					nameText={dic.workspaces.form.name}
 					enternameText={dic.workspaces.form.entername}
 					iconText={dic.workspaces.form.icon}

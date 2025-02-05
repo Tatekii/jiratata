@@ -150,7 +150,8 @@
 		},
 		"delete": {
 			"success": "任务已删除",
-			"fail": "删除任务失败"
+			"fail": "删除任务失败",
+			"title": "删除任务"
 		},
 		"update": {
 			"success": "更新任务信息",
@@ -166,6 +167,11 @@
 			"project": "项目",
 			"status": "状态"
 		},
+		"jump": {
+			"task": "任务详情",
+			"project": "进入项目"
+		},
+
 		"edit": {
 			"title": "编辑任务"
 		},

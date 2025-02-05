@@ -154,7 +154,8 @@
 		},
 		"delete": {
 			"success": "Task deleted",
-			"fail": "Failed to delete task"
+			"fail": "Failed to delete task",
+			"title": "Delete Task"
 		},
 		"update": {
 			"success": "Task updated",
@@ -169,6 +170,10 @@
 			"assign": "Assignee",
 			"project": "Project",
 			"status": "Status"
+		},
+		"jump": {
+			"task": "Task Detail",
+			"project": "Open Project"
 		},
 		"edit": {
 			"title": "Edit Task"
