@@ -11,7 +11,7 @@ import { AppVariables } from "@/app/api/[[...route]]/route"
 import { ETaskStatus, TProject, TTask } from "@/features/types"
 import { createAdminClient } from "@/lib/hono"
 import { localeMiddleware, localeValidatorMiddleware } from "@/app/api/[[...route]]/middlewares"
-import { buildCreateTaskSchema } from "../schemas"
+import { buildCreateTaskSchema, buildUpdateTaskSchema } from "../schemas"
 
 const app = new Hono<{ Variables: AppVariables }>()
 	.delete("/:taskId", authSessionMiddleware, async (c) => {
@@ -188,7 +188,7 @@ const app = new Hono<{ Variables: AppVariables }>()
 		"/:taskId",
 		authSessionMiddleware,
 		localeMiddleware,
-		localeValidatorMiddleware("json", buildCreateTaskSchema, true), // partial
+		localeValidatorMiddleware("json", buildUpdateTaskSchema),
 		async (c) => {
 			const user = c.get("user")
 			const databases = c.get("databases")

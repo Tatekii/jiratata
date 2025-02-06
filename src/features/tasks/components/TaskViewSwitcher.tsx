@@ -22,6 +22,7 @@ import { useCallback, useMemo } from "react"
 import DataKanban from "./DataKanban"
 import { ETaskStatus } from "@/features/types"
 import useBulkUpdateTasks from "../api/useBulkUpdateTasks"
+import { DataCalendar } from "./DataCalendar"
 
 interface TaskViewSwitcherProps {
 	hideProjectFilter?: boolean
@@ -98,8 +99,7 @@ const TaskViewSwitcher = ({ hideProjectFilter }: TaskViewSwitcherProps) => {
 							<DataKanban data={tasks?.documents ?? []} onChange={onKanbanChange} />
 						</TabsContent>
 						<TabsContent value="calendar" className="mt-0 h-full pb-4">
-							{/* // TODO */}
-							calender
+							<DataCalendar data={tasks?.documents ?? []} />
 						</TabsContent>
 					</>
 				)}

@@ -195,9 +195,17 @@
 			"allassignees": "所有负责人",
 			"allprojects": "所有项目",
 			"duedate": "到期日"
+		},
+		"overview": {
+			"title": "任务概览"
+		},
+		"description": {
+			"title": "任务描述",
+			"empty": "无描述"
 		}
 	},
 	"cancel": "取消",
+	"edit": "编辑",
 	"confirm": "确认",
 	"submit": "提交",
 	"upload": "上传",

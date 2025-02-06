@@ -33,15 +33,12 @@ export const localeMiddleware = createMiddleware(async (c, next) => {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const localeValidatorMiddleware = <T extends ZodObject<any>, Target extends keyof ValidationTargets>(
 	target: Target,
-	schemaBuilder: (dic: TDictionary) => T,
-	partial = false
+	schemaBuilder: (dic: TDictionary) => T
 ) =>
 	validator(target, async (value, c) => {
 		const dic = c.get("dic")
 
-		const result = partial
-			? await schemaBuilder(dic).partial().safeParseAsync(value)
-			: await schemaBuilder(dic).safeParseAsync(value)
+		const result = await schemaBuilder(dic).safeParseAsync(value)
 
 		if (!result.success) {
 			return c.json(result, 400)

@@ -198,11 +198,19 @@
 			"allassignees": "All assignees",
 			"allprojects": "All projects",
 			"duedate": "Due date"
+		},
+		"overview": {
+			"title": "Overview"
+		},
+		"description": {
+			"title": "Description",
+			"empty": "No description set"
 		}
 	},
 	"cancel": "Cancel",
 	"confirm": "Confirm",
 	"submit": "Submit",
+	"edit": "Edit",
 	"upload": "Upload",
 	"delete": "Delete",
 	"chooselang": "Choose Lang",
