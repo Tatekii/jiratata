@@ -11,7 +11,6 @@ import useConfirm from "@/hooks/useConfirm"
 import { DottedSeparator } from "@/components/DottedSeparator"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 
-
 import { EMemberRole, TWorkspace } from "@/features/types"
 import { buildUpdateWorkspaceSchema } from "../schema"
 import { useDictionary } from "@/context/DictionaryProvider"
@@ -36,7 +35,7 @@ export const EditWorkspaceForm = ({ onCancel, initialValues }: EditWorkspaceForm
 	}, [dic])
 
 	const router = useRouter()
-	const { mutate, isPending } = useUpdateWorkspace()
+	const { mutate: updateWorkspace, isPending: isUpdateWorkspacePending } = useUpdateWorkspace()
 
 	const { mutate: deleteWorkspace, isPending: isDeletingWorkspace } = useDeleteWorkspace()
 	//   const {
@@ -95,10 +94,17 @@ export const EditWorkspaceForm = ({ onCancel, initialValues }: EditWorkspaceForm
 			image: values.image instanceof File ? values.image : "",
 		}
 
-		mutate({
-			form: finalValues,
-			param: { workspaceId: initialValues.$id },
-		})
+		updateWorkspace(
+			{
+				form: finalValues,
+				param: { workspaceId: initialValues.$id },
+			},
+			{
+				onError: (err) => {
+					toast.error(JSON.stringify(err))
+				},
+			}
+		)
 	}
 
 	const fullInviteLink = `${window.location.origin}/workspaces/${initialValues.$id}/join/${initialValues.inviteCode}?role=${inviteRole}`
@@ -137,7 +143,7 @@ export const EditWorkspaceForm = ({ onCancel, initialValues }: EditWorkspaceForm
 						submitText={dic.savechanges}
 						cancelText={dic.cancel}
 						form={form}
-						isPending={isPending}
+						isPending={isUpdateWorkspacePending}
 					/>
 				</CardContent>
 			</Card>
@@ -200,7 +206,7 @@ export const EditWorkspaceForm = ({ onCancel, initialValues }: EditWorkspaceForm
 							className="mt-6 w-fit ml-auto"
 							variant="destructive"
 							type="button"
-							disabled={isPending || isDeletingWorkspace}
+							disabled={isUpdateWorkspacePending || isDeletingWorkspace}
 							onClick={handleDelete}
 						>
 							{dic.workspaces.dangerzone.delete}

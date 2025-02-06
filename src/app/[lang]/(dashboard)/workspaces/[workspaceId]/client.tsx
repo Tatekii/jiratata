@@ -1,8 +1,7 @@
 "use client"
 
 import Link from "next/link"
-import { formatDistanceToNow } from "date-fns"
-import { CalendarIcon, PlusIcon, SettingsIcon } from "lucide-react"
+import { SettingsIcon } from "lucide-react"
 import { DottedSeparator } from "@/components/DottedSeparator"
 import PageError from "@/components/PageError"
 import { PageLoader } from "@/components/PageLoader"

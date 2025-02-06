@@ -1,14 +1,10 @@
 import { authGuard } from "@/features/auth/utils"
-import TaskViewSwitcher from "@/features/tasks/components/TaskViewSwitcher"
+import TasksClient from "./client"
 
 const TasksPage = async () => {
 	await authGuard()
 
-	return (
-		<div className="h-full flex flex-col">
-			<TaskViewSwitcher />
-		</div>
-	)
+	return <TasksClient />
 }
 
 export default TasksPage
