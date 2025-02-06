@@ -116,7 +116,8 @@
 		},
 		"fetch": {
 			"error": "Failed to fetch projects",
-			"empty": "No project found"
+			"empty": "No project found",
+			"notfound": "Project not found"
 		},
 		"delete": {
 			"success": "Project deleted",

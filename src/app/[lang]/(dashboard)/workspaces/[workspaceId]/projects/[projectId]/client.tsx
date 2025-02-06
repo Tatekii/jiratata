@@ -12,20 +12,23 @@ import ProjectAvatar from "@/features/projects/components/ProjectAvatar"
 import useProjectId from "@/features/projects/hooks/useProjectId"
 import { useDictionary } from "@/context/DictionaryProvider"
 import TaskViewSwitcher from "@/features/tasks/components/TaskViewSwitcher"
+import Analytics from "@/components/Analystics"
+import useGetProjectAnalytics from "@/features/projects/api/useGetProjectAnalystics"
 
 const ProjectIdClient = () => {
 	const dic = useDictionary()
 	const projectId = useProjectId()
 	const { data: project, isLoading: isLoadingProject } = useGetProject({ projectId })
+	const { data: analytics, isLoading: isLoadingAnalytics } = useGetProjectAnalytics({ projectId })
 
-	const isLoading = isLoadingProject
+	const isLoading = isLoadingProject || isLoadingAnalytics
 
 	if (isLoading) {
 		return <PageLoader />
 	}
 
 	if (!project) {
-		return <PageError message="Project not found" />
+		return <PageError message={dic.projects.fetch.notfound} />
 	}
 
 	return (
@@ -44,6 +47,7 @@ const ProjectIdClient = () => {
 					</Button>
 				</div>
 			</div>
+			{analytics ? <Analytics data={analytics} /> : null}
 			<TaskViewSwitcher hideProjectFilter />
 		</div>
 	)

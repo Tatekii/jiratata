@@ -112,7 +112,8 @@
 		},
 		"fetch": {
 			"error": "获取项目失败",
-			"empty": "无项目"
+			"empty": "无项目",
+			"notfound": "未找到该项目"
 		},
 		"delete": {
 			"success": "项目已删除",
