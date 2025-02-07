@@ -25,9 +25,11 @@ const defaultMap = {
 const Navbar = () => {
 	const pathname = usePathname()
 	const pathnameParts = pathname.split("/")
-	const pathnameKey = pathnameParts[3] as keyof typeof pathnameMap
+	const pathnameKey = pathnameParts[4] as keyof typeof pathnameMap
+
 	const dic = useDictionary()
 
+	
 	const { title, description } = pathnameMap[pathnameKey] || defaultMap
 
 	return (

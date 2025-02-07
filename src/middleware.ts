@@ -24,6 +24,7 @@ export function getLocale(request: NextRequest): string | undefined {
 
 export function middleware(request: NextRequest) {
 	const pathname = request.nextUrl.pathname
+	const search = request.nextUrl.search
 
 	// // `/_next/` and `/api/` are ignored by the watcher, but we need to ignore files in `public` manually.
 	// // If you have one
@@ -47,8 +48,11 @@ export function middleware(request: NextRequest) {
 
 		// e.g. incoming request is /products
 		// The new URL is now /en-US/products
+
+		console.log('missing locale',pathname);
+		
 		return NextResponse.redirect(
-			new URL(`/${locale}${pathname.startsWith("/") ? "" : "/"}${pathname}`, request.url)
+			new URL(`/${locale}${pathname.startsWith("/") ? "" : "/"}${pathname}${search}`, request.url)
 		)
 	}
 }

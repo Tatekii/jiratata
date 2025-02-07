@@ -17,6 +17,7 @@ import { Form, FormControl, FormField, FormItem, FormMessage } from "@/component
 import { buildRegisterSchema } from "../schema"
 import { useDictionary } from "@/context/DictionaryProvider"
 import useRegister from "../api/useRegister"
+import { signUpWithGithub, signUpWithGoogle } from "@/lib/oauth"
 
 const SignUpCard = () => {
 	
@@ -124,7 +125,7 @@ const SignUpCard = () => {
 			</div>
 			<CardContent className="p-7 flex flex-col gap-y-4">
 				<Button
-					// onClick={() => signUpWithGoogle()}
+					onClick={() => signUpWithGoogle()}
 					disabled={isPending}
 					variant="secondary"
 					size="lg"
@@ -134,7 +135,7 @@ const SignUpCard = () => {
 					Google {dic.auth.signin}
 				</Button>
 				<Button
-					// onClick={() => signUpWithGithub()}
+					onClick={() => signUpWithGithub()}
 					disabled={isPending}
 					variant="secondary"
 					size="lg"

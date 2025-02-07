@@ -18,6 +18,7 @@ import { buildLoginSchema } from "../schema"
 import { useDictionary } from "@/context/DictionaryProvider"
 import { FC } from "react"
 import useLogin from "../api/useLogin"
+import { signUpWithGithub, signUpWithGoogle } from "@/lib/oauth"
 
 const SignInCard: FC = () => {
 	const { mutate, isPending } = useLogin()
@@ -84,7 +85,7 @@ const SignInCard: FC = () => {
 			</div>
 			<CardContent className="flex flex-col gap-4 p-7">
 				<Button
-					// onClick={() => signUpWithGoogle()}
+					onClick={() => signUpWithGoogle()}
 					disabled={isPending}
 					variant="secondary"
 					size="lg"
@@ -94,7 +95,7 @@ const SignInCard: FC = () => {
 					Google {dic.auth.signin}
 				</Button>
 				<Button
-					// onClick={() => signUpWithGithub()}
+					onClick={() => signUpWithGithub()}
 					disabled={isPending}
 					variant="secondary"
 					size="lg"

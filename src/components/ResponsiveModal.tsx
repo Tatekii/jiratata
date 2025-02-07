@@ -51,7 +51,7 @@ export const ResponsiveModal = ({ children, open, onOpenChange }: ResponsiveModa
 	)
 }
 
-const fallbackRender = ({ error, resetErrorBoundary }: FallbackProps) => {
+const fallbackRender = ({ error }: FallbackProps) => {
 	// Call resetErrorBoundary() to reset the error boundary and retry the render.
 
 	return (
