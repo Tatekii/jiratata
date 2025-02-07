@@ -3,7 +3,7 @@
 import { PageLoader } from "@/components/PageLoader"
 import PageNotFound from "@/components/PageNotFound"
 import useGetWorkspace from "@/features/workspaces/api/useGetWorkspace"
-import { EditWorkspaceForm } from "@/features/workspaces/components/EditWorkspaceForm"
+import EditWorkspaceForm from "@/features/workspaces/components/EditWorkspaceForm"
 import useWorkspaceId from "@/features/workspaces/hooks/useWorkspaceId"
 
 const WorkspaceIdSettingsClient = () => {

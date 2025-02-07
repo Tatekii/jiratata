@@ -17,6 +17,7 @@ const TasksClient = () => {
 		if (projects && !projects?.total && !isOpen) {
 			open()
 		}
+	// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [projects])
 
 	if (isLoadingProjects) {

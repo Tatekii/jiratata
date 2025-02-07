@@ -24,13 +24,8 @@ interface ICommonNameImageFormProps {
 	submitText: string
 	onCancel?: () => void
 	cancelText: string
-	form: UseFormReturn<
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		{ [x: string]: any },
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		any,
-		undefined
-	>
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	form: UseFormReturn<any, any, undefined>
 	isPending: boolean
 }
 

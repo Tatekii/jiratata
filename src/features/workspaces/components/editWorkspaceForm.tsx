@@ -27,7 +27,7 @@ interface EditWorkspaceFormProps {
 	initialValues: TWorkspace
 }
 
-export const EditWorkspaceForm = ({ onCancel, initialValues }: EditWorkspaceFormProps) => {
+const EditWorkspaceForm = ({ onCancel, initialValues }: EditWorkspaceFormProps) => {
 	const dic = useDictionary()
 
 	const updateWorkspaceSchema = useMemo(() => {
@@ -217,3 +217,5 @@ export const EditWorkspaceForm = ({ onCancel, initialValues }: EditWorkspaceForm
 		</div>
 	)
 }
+
+export default EditWorkspaceForm

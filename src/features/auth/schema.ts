@@ -6,6 +6,7 @@ export const buildLoginSchema = (dic: TDictionary) =>
 		email: z.string().email(dic.auth.form.emailFormat),
 		password: z.string().min(1, dic.form.required),
 	})
+
 export const buildRegisterSchema = (dic: TDictionary) =>
 	z
 		.object({
