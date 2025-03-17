@@ -2,12 +2,9 @@
 
 import { z } from "zod"
 import Link from "next/link"
-import { FcGoogle } from "react-icons/fc"
-import { FaGithub } from "react-icons/fa"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 
-// import { signUpWithGithub, signUpWithGoogle } from "@/lib/oauth";
 import { DottedSeparator } from "@/components/DottedSeparator"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -17,10 +14,9 @@ import { Form, FormControl, FormField, FormItem, FormMessage } from "@/component
 import { buildRegisterSchema } from "../schema"
 import { useDictionary } from "@/context/DictionaryProvider"
 import useRegister from "../api/useRegister"
-import { signUpWithGithub, signUpWithGoogle } from "@/lib/oauth"
+import OAuthCard from "./OAuthCard"
 
 const SignUpCard = () => {
-	
 	const dic = useDictionary()
 
 	const registerSchema = buildRegisterSchema(dic)
@@ -123,28 +119,9 @@ const SignUpCard = () => {
 			<div className="px-7">
 				<DottedSeparator />
 			</div>
-			<CardContent className="p-7 flex flex-col gap-y-4">
-				<Button
-					onClick={() => signUpWithGoogle()}
-					disabled={isPending}
-					variant="secondary"
-					size="lg"
-					className="w-full"
-				>
-					<FcGoogle className="mr-2 size-5" />
-					Google {dic.auth.signin}
-				</Button>
-				<Button
-					onClick={() => signUpWithGithub()}
-					disabled={isPending}
-					variant="secondary"
-					size="lg"
-					className="w-full"
-				>
-					<FaGithub className="mr-2 size-5" />
-					Github {dic.auth.signin}
-				</Button>
-			</CardContent>
+
+			<OAuthCard isPending={isPending} />
+
 			<div className="px-7">
 				<DottedSeparator />
 			</div>

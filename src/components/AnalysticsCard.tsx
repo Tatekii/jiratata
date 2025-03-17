@@ -1,19 +1,28 @@
-import { FaCaretDown, FaCaretUp } from "react-icons/fa"
+import { FaCaretDown, FaCaretUp, FaMinus } from "react-icons/fa"
 
 import { cn } from "@/lib/utils"
 import { Card, CardHeader, CardDescription, CardTitle } from "@/components/ui/card"
+import { IconType } from "react-icons/lib"
 
 interface AnalyticsCardProps {
 	title: string
 	value: number
-	variant: "up" | "down"
+	variant: "up" | "down" | "same"
 	increaseValue: number
 }
 
+const IconMap: Record<AnalyticsCardProps["variant"], IconType> = {
+	up: FaCaretUp,
+	down: FaCaretDown,
+	same: FaMinus,
+}
+
 const AnalyticsCard = ({ title, value, variant, increaseValue }: AnalyticsCardProps) => {
-	const iconColor = variant === "up" ? "text-emerald-500" : "text-red-500"
-	const increaseValueColor = variant === "up" ? "text-emerald-500" : "text-red-500"
-	const Icon = variant === "up" ? FaCaretUp : FaCaretDown
+	const iconColor = variant === "up" ? "text-emerald-500" : variant === "down" ? "text-red-500" : ""
+
+	const increaseValueColor = variant === "up" ? "text-emerald-500" : variant === "down" ? "text-red-500" : ""
+
+	const Icon = IconMap[variant]
 
 	return (
 		<Card className="shadow-none border-none w-full">
@@ -23,7 +32,7 @@ const AnalyticsCard = ({ title, value, variant, increaseValue }: AnalyticsCardPr
 						<span className="truncate text-base">{title}</span>
 					</CardDescription>
 					<div className="flex items-center gap-x-1">
-						<Icon className={cn(iconColor, "size-4")} />
+						{variant !== "same" ? <Icon className={cn(iconColor, "size-4")} /> : null}
 						<span className={cn(increaseValueColor, "truncate text-base font-medium")}>
 							{increaseValue}
 						</span>

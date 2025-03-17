@@ -3,7 +3,21 @@ import { DottedSeparator } from "./DottedSeparator"
 import AnalyticsCard from "./AnalysticsCard"
 import { WorkspaceAnalyticsResponseType } from "@/features/workspaces/api/useGetWorkSpaceAnalytics"
 
+const formatValueToVariant = (val: number) => {
+	if (val > 0) {
+		return "up"
+	} else if (val < 0) {
+		return "down"
+	} else {
+		return "same"
+	}
+}
+
 const Analytics = ({ data }: WorkspaceAnalyticsResponseType) => {
+
+	// const dic = useDictionary()
+	// TODO i18n
+
 	return (
 		<ScrollArea className="border rounded-lg w-full whitespace-nowrap shrink-0">
 			<div className="w-full flex flex-row">
@@ -11,7 +25,7 @@ const Analytics = ({ data }: WorkspaceAnalyticsResponseType) => {
 					<AnalyticsCard
 						title="Total tasks"
 						value={data.taskCount}
-						variant={data.taskDifference > 0 ? "up" : "down"}
+						variant={formatValueToVariant(data.taskDifference)}
 						increaseValue={data.taskDifference}
 					/>
 					<DottedSeparator direction="vertical" />
@@ -20,7 +34,7 @@ const Analytics = ({ data }: WorkspaceAnalyticsResponseType) => {
 					<AnalyticsCard
 						title="Assigned Tasks"
 						value={data.assignedTaskCount}
-						variant={data.assignedTaskDifference > 0 ? "up" : "down"}
+						variant={formatValueToVariant(data.assignedTaskDifference)}
 						increaseValue={data.assignedTaskDifference}
 					/>
 					<DottedSeparator direction="vertical" />
@@ -29,7 +43,7 @@ const Analytics = ({ data }: WorkspaceAnalyticsResponseType) => {
 					<AnalyticsCard
 						title="Completed Tasks"
 						value={data.completedTaskCount}
-						variant={data.completedTaskDifference > 0 ? "up" : "down"}
+						variant={formatValueToVariant(data.completedTaskDifference)}
 						increaseValue={data.completedTaskDifference}
 					/>
 					<DottedSeparator direction="vertical" />
@@ -38,7 +52,7 @@ const Analytics = ({ data }: WorkspaceAnalyticsResponseType) => {
 					<AnalyticsCard
 						title="Overdue Tasks"
 						value={data.overdueTaskCount}
-						variant={data.overdueTaskDifference > 0 ? "up" : "down"}
+						variant={formatValueToVariant(data.overdueTaskDifference)}
 						increaseValue={data.overdueTaskDifference}
 					/>
 					<DottedSeparator direction="vertical" />
@@ -47,7 +61,7 @@ const Analytics = ({ data }: WorkspaceAnalyticsResponseType) => {
 					<AnalyticsCard
 						title="Incomplete Tasks"
 						value={data.incompleteTaskCount}
-						variant={data.incompleteTaskDifference > 0 ? "up" : "down"}
+						variant={formatValueToVariant(data.incompleteTaskDifference)}
 						increaseValue={data.incompleteTaskDifference}
 					/>
 					<DottedSeparator direction="vertical" />

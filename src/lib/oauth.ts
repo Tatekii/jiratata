@@ -12,9 +12,12 @@ export async function signUpWithGithub() {
 
 	const origin = headerStore.get("origin")
 
-	const redirectUrl = await account.createOAuth2Token(OAuthProvider.Github, `${origin}/oauth`, `${origin}/signup`)
-
-	return redirect(redirectUrl)
+	try {
+		const redirectUrl = await account.createOAuth2Token(OAuthProvider.Github, `${origin}/oauth`, `${origin}/signup`)
+		return redirect(redirectUrl)
+	} catch {
+		throw false
+	}
 }
 
 export async function signUpWithGoogle() {
@@ -24,7 +27,11 @@ export async function signUpWithGoogle() {
 
 	const origin = headerStore.get("origin")
 
-	const redirectUrl = await account.createOAuth2Token(OAuthProvider.Google, `${origin}/oauth`, `${origin}/signup`)
+	try {
+		const redirectUrl = await account.createOAuth2Token(OAuthProvider.Google, `${origin}/oauth`, `${origin}/signup`)
 
-	return redirect(redirectUrl)
+		return redirect(redirectUrl)
+	} catch {
+		throw false
+	}
 }
