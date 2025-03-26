@@ -7,9 +7,9 @@ import { useDictionary } from "@/context/DictionaryProvider"
 import { MyResponseSuccessType, MyResponseFailType, MyRequestType, handleOnError } from "@/lib/utils"
 
 type TCurFetch = (typeof client.api.auth.register)["$post"]
-type ResponseSuccessType = MyResponseSuccessType<TCurFetch>
-type ResponseFailType = MyResponseFailType
-type RequestType = MyRequestType<TCurFetch>
+export type ResponseSuccessType = MyResponseSuccessType<TCurFetch>
+export type ResponseFailType = MyResponseFailType
+export type RequestType = MyRequestType<TCurFetch>
 
 export default function UseRegister() {
 	const queryClient = useQueryClient()

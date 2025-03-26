@@ -24,17 +24,17 @@ export type TProject = Models.Document & {
 	workspaceId: string
 }
 
-export enum ETaskStatus {
-	BACKLOG = "BACKLOG",
-	TODO = "TODO",
-	IN_PROGRESS = "IN_PROGRESS",
-	IN_REVIEW = "IN_REVIEW",
-	DONE = "DONE",
-}
+export const ETaskStatus = {
+	BACKLOG: "BACKLOG",
+	TODO: "TODO",
+	IN_PROGRESS: "IN_PROGRESS",
+	IN_REVIEW: "IN_REVIEW",
+	DONE: "DONE",
+} as const
 
 export type TTask = Models.Document & {
 	name: string
-	status: ETaskStatus
+	status: typeof ETaskStatus[keyof typeof ETaskStatus]
 	workspaceId: string
 	assigneeId: string
 	projectId: string

@@ -7,9 +7,9 @@ import { useDictionary } from "@/context/DictionaryProvider"
 import { handleOnError, MyRequestType, MyResponseFailType, MyResponseSuccessType } from "@/lib/utils"
 
 type TCurFetch = (typeof client.api.auth.login)["$post"]
-type ResponseSuccessType = MyResponseSuccessType<TCurFetch>
-type ResponseFailType = MyResponseFailType
-type RequestType = MyRequestType<TCurFetch>
+export type ResponseSuccessType = MyResponseSuccessType<TCurFetch>
+export type ResponseFailType = MyResponseFailType
+export type RequestType = MyRequestType<TCurFetch>
 
 export default function UseLogin() {
 	const router = useRouter()
