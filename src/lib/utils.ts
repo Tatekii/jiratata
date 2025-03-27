@@ -33,7 +33,7 @@ function fetchHasError(response: any): response is MyResponseFailType {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const handleOnError = (err: any, defaultAction: () => void)=>() => {
+export const handleOnError = (err: any, defaultAction: () => void) => () => {
 	if (fetchHasError(err)) {
 		toast.error(err.error)
 	} else if (err instanceof Error) {
@@ -43,10 +43,18 @@ export const handleOnError = (err: any, defaultAction: () => void)=>() => {
 	}
 }
 
-
 export function snakeCaseToTitleCase(str: string) {
-	return str.toLowerCase()
-	  .replace(/_/g, " ")
-	  .replace(/\b\w/g, (char) => char.toUpperCase())
-  };
-  
+	return str
+		.toLowerCase()
+		.replace(/_/g, " ")
+		.replace(/\b\w/g, (char) => char.toUpperCase())
+}
+
+/**
+ * jest mock使用
+ * @param fn
+ * @returns
+ */
+export function mockFunction<T extends (...args: any[]) => any>(fn: T): jest.MockedFunction<T> {
+	return fn as jest.MockedFunction<T>
+}

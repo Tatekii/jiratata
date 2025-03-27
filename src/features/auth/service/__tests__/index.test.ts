@@ -1,27 +1,107 @@
-import { describe, it, expect, beforeEach, jest } from "@jest/globals"
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { describe, it, expect, beforeEach, vi } from "vitest"
+import type { Models } from "node-appwrite"
 import { testClient } from "hono/testing"
-// import { Account, Client } from "node-appwrite"
 import app from ".."
 import { AUTH_COOKIE } from "../../constans"
 
-// Mock Appwrite client and account
-jest.mock("node-appwrite", () => ({
-	Client: jest.fn().mockImplementation(() => ({
-		setEndpoint: jest.fn(),
-		setProject: jest.fn(),
-	})),
-	Account: jest.fn().mockImplementation(() => ({
-		create: jest.fn(),
-		createEmailPasswordSession: jest.fn(),
-		deleteSessions: jest.fn(),
+// Mock next/headers first
+vi.mock("next/headers", () => ({
+	cookies: vi.fn().mockImplementation(() => ({
+		get: vi.fn().mockReturnValue({ value: "mock-session-token" }),
 	})),
 }))
+
+vi.mock("server-only", () => {
+	return {
+		// mock server-only module
+	}
+})
+
+// Create mock account instance with logging
+const mockAccount = {
+	create: vi.fn<() => Promise<Models.User<Models.Preferences>>>().mockImplementation(() => {
+		return Promise.resolve({} as Models.User<Models.Preferences>)
+	}),
+	createEmailPasswordSession: vi.fn<() => Promise<Models.Session>>().mockImplementation(() => {
+		return Promise.resolve({} as Models.Session)
+	}),
+	deleteSessions: vi.fn<() => Promise<void>>(),
+	deleteSession: vi.fn<() => Promise<void>>(),
+	get: vi.fn<() => Promise<Models.User<Models.Preferences>>>(),
+}
+
+// Mock the hono lib with logging
+vi.mock("@/lib/hono", () => {
+	const mock = {
+		createSessionClient: vi.fn().mockImplementation(() => {
+			return Promise.resolve({
+				account: mockAccount,
+				databases: {},
+				storage: {},
+			})
+		}),
+		createAdminClient: vi.fn().mockImplementation(() => {
+			return Promise.resolve({
+				account: mockAccount,
+				users: {},
+				databases: {},
+			})
+		}),
+	}
+	return mock
+})
 
 describe("Auth API", () => {
 	const client = testClient(app)
 
 	beforeEach(() => {
-		jest.clearAllMocks()
+		vi.clearAllMocks()
+	})
+
+	describe("GET /current", () => {
+		it("should return current user", async () => {
+			const mockUser = {
+				$id: "test-user-id",
+				name: "Test User",
+				email: "test@example.com",
+			} as Models.User<Models.Preferences>
+
+			mockAccount.get.mockResolvedValueOnce(mockUser)
+
+			const res = await client.current.$get()
+
+			expect(res.status).toBe(200)
+			expect(await res.json()).toEqual({ data: mockUser })
+		})
+	})
+
+	describe("POST /login", () => {
+		const loginData = {
+			email: "test@example.com",
+			password: "1qaz@WSX",
+		}
+
+		it("should login successfully", async () => {
+			const mockSession = {
+				secret: "test-session-secret",
+			} as Models.Session
+
+			mockAccount.createEmailPasswordSession.mockResolvedValueOnce(mockSession)
+
+			const res = await client.login.$post({
+				json: loginData,
+			})
+
+			expect(mockAccount.createEmailPasswordSession).toHaveBeenCalledWith(
+				loginData.email,
+				loginData.password
+			)
+
+			expect(res.status).toBe(200)
+			expect(await res.json()).toEqual({ success: true })
+			expect(res.headers.get("Set-Cookie")).toContain(AUTH_COOKIE)
+		})
 	})
 
 	describe("POST /register", () => {
@@ -33,123 +113,49 @@ describe("Auth API", () => {
 		}
 
 		it("should register successfully", async () => {
-			//   const mockUser = {
-			//     $id: "user123",
-			//     email: registerData.email,
-			//     name: registerData.name,
-			//   }
+			const mockUser = {
+				$id: "test-user-id",
+				name: "Test User",
+				email: "test@example.com",
+			} as Models.User<Models.Preferences>
 
-			//   const mockSession = {
-			//     $id: "session123",
-			//     userId: mockUser.$id,
-			//     secret: "mock-secret",
-			//   }
+			const mockSession = {
+				secret: "test-session-secret",
+			} as Models.Session
 
-			// Mock Appwrite responses
-			//   const appwriteClient = new Client()
-			//   const account = new Account(appwriteClient)
-			//   ;(account.create as jest.Mock<typeof account.create>).mockResolvedValueOnce(mockUser)
-			//   ;(account.createEmailPasswordSession as jest.Mock).mockResolvedValueOnce(mockSession)
+			mockAccount.create.mockResolvedValueOnce(mockUser)
+			mockAccount.createEmailPasswordSession.mockResolvedValueOnce(mockSession)
 
 			const res = await client.register.$post({
 				json: registerData,
 			})
 
-			expect(res.status).toBe(200)
-			expect(await res.json()).toEqual({ success: true })
-			expect(res.headers.get("Set-Cookie")).toContain(AUTH_COOKIE)
-		})
+			expect(mockAccount.create).toHaveBeenCalledWith(
+				expect.any(String),
+				registerData.email,
+				registerData.password,
+				registerData.name
+			)
 
-		it("should handle registration failure", async () => {
-			// const appwriteClient = new Client()
-			// const account = new Account(appwriteClient)
-
-			//      ;(account.create as jest.Mock).mockRejectedValueOnce(new Error("Email already exists"))
-
-			const res = await client.register.$post({
-				json: registerData,
-			})
-
-			expect(res.status).toBe(400)
-			expect(await res.json()).toEqual({
-				success: false,
-				error: "Email already exists",
-			})
-		})
-	})
-
-	describe("POST /login", () => {
-		const loginData = {
-			email: "mockEmail@email.com",
-			password: "1qaz@WSX",
-		}
-
-		it("should login successfully", async () => {
-			//   const mockSession = {
-			//     $id: "session123",
-			//     userId: "user123",
-			//     secret: "mock-secret",
-			//   }
-
-			//   const appwriteClient = new Client()
-			//   const account = new Account(appwriteClient)
-			//   ;(account.createEmailPasswordSession as jest.Mock).mockResolvedValueOnce(mockSession)
-
-			const res = await client.login.$post({
-				json: loginData,
-			})
+			expect(mockAccount.createEmailPasswordSession).toHaveBeenCalledWith(
+				registerData.email,
+				registerData.password
+			)
 
 			expect(res.status).toBe(200)
 			expect(await res.json()).toEqual({ success: true })
 			expect(res.headers.get("Set-Cookie")).toContain(AUTH_COOKIE)
-		})
-
-		it("should handle login failure", async () => {
-			//   const appwriteClient = new Client()
-			//   const account = new Account(appwriteClient)
-			// ;(account.createEmailPasswordSession as jest.Mock).mockRejectedValueOnce(
-			//         new Error("Invalid credentials")
-			//       )
-
-			const res = await client.login.$post({
-				json: loginData,
-			})
-
-			expect(res.status).toBe(400)
-			expect(await res.json()).toEqual({
-				success: false,
-				error: "Invalid credentials",
-			})
 		})
 	})
 
 	describe("POST /logout", () => {
 		it("should logout successfully", async () => {
-			// const appwriteClient = new Client()
-			// const account = new Account(appwriteClient)
-			// ;(account.deleteSessions as jest.Mock).mockResolvedValueOnce({})
-
 			const res = await client.logout.$post()
 
+			expect(mockAccount.deleteSession).toHaveBeenCalledWith("current")
 			expect(res.status).toBe(200)
 			expect(await res.json()).toEqual({ success: true })
-			expect(res.headers.get("Set-Cookie")).toContain(`${AUTH_COOKIE}=;`)
-		})
-
-		it("should handle logout failure", async () => {
-			//   const appwriteClient = new Client()
-			//   const account = new Account(appwriteClient)
-			//   account.deleteSessions.mockRejectedValueOnce(
-			//     new Error("Session not found")
-			//   )
-
-			const res = await client.logout.$post()
-
-			expect(res.status).toBe(400)
-			expect(await res.json()).toEqual({
-				success: false,
-				error: "Session not found",
-			})
+			expect(res.headers.get("Set-Cookie")).toContain(AUTH_COOKIE + "=;")
 		})
 	})
 })

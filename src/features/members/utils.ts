@@ -13,14 +13,19 @@ export const getMember = async ({
   workspaceId,
   userId,
 }: GetMemberProps) => {
-  const members = await databases.listDocuments(
-    DATABASE_ID,
-    MEMBERS_ID,
-    [
-      Query.equal("workspaceId", workspaceId), 
-      Query.equal("userId", userId),
-    ],
-  );
+  try {
+    const members = await databases.listDocuments(
+      DATABASE_ID,
+      MEMBERS_ID,
+      [
+        Query.equal("workspaceId", workspaceId), 
+        Query.equal("userId", userId),
+      ],
+    );
 
-  return members.documents[0];
+    return members.documents.length > 0 ? members.documents[0] : null;
+  } catch (error) {
+    console.error("Failed to fetch member:", error);
+    return null;
+  }
 };
