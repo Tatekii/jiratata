@@ -1,5 +1,7 @@
 # 非常magic的jira clone
 
+![amazing](sample.png)
+
 ## client
 - `Next`
 

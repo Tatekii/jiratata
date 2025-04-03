@@ -10,6 +10,7 @@ import { QueryProvider } from "@/context/QueryProvider"
 import { NuqsAdapter } from "nuqs/adapters/next/app"
 import { Toaster } from "sonner"
 import { Suspense } from "react"
+import { Version } from "@/components/Version"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -43,6 +44,7 @@ export default async function RootLayout({
 							<NuqsAdapter>
 								<Suspense>{children}</Suspense>
 							</NuqsAdapter>
+							<Version/>
 						</QueryProvider>
 					</DictionaryProvider>
 				</LocaleProvider>
