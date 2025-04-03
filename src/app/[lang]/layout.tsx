@@ -41,7 +41,7 @@ export default async function RootLayout({
 						<QueryProvider>
 							<Toaster />
 							<NuqsAdapter>
-								<Suspense fallback={"..."}>{children}</Suspense>
+								<Suspense>{children}</Suspense>
 							</NuqsAdapter>
 						</QueryProvider>
 					</DictionaryProvider>

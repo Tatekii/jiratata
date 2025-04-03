@@ -22,7 +22,7 @@ export default function UseLogin() {
 			const response = await client.api.auth.login.$post({ json })
 
 			if (!response.ok) {
-				throw new Error(dic.auth.failInLogin)
+				throw await response.json()
 			}
 
 			return await response.json()
@@ -31,8 +31,8 @@ export default function UseLogin() {
 			toast.success(dic.auth.successfulLogin)
 			router.refresh()
 		},
-		onError: (err) => {
-			handleOnError(err, () => {
+		onError: (error) => {
+			handleOnError(error, () => {
 				toast.error(dic.auth.failInLogin)
 			})
 		},

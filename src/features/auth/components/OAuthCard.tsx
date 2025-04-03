@@ -23,7 +23,7 @@ const OAuthCard: FC<IOauthProps> = ({ isPending }) => {
 		setLoading(true)
 
 		provider().catch(() => {
-            toast.error('oauth error')
+            toast.error('OAuth Provider error')
 			setLoading(false)
 		})
 	}, [])

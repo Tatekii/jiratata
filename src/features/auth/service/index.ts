@@ -19,17 +19,30 @@ const app = new Hono<{ Variables: AppVariables }>()
 
 		const { account } = await createAdminClient()
 
-		const session = await account.createEmailPasswordSession(email, password)
+		try {
+			const session = await account.createEmailPasswordSession(email, password)
 
-		setCookie(c, AUTH_COOKIE, session.secret, {
-			path: "/",
-			httpOnly: true,
-			secure: true,
-			sameSite: "strict",
-			maxAge: 60 * 60 * 24 * 30,
-		})
+			setCookie(c, AUTH_COOKIE, session.secret, {
+				path: "/",
+				httpOnly: true,
+				secure: true,
+				sameSite: "strict",
+				maxAge: 60 * 60 * 24 * 30,
+			})
 
-		return c.json({ success: true })
+			return c.json({ success: true })
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		} catch (error: any) {
+			if (error.response) {
+
+				const { response } = error
+
+				return c.json({ error: response.message }, response.code as ResponseInit)
+			}
+
+			// Handle other types of errors
+			return c.json({ failed: "An unexpected error occurred" }, 401)
+		}
 	})
 	.post("/register", localeMiddleware, localeValidatorMiddleware("json", buildRegisterSchema), async (c) => {
 		const { email, password, name } = c.req.valid("json")

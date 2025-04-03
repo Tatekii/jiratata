@@ -24,16 +24,14 @@ export type MyResponseFailType = {
 // export type MyResponseUnauthorizedType<T> = InferResponseType<T, 401>
 export type MyRequestType<T> = InferRequestType<T>
 
-export function fetchHasData<T>(response: MyResponseType<T>): response is MyResponseSuccessType<T> {
-	return "data" in response
-}
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function fetchHasError(response: any): response is MyResponseFailType {
 	return "error" in response
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const handleOnError = (err: any, defaultAction: () => void)=>() => {
+export const handleOnError = (err: any, defaultAction: () => void) => {
+
 	if (fetchHasError(err)) {
 		toast.error(err.error)
 	} else if (err instanceof Error) {
@@ -43,10 +41,9 @@ export const handleOnError = (err: any, defaultAction: () => void)=>() => {
 	}
 }
 
-
 export function snakeCaseToTitleCase(str: string) {
-	return str.toLowerCase()
-	  .replace(/_/g, " ")
-	  .replace(/\b\w/g, (char) => char.toUpperCase())
-  };
-  
+	return str
+		.toLowerCase()
+		.replace(/_/g, " ")
+		.replace(/\b\w/g, (char) => char.toUpperCase())
+}

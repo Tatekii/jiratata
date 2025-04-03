@@ -22,6 +22,7 @@ export function getLocale(request: NextRequest): string | undefined {
 	return locale
 }
 
+
 export function middleware(request: NextRequest) {
 	const pathname = request.nextUrl.pathname
 	const search = request.nextUrl.search
@@ -60,7 +61,7 @@ export function middleware(request: NextRequest) {
 export const config = {
 	// Matcher ignoring `/_next/` and `/api/`
 	matcher: [
-		"/((?!api|_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt|image/logo.svg).*)"
+		"/((?!api|oauth|_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt|image/logo.svg).*)"
 
 	]
 }
