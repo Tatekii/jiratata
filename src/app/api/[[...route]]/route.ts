@@ -1,5 +1,5 @@
 /**
- *   Hono backend application
+ *   Hono backend application - 更新为MongoDB版本
  */
 import { Hono } from "hono"
 import { handle } from "hono/vercel"
@@ -9,15 +9,11 @@ import memberService from "@/features/members/service"
 import projectService from "@/features/projects/service"
 import taskService from "@/features/tasks/service"
 import { TDictionary } from "@/context/DictionaryProvider"
-import { Account, Databases, Models, Storage, Users } from "node-appwrite"
+import { IUser } from "@/models"
 
 export type AppVariables = {
 	dic: TDictionary
-	account: Account
-	databases: Databases
-	storage: Storage
-	users: Users
-	user: Models.User<Models.Preferences>
+	user: Partial<IUser> // 替代AppWrite的用户类型
 }
 
 const app = new Hono<{ Variables: AppVariables }>().basePath("/api")

@@ -1,26 +1,19 @@
-import { Query, type Databases } from "node-appwrite";
+/**
+ * Members schema定义，用于数据验证
+ */
+import { z } from "zod"
+import { EMemberRole } from "@/models"
 
-import { DATABASE_ID, MEMBERS_ID } from "@/config";
+// 更新成员角色的schema
+export const updateMemberRoleSchema = z.object({
+  role: z.nativeEnum(EMemberRole),
+})
 
-interface GetMemberProps {
-  databases: Databases;
-  workspaceId: string;
-  userId: string;
-};
+// 成员邀请schema
+export const inviteMemberSchema = z.object({
+  email: z.string().email("请输入有效的邮箱地址"),
+  role: z.nativeEnum(EMemberRole).default(EMemberRole.MEMBER),
+})
 
-export const getMember = async ({
-  databases,
-  workspaceId,
-  userId,
-}: GetMemberProps) => {
-  const members = await databases.listDocuments(
-    DATABASE_ID,
-    MEMBERS_ID,
-    [
-      Query.equal("workspaceId", workspaceId), 
-      Query.equal("userId", userId),
-    ],
-  );
-
-  return members.documents[0];
-};
+export type UpdateMemberRoleInput = z.infer<typeof updateMemberRoleSchema>
+export type InviteMemberInput = z.infer<typeof inviteMemberSchema>

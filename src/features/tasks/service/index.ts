@@ -1,321 +1,227 @@
+"use server"
+/**
+ * MongoDB版本的任务服务
+ */
 import { z } from "zod"
 import { Hono } from "hono"
-import { ID, Query } from "node-appwrite"
 import { zValidator } from "@hono/zod-validator"
-
-import { getMember } from "@/features/members/utils"
-
-import { DATABASE_ID, MEMBERS_ID, PROJECTS_ID, TASKS_ID } from "@/config"
 import { authSessionMiddleware } from "@/lib/hono-middleware"
-import { AppVariables } from "@/app/api/[[...route]]/route"
-import { ETaskStatus, TProject, TTask } from "@/features/types"
-import { createAdminClient } from "@/lib/hono"
 import { localeMiddleware, localeValidatorMiddleware } from "@/app/api/[[...route]]/middlewares"
-import { buildCreateTaskSchema, buildUpdateTaskSchema } from "../schemas"
+import { buildCreateTaskSchema, buildUpdateTaskSchema, mapTaskStatus } from "../schemas"
+import { AppVariables } from "@/app/api/[[...route]]/route"
+import { ETaskStatus } from "@/models"
+import { isMemberOfWorkspace } from "@/features/members/utils-mongodb"
+import {
+  getTasks,
+  createTask,
+  getTaskById,
+  updateTask,
+  deleteTask,
+  bulkUpdateTaskPositions,
+  checkTaskAccess
+} from "../utils"
+import mongoose from 'mongoose'
 
 const app = new Hono<{ Variables: AppVariables }>()
-	.delete("/:taskId", authSessionMiddleware, async (c) => {
-		const user = c.get("user")
-		const databases = c.get("databases")
-		const { taskId } = c.req.param()
+  // 删除任务
+  .delete("/:taskId", authSessionMiddleware, async (c) => {
+    try {
+      const user = c.get("user")
+      const { taskId } = c.req.param()
 
-		const task = await databases.getDocument<TTask>(DATABASE_ID, TASKS_ID, taskId)
+      // 验证ObjectId格式
+      if (!mongoose.Types.ObjectId.isValid(taskId)) {
+        return c.json({ error: "无效的任务ID" }, 400)
+      }
 
-		const member = await getMember({
-			databases,
-			workspaceId: task.workspaceId,
-			userId: user.$id,
-		})
+      // 检查用户权限
+      const hasAccess = await checkTaskAccess(taskId, user._id!.toString())
+      if (!hasAccess) {
+        return c.json({ error: "Unauthorized" }, 401)
+      }
 
-		if (!member) {
-			return c.json({ error: "Unauthorized" }, 401)
-		}
+      const task = await deleteTask(taskId)
+      if (!task) {
+        return c.json({ error: "任务不存在" }, 404)
+      }
 
-		await databases.deleteDocument(DATABASE_ID, TASKS_ID, taskId)
+      return c.json({ data: { $id: taskId } })
+    } catch (error) {
+      console.error('删除任务失败:', error)
+      return c.json({ error: "删除任务失败" }, 500)
+    }
+  })
 
-		return c.json({ data: { $id: task.$id } })
-	})
-	.get(
-		"/",
-		authSessionMiddleware,
-		zValidator(
-			"query",
-			z.object({
-				workspaceId: z.string(),
-				projectId: z.string().nullish(),
-				assigneeId: z.string().nullish(),
-				status: z.nativeEnum(ETaskStatus).nullish(),
-				search: z.string().nullish(),
-				dueDate: z.string().nullish(),
-			})
-		),
-		async (c) => {
-			const { users } = await createAdminClient()
-			const databases = c.get("databases")
-			const user = c.get("user")
+  // 获取任务列表
+  .get("/", authSessionMiddleware, zValidator("query", z.object({
+    workspaceId: z.string(),
+    projectId: z.string().nullish(),
+    assigneeId: z.string().nullish(),
+    status: z.nativeEnum(ETaskStatus).nullish(),
+    search: z.string().nullish(),
+    dueDate: z.string().nullish(),
+  })), async (c) => {
+    try {
+      const user = c.get("user")
+      const query = c.req.valid("query")
 
-			const { workspaceId, projectId, status, search, assigneeId, dueDate } = c.req.valid("query")
+      // 验证ObjectId格式
+      if (!mongoose.Types.ObjectId.isValid(query.workspaceId)) {
+        return c.json({ error: "无效的工作区ID" }, 400)
+      }
 
-			const member = await getMember({
-				databases,
-				workspaceId,
-				userId: user.$id,
-			})
+      // 检查用户是否为工作区成员
+      const isMember = await isMemberOfWorkspace(query.workspaceId, user._id!.toString())
+      if (!isMember) {
+        return c.json({ error: "Unauthorized" }, 401)
+      }
 
-			if (!member) {
-				return c.json({ error: "Unauthorized" }, 401)
-			}
+      const tasks = await getTasks({
+        workspaceId: query.workspaceId,
+        projectId: query.projectId || undefined,
+        assigneeId: query.assigneeId || undefined,
+        status: query.status || undefined,
+        search: query.search || undefined,
+        dueDate: query.dueDate || undefined,
+      })
 
-			const query = [Query.equal("workspaceId", workspaceId), Query.orderDesc("$createdAt")]
+      // 格式化返回数据，保持与原API兼容
+      const formattedTasks = tasks.map(task => ({
+        $id: task._id,
+        name: task.name,
+        description: task.description,
+        status: task.status,
+        workspaceId: task.workspaceId,
+        projectId: task.projectId,
+        assigneeId: task.assigneeId,
+        dueDate: task.dueDate,
+        position: task.position,
+        $createdAt: task.createdAt,
+        $updatedAt: task.updatedAt,
+        project: task.projectId,
+        assignee: task.assigneeId
+      }))
 
-			if (projectId) {
-				console.log("projectId: ", projectId)
-				query.push(Query.equal("projectId", projectId))
-			}
+      return c.json({ 
+        data: { 
+          documents: formattedTasks, 
+          total: formattedTasks.length 
+        } 
+      })
+    } catch (error) {
+      console.error('获取任务列表失败:', error)
+      return c.json({ error: "获取任务列表失败" }, 500)
+    }
+  })
 
-			if (status) {
-				console.log("status: ", status)
-				query.push(Query.equal("status", status))
-			}
+  // 创建任务
+  .post("/", authSessionMiddleware, localeMiddleware, localeValidatorMiddleware("json", buildCreateTaskSchema), async (c) => {
+    try {
+      const user = c.get("user")
+      const { name, description, status, workspaceId, projectId, assigneeId, dueDate } = c.req.valid("json")
 
-			if (assigneeId) {
-				console.log("assigneeId: ", assigneeId)
-				query.push(Query.equal("assigneeId", assigneeId))
-			}
+      // 验证ObjectId格式
+      if (!mongoose.Types.ObjectId.isValid(workspaceId) || 
+          !mongoose.Types.ObjectId.isValid(projectId) || 
+          !mongoose.Types.ObjectId.isValid(assigneeId)) {
+        return c.json({ error: "无效的ID格式" }, 400)
+      }
 
-			if (dueDate) {
-				console.log("dueDate: ", dueDate)
-				query.push(Query.equal("dueDate", dueDate))
-			}
+      // 检查用户是否为工作区成员
+      const isMember = await isMemberOfWorkspace(workspaceId, user._id!.toString())
+      if (!isMember) {
+        return c.json({ error: "Unauthorized" }, 401)
+      }
 
-			if (search) {
-				console.log("search: ", search)
-				query.push(Query.search("name", search))
-			}
+      const task = await createTask({
+        name,
+        description,
+        workspaceId,
+        projectId,
+        assigneeId,
+        status: mapTaskStatus(status),
+        dueDate: new Date(dueDate)
+      })
 
-			const tasks = await databases.listDocuments<TTask>(DATABASE_ID, TASKS_ID, query)
+      return c.json({ data: task })
+    } catch (error) {
+      console.error('创建任务失败:', error)
+      return c.json({ error: "创建任务失败" }, 500)
+    }
+  })
 
-			const projectIds = tasks.documents.map((task) => task.projectId)
-			const assigneeIds = tasks.documents.map((task) => task.assigneeId)
+  // 更新任务
+  .patch("/:taskId", authSessionMiddleware, localeMiddleware, localeValidatorMiddleware("json", buildUpdateTaskSchema), async (c) => {
+    try {
+      const user = c.get("user")
+      const { taskId } = c.req.param()
+      const updates = c.req.valid("json")
 
-			const projects = await databases.listDocuments<TProject>(
-				DATABASE_ID,
-				PROJECTS_ID,
-				projectIds.length > 0 ? [Query.contains("$id", projectIds)] : []
-			)
+      // 验证ObjectId格式
+      if (!mongoose.Types.ObjectId.isValid(taskId)) {
+        return c.json({ error: "无效的任务ID" }, 400)
+      }
 
-			const members = await databases.listDocuments(
-				DATABASE_ID,
-				MEMBERS_ID,
-				assigneeIds.length > 0 ? [Query.contains("$id", assigneeIds)] : []
-			)
+      // 检查用户权限
+      const hasAccess = await checkTaskAccess(taskId, user._id!.toString())
+      if (!hasAccess) {
+        return c.json({ error: "Unauthorized" }, 401)
+      }
 
-			const assignees = await Promise.all(
-				members.documents.map(async (member) => {
-					const user = await users.get(member.userId)
+      const updateData: any = {}
+      if (updates.name !== undefined) updateData.name = updates.name
+      if (updates.description !== undefined) updateData.description = updates.description
+      if (updates.status !== undefined) updateData.status = updates.status
+      if (updates.assigneeId !== undefined) updateData.assigneeId = updates.assigneeId
+      if (updates.projectId !== undefined) updateData.projectId = updates.projectId
+      if (updates.dueDate !== undefined) updateData.dueDate = new Date(updates.dueDate)
 
-					return {
-						...member,
-						name: user.name || user.email,
-						email: user.email,
-					}
-				})
-			)
+      const task = await updateTask(taskId, updateData)
+      if (!task) {
+        return c.json({ error: "任务不存在" }, 404)
+      }
 
-			const populatedTasks = tasks.documents.map((task) => {
-				const project = projects.documents.find((project) => project.$id === task.projectId)
-				const assignee = assignees.find((assignee) => assignee.$id === task.assigneeId)
+      return c.json({ data: task })
+    } catch (error) {
+      console.error('更新任务失败:', error)
+      return c.json({ error: "更新任务失败" }, 500)
+    }
+  })
 
-				return {
-					...task,
-					project,
-					assignee,
-				}
-			})
+  // 批量更新任务（用于拖拽排序）
+  .post("/bulk-update", authSessionMiddleware, zValidator("json", z.object({
+    tasks: z.array(z.object({
+      $id: z.string(),
+      status: z.nativeEnum(ETaskStatus),
+      position: z.number(),
+    }))
+  })), async (c) => {
+    try {
+      const user = c.get("user")
+      const { tasks } = c.req.valid("json")
 
-			return c.json({
-				data: {
-					...tasks,
-					documents: populatedTasks,
-				},
-			})
-		}
-	)
-	.post(
-		"/",
-		authSessionMiddleware,
-		localeMiddleware,
-		localeValidatorMiddleware("json", buildCreateTaskSchema),
-		async (c) => {
-			const user = c.get("user")
-			const databases = c.get("databases")
-			const { name, status, workspaceId, projectId, dueDate, assigneeId } = c.req.valid("json")
+      // 验证所有任务ID格式
+      for (const task of tasks) {
+        if (!mongoose.Types.ObjectId.isValid(task.$id)) {
+          return c.json({ error: "无效的任务ID格式" }, 400)
+        }
+      }
 
-			const member = await getMember({
-				databases,
-				workspaceId,
-				userId: user.$id,
-			})
+      // 检查用户对所有任务的权限（简化版本，实际应该优化批量检查）
+      for (const task of tasks) {
+        const hasAccess = await checkTaskAccess(task.$id, user._id!.toString())
+        if (!hasAccess) {
+          return c.json({ error: "Unauthorized" }, 401)
+        }
+      }
 
-			if (!member) {
-				return c.json({ error: "Unauthorized" }, 401)
-			}
+      await bulkUpdateTaskPositions(tasks)
 
-			const highestPositionTask = await databases.listDocuments(DATABASE_ID, TASKS_ID, [
-				Query.equal("status", status),
-				Query.equal("workspaceId", workspaceId),
-				Query.orderAsc("position"),
-				Query.limit(1),
-			])
-
-			const newPosition =
-				highestPositionTask.documents.length > 0 ? highestPositionTask.documents[0].position + 1000 : 1000
-
-			const task = await databases.createDocument(DATABASE_ID, TASKS_ID, ID.unique(), {
-				name,
-				status,
-				workspaceId,
-				projectId,
-				dueDate,
-				assigneeId,
-				position: newPosition,
-			})
-
-			return c.json({ data: task })
-		}
-	)
-	.patch(
-		"/:taskId",
-		authSessionMiddleware,
-		localeMiddleware,
-		localeValidatorMiddleware("json", buildUpdateTaskSchema),
-		async (c) => {
-			const user = c.get("user")
-			const databases = c.get("databases")
-			const { name, status, description, projectId, dueDate, assigneeId } = c.req.valid("json")
-			const { taskId } = c.req.param()
-
-			const existingTask = await databases.getDocument<TTask>(DATABASE_ID, TASKS_ID, taskId)
-
-			const member = await getMember({
-				databases,
-				workspaceId: existingTask.workspaceId,
-				userId: user.$id,
-			})
-
-			if (!member) {
-				return c.json({ error: "Unauthorized" }, 401)
-			}
-
-			const task = await databases.updateDocument<TTask>(DATABASE_ID, TASKS_ID, taskId, {
-				name,
-				status,
-				projectId,
-				dueDate,
-				assigneeId,
-				description,
-			})
-
-			return c.json({ data: task })
-		}
-	)
-	.get("/:taskId", authSessionMiddleware, async (c) => {
-		const currentUser = c.get("user")
-		const databases = c.get("databases")
-		const { users } = await createAdminClient()
-		const { taskId } = c.req.param()
-
-		const task = await databases.getDocument<TTask>(DATABASE_ID, TASKS_ID, taskId)
-
-		const currentMember = await getMember({
-			databases,
-			workspaceId: task.workspaceId,
-			userId: currentUser.$id,
-		})
-
-		if (!currentMember) {
-			return c.json({ error: "Unauthorized" }, 401)
-		}
-
-		const project = await databases.getDocument<TProject>(DATABASE_ID, PROJECTS_ID, task.projectId)
-
-		const member = await databases.getDocument(DATABASE_ID, MEMBERS_ID, task.assigneeId)
-
-		const user = await users.get(member.userId)
-
-		const assignee = {
-			...member,
-			name: user.name || user.email,
-			email: user.email,
-		}
-
-		return c.json({
-			data: {
-				...task,
-				project,
-				assignee,
-			},
-		})
-	})
-	.post(
-		"/bulk-update",
-		authSessionMiddleware,
-		zValidator(
-			"json",
-			z.object({
-				tasks: z.array(
-					z.object({
-						$id: z.string(),
-						status: z.nativeEnum(ETaskStatus),
-						position: z.number().int().positive().min(1000).max(1_000_000),
-					})
-				),
-			})
-		),
-		async (c) => {
-			const databases = c.get("databases")
-			const user = c.get("user")
-			const { tasks } = await c.req.valid("json")
-
-			const tasksToUpdate = await databases.listDocuments<TTask>(DATABASE_ID, TASKS_ID, [
-				Query.contains(
-					"$id",
-					tasks.map((task) => task.$id)
-				),
-			])
-
-			const workspaceIds = new Set(tasksToUpdate.documents.map((task) => task.workspaceId))
-			
-			// 检查工作区一致
-			if (workspaceIds.size !== 1) {
-				return c.json({ error: "All tasks must belong to the same workspace" })
-			}
-
-			const workspaceId = workspaceIds.values().next().value
-
-			if (!workspaceId) {
-				return c.json({ error: "Workspace ID is required" }, 400)
-			}
-
-			const member = await getMember({
-				databases,
-				workspaceId,
-				userId: user.$id,
-			})
-
-			if (!member) {
-				return c.json({ error: "Unauthorized" }, 401)
-			}
-
-			const updatedTasks = await Promise.all(
-				tasks.map(async (task) => {
-					const { $id, status, position } = task
-					return databases.updateDocument<TTask>(DATABASE_ID, TASKS_ID, $id, { status, position })
-				})
-			)
-
-			return c.json({ data: updatedTasks })
-		}
-	)
+      return c.json({ data: { success: true } })
+    } catch (error) {
+      console.error('批量更新任务失败:', error)
+      return c.json({ error: "批量更新任务失败" }, 500)
+    }
+  })
 
 export default app

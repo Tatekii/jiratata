@@ -1,26 +1,47 @@
 /**
- * middleware for hono client ONLY
+ * middleware for hono client ONLY - 更新为MongoDB认证
  */
 import { createMiddleware } from "hono/factory"
-import { createSessionClient } from "./hono"
+import { getCookie } from "hono/cookie"
+import { verifyToken } from "@/lib/auth"
+import { User } from "@/models"
+import { connectToDatabase } from "@/lib/mongodb"
+import { AUTH_COOKIE } from "@/features/auth/constans"
 
 export const authSessionMiddleware = createMiddleware(async (c, next) => {
 	try {
-		const { account, storage, databases } = await createSessionClient()
+		// 从cookie获取JWT token
+		const token = getCookie(c, AUTH_COOKIE)
+		
+		if (!token) {
+			return c.json({ error: "Unauthorized" }, 401)
+		}
 
-		const user = await account.get()
+		// 验证JWT token
+		const decoded = verifyToken(token)
+		if (!decoded) {
+			return c.json({ error: "Invalid token" }, 401)
+		}
 
-		c.set("account", account)
-		c.set("databases", databases)
-		c.set("storage", storage)
-		c.set("user", user)
+		// 连接数据库并获取用户信息
+		await connectToDatabase()
+		const user = await User.findById(decoded.userId)
+		
+		if (!user) {
+			return c.json({ error: "User not found" }, 401)
+		}
+
+		// 将用户信息设置到上下文中
+		c.set("user", {
+			_id: user._id,
+			name: user.name,
+			email: user.email,
+			createdAt: user.createdAt,
+			updatedAt: user.updatedAt,
+		})
+		
 		await next()
 	} catch {
-		return c.json(
-			{
-				error: "Unauthorized",
-			},
-			401
-		)
+		return c.json({ error: "Unauthorized" }, 401)
 	}
 })

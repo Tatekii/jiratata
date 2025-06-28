@@ -1,5 +1,5 @@
 import { z } from "zod"
-import { ETaskStatus } from "../types"
+import { ETaskStatus } from "@/models" // 直接使用MongoDB的枚举
 import { TDictionary } from "@/context/DictionaryProvider"
 
 export const buildCreateTaskSchema = (dic: TDictionary) =>
