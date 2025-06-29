@@ -1,13 +1,13 @@
 import { useQuery } from "@tanstack/react-query"
 
 import { client } from "@/lib/rpc"
-import { ETaskStatus } from "@/features/types"
+import { TaskStatusType } from "@/features/types"
 import { useDictionary } from "@/context/DictionaryProvider"
 
 interface UseGetTasksProps {
 	workspaceId: string
 	projectId?: string | null
-	status?: ETaskStatus | null
+	status?: TaskStatusType | null
 	search?: string | null
 	assigneeId?: string | null
 	dueDate?: string | null

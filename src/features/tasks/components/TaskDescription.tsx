@@ -5,11 +5,11 @@ import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { useUpdateTask } from "../api/useUpdateTask"
 import { DottedSeparator } from "@/components/DottedSeparator"
-import { TTask } from "@/features/types"
+import { ITask } from "@/features/types"
 import { useDictionary } from "@/context/DictionaryProvider"
 
 interface TaskDescriptionProps {
-	task: TTask
+	task: ITask
 }
 
 const TaskDescription = ({ task }: TaskDescriptionProps) => {
@@ -24,7 +24,7 @@ const TaskDescription = ({ task }: TaskDescriptionProps) => {
 		mutate(
 			{
 				json: { description: value },
-				param: { taskId: task.$id },
+				param: { taskId: task._id },
 			},
 			{
 				onSuccess: () => {

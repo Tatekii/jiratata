@@ -2,7 +2,6 @@ import mongoose from 'mongoose';
 
 /**
  * MongoDB 连接管理
- * 用于替换原有的 AppWrite 数据存储方式
  */
 
 // 防止开发环境中重复连接的警告

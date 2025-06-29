@@ -2,7 +2,8 @@
  * Members schema定义，用于数据验证
  */
 import { z } from "zod"
-import { EMemberRole } from "@/models"
+import { EMemberRole } from "../types"
+
 
 // 更新成员角色的schema
 export const updateMemberRoleSchema = z.object({

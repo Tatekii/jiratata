@@ -1,4 +1,3 @@
-"use server"
 /**
  * MongoDB版本的项目服务
  */
@@ -9,11 +8,10 @@ import { authSessionMiddleware } from "@/lib/hono-middleware"
 import { localeMiddleware, localeValidatorMiddleware } from "@/app/api/[[...route]]/middlewares"
 import { buildCreateProjectSchema, buildUpdateProjectSchema } from "../schema"
 import { AppVariables } from "@/app/api/[[...route]]/route"
-import { isMemberOfWorkspace } from "@/features/members/utils-mongodb"
+import { isMemberOfWorkspace } from "@/features/members/utils"
 import {
   getWorkspaceProjects,
   createProject,
-  getProjectById,
   updateProject,
   deleteProject,
   getProjectAnalytics,
@@ -76,22 +74,13 @@ const app = new Hono<{ Variables: AppVariables }>()
         return c.json({ error: "Unauthorized" }, 401)
       }
 
-      const projects = await getWorkspaceProjects(workspaceId)
+      const projects = await getWorkspaceProjects(workspaceId) ||[]
 
-      // 格式化返回数据，保持与原API兼容
-      const formattedProjects = projects.map(project => ({
-        $id: project._id,
-        name: project.name,
-        imageUrl: project.imageUrl,
-        workspaceId: project.workspaceId,
-        $createdAt: project.createdAt,
-        $updatedAt: project.updatedAt
-      }))
-
+      // 直接返回MongoDB格式的数据
       return c.json({ 
         data: { 
-          documents: formattedProjects, 
-          total: formattedProjects.length 
+          documents: projects, 
+          total: projects.length 
         } 
       })
     } catch (error) {
@@ -125,7 +114,7 @@ const app = new Hono<{ Variables: AppVariables }>()
       }
       // TODO: 实现文件上传逻辑
 
-      const updates: any = {}
+      const updates: { name?: string; imageUrl?: string } = {}
       if (name) updates.name = name
       if (uploadedImageUrl !== undefined) updates.imageUrl = uploadedImageUrl
 
@@ -160,7 +149,7 @@ const app = new Hono<{ Variables: AppVariables }>()
 
       await deleteProject(projectId)
 
-      return c.json({ data: { $id: projectId } })
+      return c.json({ data: { _id: projectId } })
     } catch (error) {
       console.error('删除项目失败:', error)
       return c.json({ error: "删除项目失败" }, 500)

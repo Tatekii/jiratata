@@ -13,7 +13,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useUpdateTask } from "../api/useUpdateTask"
 import { buildCreateTaskSchema } from "../schemas"
 import { useDictionary } from "@/context/DictionaryProvider"
-import { ETaskStatus, TTask } from "@/features/types"
+import { ETaskStatus, ITask } from "@/features/types"
 import { DottedSeparator } from "@/components/DottedSeparator"
 import DatePicker from "@/components/DatePicker"
 import MemberAvatar from "@/features/members/components/MemberAvatar"
@@ -23,7 +23,7 @@ interface EditTaskFormProps {
 	onCancel?: () => void
 	projectOptions: { id: string; name: string; imageUrl: string }[]
 	memberOptions: { id: string; name: string }[]
-	initialValues: TTask
+	initialValues: ITask
 }
 
 export const EditTaskForm = ({ onCancel, projectOptions, memberOptions, initialValues }: EditTaskFormProps) => {
@@ -42,7 +42,7 @@ export const EditTaskForm = ({ onCancel, projectOptions, memberOptions, initialV
 
 	const onSubmit = (values: z.infer<typeof createTaskSchema>) => {
 		mutate(
-			{ json: values, param: { taskId: initialValues.$id } },
+			{ json: values, param: { taskId: initialValues._id } },
 			{
 				onSuccess: () => {
 					form.reset()

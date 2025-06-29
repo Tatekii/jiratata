@@ -14,14 +14,14 @@ import { DottedSeparator } from "@/components/DottedSeparator"
 import { useUpdateProject } from "../api/useUpdateProject"
 import { buildUpdateProjectSchema } from "../schema"
 import useDeleteProject from "../api/useDeleteProject"
-import { TProject } from "@/features/types"
+import { IProject } from "@/features/types"
 import useConfirm from "@/hooks/useConfirm"
 import { useDictionary } from "@/context/DictionaryProvider"
 import CommonNameImageForm from "@/components/CommonNameImageForm"
 
 interface EditProjectFormProps {
 	onCancel?: () => void
-	initialValues: TProject
+	initialValues: IProject
 }
 
 export const EditProjectForm = ({ onCancel, initialValues }: EditProjectFormProps) => {
@@ -51,7 +51,7 @@ export const EditProjectForm = ({ onCancel, initialValues }: EditProjectFormProp
 
 		deleteProject(
 			{
-				param: { projectId: initialValues.$id },
+				param: { projectId: initialValues._id },
 			},
 			{
 				onSuccess: () => {
@@ -69,7 +69,7 @@ export const EditProjectForm = ({ onCancel, initialValues }: EditProjectFormProp
 
 		mutate({
 			form: finalValues,
-			param: { projectId: initialValues.$id },
+			param: { projectId: initialValues._id },
 		})
 	}
 
@@ -86,7 +86,7 @@ export const EditProjectForm = ({ onCancel, initialValues }: EditProjectFormProp
 								? onCancel
 								: () =>
 										router.push(
-											`/workspaces/${initialValues.workspaceId}/projects/${initialValues.$id}`
+											`/workspaces/${initialValues.workspaceId}/projects/${initialValues._id}`
 										)
 						}
 					>

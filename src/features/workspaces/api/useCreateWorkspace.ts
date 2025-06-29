@@ -15,8 +15,9 @@ export const useCreateWorkspace = () => {
 	const dic = useDictionary()
 
 	const mutation = useMutation<ResponseSuccessType, ResponseFailType, RequestType>({
-		mutationFn: async ({ form }) => {
-			const response = await client.api.workspaces["$post"]({ form })
+		mutationFn: async ({ json }) => {
+
+			const response = await client.api.workspaces["$post"]({ json })
 
 			if (!response.ok) {
 				throw new Error(dic.workspaces.create.fail)

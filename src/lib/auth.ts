@@ -1,6 +1,6 @@
 import { NextRequest } from 'next/server';
 import * as jwt from 'jsonwebtoken';
-import { User, type IUser } from '@/models';
+import { User, type IMongoUser } from '@/models';
 import { connectToDatabase } from '@/lib/mongodb';
 
 // JWT 密钥和过期时间
@@ -25,7 +25,7 @@ export const verifyToken = (token: string): JWTPayload | null => {
 };
 
 // 注册新用户
-export const registerUser = async (userData: { name: string; email: string; password: string }): Promise<{ user: Partial<IUser>; token: string }> => {
+export const registerUser = async (userData: { name: string; email: string; password: string }): Promise<{ user: Partial<IMongoUser>; token: string }> => {
   await connectToDatabase();
 
   // 检查邮箱是否已存在
@@ -54,7 +54,7 @@ export const registerUser = async (userData: { name: string; email: string; pass
 };
 
 // 用户登录
-export const loginUser = async (credentials: { email: string; password: string }): Promise<{ user: Partial<IUser>; token: string }> => {
+export const loginUser = async (credentials: { email: string; password: string }): Promise<{ user: Partial<IMongoUser>; token: string }> => {
   await connectToDatabase();
 
   // 查找用户并包含密码字段
@@ -85,7 +85,7 @@ export const loginUser = async (credentials: { email: string; password: string }
 };
 
 // 从请求中获取当前用户
-export const getCurrentUser = async (request: NextRequest): Promise<Partial<IUser> | null> => {
+export const getCurrentUser = async (request: NextRequest): Promise<Partial<IMongoUser> | null> => {
   // 从 cookie 或 Authorization 头获取 token
   const token = request.cookies.get('token')?.value || request.headers.get('Authorization')?.replace('Bearer ', '');
 

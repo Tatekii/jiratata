@@ -29,7 +29,7 @@ const useDeleteTask = () => {
 			toast.success(dic.tasks.delete.success)
 
 			queryClient.invalidateQueries({ queryKey: ["tasks"] })
-			queryClient.invalidateQueries({ queryKey: ["task", data.$id] })
+			queryClient.invalidateQueries({ queryKey: ["task", data._id] })
 		},
 		onError: (err) => {
 			handleOnError(err, () => {

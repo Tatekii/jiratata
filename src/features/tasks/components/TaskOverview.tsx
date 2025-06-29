@@ -1,6 +1,6 @@
 import { PencilIcon } from "lucide-react"
 import useEditTaskModal from "../hooks/useEditTaskModal"
-import { TTask } from "@/features/types"
+import { ITask } from "@/features/types"
 import { Button } from "@/components/ui/button"
 import { useDictionary } from "@/context/DictionaryProvider"
 import { DottedSeparator } from "@/components/DottedSeparator"
@@ -10,7 +10,7 @@ import TaskDate from "./TaskDate"
 import MemberAvatar from "@/features/members/components/MemberAvatar"
 
 interface TaskOverviewProps {
-	task: TTask
+	task: ITask
 }
 
 const TaskOverview = ({ task }: TaskOverviewProps) => {
@@ -22,7 +22,7 @@ const TaskOverview = ({ task }: TaskOverviewProps) => {
 			<div className="bg-muted rounded-lg p-4">
 				<div className="flex items-center justify-between">
 					<p className="text-lg font-semibold">{dic.tasks.overview.title}</p>
-					<Button onClick={() => open(task.$id)} size="sm" variant="secondary">
+					<Button onClick={() => open(task._id)} size="sm" variant="secondary">
 						<PencilIcon className="size-4 mr-2" />
 						{dic.edit}
 					</Button>

@@ -1,25 +1,33 @@
 import "server-only"
-import { Query } from "node-appwrite"
-import { DATABASE_ID, MEMBERS_ID, WORKSPACES_ID } from "@/config"
-import { createSessionClient } from "@/lib/hono"
+import { connectToDatabase } from "@/lib/mongodb"
+import { Member, Workspace } from "@/models"
+import mongoose from "mongoose"
 
-export const getWorkspaces = async () => {
-	const { databases, account } = await createSessionClient()
+export const getWorkspaces = async (userId: string) => {
+	await connectToDatabase()
 
-	const user = await account.get()
-
-	const members = await databases.listDocuments(DATABASE_ID, MEMBERS_ID, [Query.equal("userId", user.$id)])
-
-	if (members.total === 0) {
+	// 验证用户ID格式
+	if (!mongoose.Types.ObjectId.isValid(userId)) {
 		return { documents: [], total: 0 }
 	}
 
-	const workspaceIds = members.documents.map((member) => member.workspaceId)
+	// 查找用户参与的所有成员关系
+	const members = await Member.find({ userId: new mongoose.Types.ObjectId(userId) })
 
-	const workspaces = await databases.listDocuments(DATABASE_ID, WORKSPACES_ID, [
-		Query.orderDesc("$createdAt"),
-		Query.contains("$id", workspaceIds),
-	])
+	if (members.length === 0) {
+		return { documents: [], total: 0 }
+	}
 
-	return workspaces
+	// 提取工作区ID
+	const workspaceIds = members.map((member) => member.workspaceId)
+
+	// 查找用户参与的所有工作区
+	const workspaces = await Workspace.find({
+		_id: { $in: workspaceIds }
+	}).sort({ createdAt: -1 })
+
+	return {
+		documents: workspaces,
+		total: workspaces.length
+	}
 }

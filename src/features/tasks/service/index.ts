@@ -1,4 +1,4 @@
-"use server"
+import "server-only"
 /**
  * MongoDB版本的任务服务
  */
@@ -7,20 +7,19 @@ import { Hono } from "hono"
 import { zValidator } from "@hono/zod-validator"
 import { authSessionMiddleware } from "@/lib/hono-middleware"
 import { localeMiddleware, localeValidatorMiddleware } from "@/app/api/[[...route]]/middlewares"
-import { buildCreateTaskSchema, buildUpdateTaskSchema, mapTaskStatus } from "../schemas"
+import { buildCreateTaskSchema, buildUpdateTaskSchema } from "../schemas"
 import { AppVariables } from "@/app/api/[[...route]]/route"
-import { ETaskStatus } from "@/models"
-import { isMemberOfWorkspace } from "@/features/members/utils-mongodb"
+import { isMemberOfWorkspace } from "@/features/members/utils"
 import {
   getTasks,
   createTask,
-  getTaskById,
   updateTask,
   deleteTask,
   bulkUpdateTaskPositions,
   checkTaskAccess
 } from "../utils"
 import mongoose from 'mongoose'
+import { ETaskStatus, TaskStatusType } from "@/features/types"
 
 const app = new Hono<{ Variables: AppVariables }>()
   // 删除任务
@@ -45,7 +44,7 @@ const app = new Hono<{ Variables: AppVariables }>()
         return c.json({ error: "任务不存在" }, 404)
       }
 
-      return c.json({ data: { $id: taskId } })
+      return c.json({ data: { _id: taskId } })
     } catch (error) {
       console.error('删除任务失败:', error)
       return c.json({ error: "删除任务失败" }, 500)
@@ -83,29 +82,13 @@ const app = new Hono<{ Variables: AppVariables }>()
         status: query.status || undefined,
         search: query.search || undefined,
         dueDate: query.dueDate || undefined,
-      })
+      }) || []
 
-      // 格式化返回数据，保持与原API兼容
-      const formattedTasks = tasks.map(task => ({
-        $id: task._id,
-        name: task.name,
-        description: task.description,
-        status: task.status,
-        workspaceId: task.workspaceId,
-        projectId: task.projectId,
-        assigneeId: task.assigneeId,
-        dueDate: task.dueDate,
-        position: task.position,
-        $createdAt: task.createdAt,
-        $updatedAt: task.updatedAt,
-        project: task.projectId,
-        assignee: task.assigneeId
-      }))
-
+      // 直接返回MongoDB格式的数据
       return c.json({ 
         data: { 
-          documents: formattedTasks, 
-          total: formattedTasks.length 
+          documents: tasks, 
+          total: tasks.length 
         } 
       })
     } catch (error) {
@@ -139,7 +122,7 @@ const app = new Hono<{ Variables: AppVariables }>()
         workspaceId,
         projectId,
         assigneeId,
-        status: mapTaskStatus(status),
+        status,
         dueDate: new Date(dueDate)
       })
 
@@ -168,7 +151,14 @@ const app = new Hono<{ Variables: AppVariables }>()
         return c.json({ error: "Unauthorized" }, 401)
       }
 
-      const updateData: any = {}
+      const updateData: {
+        name?: string;
+        description?: string;
+        status?: TaskStatusType;
+        assigneeId?: string;
+        projectId?: string;
+        dueDate?: Date;
+      } = {}
       if (updates.name !== undefined) updateData.name = updates.name
       if (updates.description !== undefined) updateData.description = updates.description
       if (updates.status !== undefined) updateData.status = updates.status
@@ -191,7 +181,7 @@ const app = new Hono<{ Variables: AppVariables }>()
   // 批量更新任务（用于拖拽排序）
   .post("/bulk-update", authSessionMiddleware, zValidator("json", z.object({
     tasks: z.array(z.object({
-      $id: z.string(),
+      _id: z.string(),
       status: z.nativeEnum(ETaskStatus),
       position: z.number(),
     }))
@@ -202,14 +192,14 @@ const app = new Hono<{ Variables: AppVariables }>()
 
       // 验证所有任务ID格式
       for (const task of tasks) {
-        if (!mongoose.Types.ObjectId.isValid(task.$id)) {
+        if (!mongoose.Types.ObjectId.isValid(task._id)) {
           return c.json({ error: "无效的任务ID格式" }, 400)
         }
       }
 
       // 检查用户对所有任务的权限（简化版本，实际应该优化批量检查）
       for (const task of tasks) {
-        const hasAccess = await checkTaskAccess(task.$id, user._id!.toString())
+        const hasAccess = await checkTaskAccess(task._id, user._id!.toString())
         if (!hasAccess) {
           return c.json({ error: "Unauthorized" }, 401)
         }

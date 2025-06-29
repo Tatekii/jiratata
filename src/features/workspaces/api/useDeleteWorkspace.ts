@@ -30,7 +30,7 @@ const useDeleteWorkspace = () => {
 			toast.success(dic.workspaces.delete.success)
 			router.replace("/")
 			queryClient.invalidateQueries({ queryKey: ["workspaces"] })
-			queryClient.invalidateQueries({ queryKey: ["workspace", data.$id] })
+			queryClient.invalidateQueries({ queryKey: ["workspace", data._id] })
 		},
 		onError: (err) => {
 			handleOnError(err, () => {

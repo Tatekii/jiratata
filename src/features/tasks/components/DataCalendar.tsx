@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button"
 
 import "react-big-calendar/lib/css/react-big-calendar.css"
 import "./data-calendar.css"
-import { TTask } from "@/features/types"
+import { ITask } from "@/features/types"
 import EventCard from "./EventCard"
 
 const locales = {
@@ -25,7 +25,7 @@ const localizer = dateFnsLocalizer({
 })
 
 interface DataCalendarProps {
-	data: TTask[]
+	data: ITask[]
 }
 
 interface CustomToolbarProps {
@@ -60,7 +60,7 @@ export const DataCalendar = ({ data }: DataCalendarProps) => {
 		project: task.project,
 		assignee: task.assignee,
 		status: task.status,
-		id: task.$id,
+		id: task._id,
 	}))
 
 	const handleNavigate = (action: "PREV" | "NEXT" | "TODAY") => {

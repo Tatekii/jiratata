@@ -1,24 +1,18 @@
 import React, { useCallback, useEffect, useState } from "react"
 import { DragDropContext, Droppable, Draggable, type DropResult } from "@hello-pangea/dnd"
-import { ETaskStatus, TTask } from "@/features/types"
+import { ETaskStatus, IClientTask, TaskStatusType } from "@/features/types"
 import KanbanColumnHeader from "./KanbanColumnHeader"
 import KanbanCard from "./KanbanCard"
 
-const boards: ETaskStatus[] = [
-	ETaskStatus.BACKLOG,
-	ETaskStatus.TODO,
-	ETaskStatus.IN_PROGRESS,
-	ETaskStatus.IN_REVIEW,
-	ETaskStatus.DONE,
-]
+const boards = Object.values(ETaskStatus)
 
 type TasksState = {
-	[key in ETaskStatus]: TTask[]
+	[key in TaskStatusType]: IClientTask[]
 }
 
 interface DataKanbanProps {
-	data: TTask[]
-	onChange: (tasks: { $id: string; status: ETaskStatus; position: number }[]) => void
+	data: IClientTask[]
+	onChange: (tasks: { _id: string; status: TaskStatusType; position: number }[]) => void
 }
 
 const DataKanban = ({ data, onChange }: DataKanbanProps) => {
@@ -36,7 +30,7 @@ const DataKanban = ({ data, onChange }: DataKanbanProps) => {
 		})
 
 		Object.keys(initialTasks).forEach((status) => {
-			initialTasks[status as ETaskStatus].sort((a, b) => a.position - b.position)
+			initialTasks[status as TaskStatusType].sort((a, b) => a.position - b.position)
 		})
 
 		return initialTasks
@@ -56,7 +50,7 @@ const DataKanban = ({ data, onChange }: DataKanbanProps) => {
 		})
 
 		Object.keys(newTasks).forEach((status) => {
-			newTasks[status as ETaskStatus].sort((a, b) => a.position - b.position)
+			newTasks[status as TaskStatusType].sort((a, b) => a.position - b.position)
 		})
 
 		setTasks(newTasks)
@@ -67,10 +61,10 @@ const DataKanban = ({ data, onChange }: DataKanbanProps) => {
 			if (!result.destination) return
 
 			const { source, destination } = result
-			const sourceStatus = source.droppableId as ETaskStatus
-			const destStatus = destination.droppableId as ETaskStatus
+			const sourceStatus = source.droppableId as TaskStatusType
+			const destStatus = destination.droppableId as TaskStatusType
 
-			let updatesPayload: { $id: string; status: ETaskStatus; position: number }[] = []
+			let updatesPayload: { _id: string; status: TaskStatusType; position: number }[] = []
 
 			setTasks((prevTasks) => {
 				const newTasks = { ...prevTasks }
@@ -101,18 +95,18 @@ const DataKanban = ({ data, onChange }: DataKanbanProps) => {
 
 				// 首先加入拖动项
 				updatesPayload.push({
-					$id: updatedMovedTask.$id,
+					_id: updatedMovedTask._id,
 					status: destStatus,
 					position: Math.min((destination.index + 1) * 1000, 1_000_000),
 				})
 
 				// 更新位置被往后挤的目标列中task
 				newTasks[destStatus].forEach((task, index) => {
-					if (task && task.$id !== updatedMovedTask.$id) {
+					if (task && task._id !== updatedMovedTask._id) {
 						const newPosition = Math.min((index + 1) * 1000, 1_000_000)
 						if (task.position !== newPosition) {
 							updatesPayload.push({
-								$id: task.$id,
+								_id: task._id,
 								status: destStatus,
 								position: newPosition,
 							})
@@ -127,7 +121,7 @@ const DataKanban = ({ data, onChange }: DataKanbanProps) => {
 							const newPosition = Math.min((index + 1) * 1000, 1_000_000)
 							if (task.position !== newPosition) {
 								updatesPayload.push({
-									$id: task.$id,
+									_id: task._id,
 									status: sourceStatus,
 									position: newPosition,
 								})
@@ -159,7 +153,7 @@ const DataKanban = ({ data, onChange }: DataKanbanProps) => {
 										className="min-h-[200px] py-1.5"
 									>
 										{tasks[board].map((task, index) => (
-											<Draggable key={task.$id} draggableId={task.$id} index={index}>
+											<Draggable key={task._id} draggableId={task._id} index={index}>
 												{(provided) => (
 													<div
 														ref={provided.innerRef}

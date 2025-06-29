@@ -6,14 +6,14 @@ import { ArrowUpDown, MoreVertical } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { snakeCaseToTitleCase } from "@/lib/utils"
-import { TTask } from "@/features/types"
+import { ITask } from "@/features/types"
 import ProjectAvatar from "@/features/projects/components/ProjectAvatar"
 import MemberAvatar from "@/features/members/components/MemberAvatar"
 import TaskDate from "./TaskDate"
 import TaskActions from "./TaskAction"
 import { TDictionary } from "@/context/DictionaryProvider"
 
-const TaskColumns: (dic: TDictionary) => ColumnDef<TTask>[] = (dic) => [
+const TaskColumns: (dic: TDictionary) => ColumnDef<ITask>[] = (dic) => [
 	{
 		accessorKey: "name",
 		header: ({ column }) => {
@@ -107,7 +107,7 @@ const TaskColumns: (dic: TDictionary) => ColumnDef<TTask>[] = (dic) => [
 	{
 		id: "actions",
 		cell: ({ row }) => {
-			const id = row.original.$id
+			const id = row.original._id
 			const projectId = row.original.projectId
 
 			return (

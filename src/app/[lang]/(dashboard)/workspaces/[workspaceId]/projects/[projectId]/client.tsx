@@ -40,7 +40,7 @@ const ProjectIdClient = () => {
 				</div>
 				<div>
 					<Button variant="secondary" size="sm" asChild>
-						<Link href={`/workspaces/${project.workspaceId}/projects/${project.$id}/settings`}>
+						<Link href={`/workspaces/${project.workspaceId}/projects/${project._id}/settings`}>
 							<BoltIcon className="size-4 mr-2" />
 							{dic.settings}
 						</Link>

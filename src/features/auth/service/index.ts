@@ -1,4 +1,4 @@
-"use server"
+import "server-only"
 import { Hono } from "hono"
 import { localeMiddleware, localeValidatorMiddleware } from "@/app/api/[[...route]]/middlewares"
 import { buildLoginSchema, buildRegisterSchema } from "../schema"

@@ -4,25 +4,15 @@
 
 import bcrypt from "bcrypt"
 import mongoose from "mongoose"
+import { EMemberRole, ETaskStatus } from "../src/features/types"
 
 // 导入现有的模型定义，避免重复定义schema
-import { 
-  User, 
-  Workspace, 
-  Member, 
-  Project, 
-  Task,
-  type IUser,
-  type IMember,
-  EMemberRole,
-  ETaskStatus
-} from "../src/models"
+import { User, Workspace, Member, Project, Task, type IMongoUser, type IMongoMember } from "../src/models"
 
 // 生成随机邀请码
 export function generateInviteCode(): string {
 	return Math.random().toString(36).substring(2, 10).toUpperCase()
 }
-
 
 // 连接URL
 const url = "mongodb://localhost:27017/jiratata_dev"
@@ -184,11 +174,11 @@ async function seedMongoDB(): Promise<void> {
 		console.log("\n数据验证:")
 
 		// 查询李四的所有任务
-		const lisiUser = users[1] as IUser
+		const lisiUser = users[1] as IMongoUser
 		const lisiMember = (await Member.findOne({
 			userId: lisiUser._id,
 			workspaceId: workspaces[0]._id,
-		})) as IMember
+		})) as IMongoMember
 
 		const lisiTasks = await Task.find({ assigneeId: lisiMember._id })
 			.populate("projectId", "name")

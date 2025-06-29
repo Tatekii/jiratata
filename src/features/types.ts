@@ -1,52 +1,58 @@
-/**
- * 统一类型定义 - 从Models派生前端类型
- * 替代重复的类型定义，统一从MongoDB模型派生
- */
-import { 
-  IUser, 
-  IWorkspace, 
-  IMember, 
-  IProject, 
-  ITask, 
-  EMemberRole, 
-  ETaskStatus 
-} from '@/models';
+export const EMemberRole = {
+	ADMIN: "ADMIN",
+	MEMBER: "MEMBER",
+	GUEST: "GUEST",
+} as const // 任务状态枚举
 
-// 基础文档接口（兼容AppWrite格式，用于前端显示）
-export interface BaseDocument {
-  $id: string;
-  $createdAt: string;
-  $updatedAt: string;
+export const ETaskStatus = {
+	BACKLOG: "BACKLOG",
+	TODO: "TODO",
+	IN_PROGRESS: "IN_PROGRESS",
+	IN_REVIEW: "IN_REVIEW",
+	DONE: "DONE",
+} as const
+
+export type MemberRoleType = (typeof EMemberRole)[keyof typeof EMemberRole]
+export type TaskStatusType = (typeof ETaskStatus)[keyof typeof ETaskStatus]
+
+interface IClientBase {
+	_id: string
+	createdAt: Date
+	updatedAt: Date
 }
 
-// MongoDB文档转换为前端格式的工具类型
-type MongoToFrontend<T> = Omit<T, '_id' | 'createdAt' | 'updatedAt'> & BaseDocument;
+export interface IClientUser extends IClientBase {
+	name: string
+	email: string
+	password: string
+}
 
-// 重新导出枚举，保持向后兼容
-export { EMemberRole as EMemberRole, ETaskStatus as ETaskStatus };
+export interface IClientMember extends IClientBase {
+	workspaceId: string
+	userId: string
+	role: MemberRoleType
+}
 
-// 从MongoDB模型派生的前端类型
-export type TUser = MongoToFrontend<Pick<IUser, 'name' | 'email'>> & {
-  _id?: string; // MongoDB原始ID，供API使用
-};
+export interface IClientWorkspace extends IClientBase {
+	name: string
+	imageUrl?: string
+	inviteCode: string
+	userId: string
+}
 
-export type TWorkspace = MongoToFrontend<Pick<IWorkspace, 'name' | 'imageUrl' | 'inviteCode' | 'userId'>> & {
-  _id?: string;
-};
+export interface IClientProject extends IClientBase {
+	name: string
+	imageUrl?: string
+	workspaceId: string
+}
 
-export type TMember = MongoToFrontend<Pick<IMember, 'workspaceId' | 'userId' | 'role'>> & {
-  _id?: string;
-  name?: string;
-  email?: string;
-  user?: TUser; // 关联用户信息
-};
-
-export type TProject = MongoToFrontend<Pick<IProject, 'name' | 'imageUrl' | 'workspaceId'>> & {
-  _id?: string;
-};
-
-export type TTask = MongoToFrontend<Pick<ITask, 'name' | 'description' | 'workspaceId' | 'projectId' | 'assigneeId' | 'status' | 'position' | 'dueDate'>> & {
-  _id?: string;
-  project?: TProject;
-  assignee?: TMember;
-};
+export interface IClientTask extends IClientBase {
+	name: string
+	status: TaskStatusType
+	workspaceId: string
+	assigneeId: string
+	projectId: string
+	position: number
+	dueDate: Date
+	description?: string
+}

@@ -1,5 +1,7 @@
+import "server-only"
 import mongoose from 'mongoose';
 
+// TODO
 // 文件模型接口
 export interface IFile extends mongoose.Document {
   filename: string;

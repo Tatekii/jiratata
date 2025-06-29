@@ -9,11 +9,11 @@ import memberService from "@/features/members/service"
 import projectService from "@/features/projects/service"
 import taskService from "@/features/tasks/service"
 import { TDictionary } from "@/context/DictionaryProvider"
-import { IUser } from "@/models"
+import { IMongoUser } from "@/models"
 
 export type AppVariables = {
 	dic: TDictionary
-	user: Partial<IUser> // 替代AppWrite的用户类型
+	user: IMongoUser
 }
 
 const app = new Hono<{ Variables: AppVariables }>().basePath("/api")

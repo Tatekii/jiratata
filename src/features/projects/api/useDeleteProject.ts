@@ -28,7 +28,7 @@ const useDeleteProject = () => {
 			toast.success(dic.projects.delete.success)
 
 			queryClient.invalidateQueries({ queryKey: ["projects"] })
-			queryClient.invalidateQueries({ queryKey: ["project", data.$id] })
+			queryClient.invalidateQueries({ queryKey: ["project", data._id] })
 		},
 		onError: (err) => {
 			handleOnError(err, () => {

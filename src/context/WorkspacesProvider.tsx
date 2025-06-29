@@ -1,7 +1,6 @@
 // MongoDB版本，移除AppWrite依赖
-// import { Models } from "node-appwrite"
 import { FC, PropsWithChildren, useContext, createContext } from "react"
-import { TWorkspace } from "@/features/types"
+import { IWorkspace } from "@/features/types"
 
 // 兼容的文档列表类型
 interface DocumentList<T> {
@@ -10,10 +9,10 @@ interface DocumentList<T> {
 }
 
 interface IProps extends PropsWithChildren {
-	workspaces: DocumentList<TWorkspace>
+	workspaces: DocumentList<IWorkspace>
 }
 
-const WorkspaceContext = createContext<DocumentList<TWorkspace>>({ total: 0, documents: [] })
+const WorkspaceContext = createContext<DocumentList<IWorkspace>>({ total: 0, documents: [] })
 
 const WorkspacesProvider: FC<IProps> = ({ workspaces, children }) => {
 	return <WorkspaceContext.Provider value={workspaces}>{children}</WorkspaceContext.Provider>

@@ -56,7 +56,7 @@ const TaskViewSwitcher = ({ hideProjectFilter }: TaskViewSwitcherProps) => {
 	const { mutate: bulkUpdate } = useBulkUpdateTasks()
 
 	const onKanbanChange = useCallback(
-		(tasks: { $id: string; status: ETaskStatus; position: number }[]) => {
+		(tasks: { _id: string; status: ETaskStatus; position: number }[]) => {
 			bulkUpdate({
 				json: { tasks },
 			})

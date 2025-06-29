@@ -8,4 +8,5 @@ export const authGuard = async (redirectTo = "/signin") => {
 	"use server"
 	const user = await getCurrent()
 	if (!user) redirect(redirectTo)
+	return user
 }

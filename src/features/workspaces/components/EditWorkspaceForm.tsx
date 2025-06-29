@@ -11,7 +11,7 @@ import useConfirm from "@/hooks/useConfirm"
 import { DottedSeparator } from "@/components/DottedSeparator"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 
-import { EMemberRole, TWorkspace } from "@/features/types"
+import { EMemberRole, MemberRoleType } from "@/features/types"
 import { buildUpdateWorkspaceSchema } from "../schema"
 import { useDictionary } from "@/context/DictionaryProvider"
 import { useMemo, useState } from "react"
@@ -21,10 +21,11 @@ import { Input } from "@/components/ui/input"
 import { toast } from "sonner"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import CommonNameImageForm from "@/components/CommonNameImageForm"
+import { IMongoWorkspace } from "@/models"
 
 interface EditWorkspaceFormProps {
 	onCancel?: () => void
-	initialValues: TWorkspace
+	initialValues: IMongoWorkspace
 }
 
 const EditWorkspaceForm = ({ onCancel, initialValues }: EditWorkspaceFormProps) => {
@@ -51,7 +52,7 @@ const EditWorkspaceForm = ({ onCancel, initialValues }: EditWorkspaceFormProps) 
 	//     "destructive",
 	//   );
 
-	const [inviteRole, setInviteRole] = useState<EMemberRole>(EMemberRole.MEMBER)
+	const [inviteRole, setInviteRole] = useState<MemberRoleType>(EMemberRole.MEMBER)
 
 	const form = useForm<z.infer<typeof updateWorkspaceSchema>>({
 		resolver: zodResolver(updateWorkspaceSchema),
@@ -68,7 +69,7 @@ const EditWorkspaceForm = ({ onCancel, initialValues }: EditWorkspaceFormProps) 
 
 		deleteWorkspace(
 			{
-				param: { workspaceId: initialValues.$id },
+				param: { workspaceId: initialValues._id },
 			},
 			{
 				onSuccess: () => {
@@ -84,7 +85,7 @@ const EditWorkspaceForm = ({ onCancel, initialValues }: EditWorkspaceFormProps) 
 	// if (!ok) return;
 
 	// resetInviteCode({
-	//   param: { workspaceId: initialValues.$id },
+	//   param: { workspaceId: initialValues._id },
 	// });
 	//   };
 
@@ -96,8 +97,8 @@ const EditWorkspaceForm = ({ onCancel, initialValues }: EditWorkspaceFormProps) 
 
 		updateWorkspace(
 			{
-				form: finalValues,
-				param: { workspaceId: initialValues.$id },
+				json: finalValues,
+				param: { workspaceId: initialValues._id },
 			},
 			{
 				onError: (err) => {
@@ -107,7 +108,7 @@ const EditWorkspaceForm = ({ onCancel, initialValues }: EditWorkspaceFormProps) 
 		)
 	}
 
-	const fullInviteLink = `${window.location.origin}/workspaces/${initialValues.$id}/join/${initialValues.inviteCode}?role=${inviteRole}`
+	const fullInviteLink = `${window.location.origin}/workspaces/${initialValues._id}/join/${initialValues.inviteCode}?role=${inviteRole}`
 
 	const handleCopyInviteLink = () => {
 		navigator.clipboard.writeText(fullInviteLink).then(() => toast.success("Invite link copied to clipboard"))
@@ -122,7 +123,7 @@ const EditWorkspaceForm = ({ onCancel, initialValues }: EditWorkspaceFormProps) 
 					<Button
 						size="sm"
 						variant="secondary"
-						onClick={onCancel ? onCancel : () => router.push(`/workspaces/${initialValues.$id}`)}
+						onClick={onCancel ? onCancel : () => router.push(`/workspaces/${initialValues._id}`)}
 					>
 						<ArrowLeftIcon className="size-4 mr-2" />
 						{dic.back}
@@ -159,7 +160,7 @@ const EditWorkspaceForm = ({ onCancel, initialValues }: EditWorkspaceFormProps) 
 
 								<Select
 									value={inviteRole}
-									onValueChange={(role: EMemberRole) => {
+									onValueChange={(role: MemberRoleType) => {
 										setInviteRole(role)
 									}}
 								>

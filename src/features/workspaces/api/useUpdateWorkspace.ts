@@ -28,7 +28,7 @@ const useUpdateWorkspace = () => {
 			toast.success(dic.workspaces.update.success)
 
 			queryClient.invalidateQueries({ queryKey: ["workspaces"] })
-			queryClient.invalidateQueries({ queryKey: ["workspace", data.$id] })
+			queryClient.invalidateQueries({ queryKey: ["workspace", data._id] })
 		},
 		onError: (err) => {
 			handleOnError(err, () => {

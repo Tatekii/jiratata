@@ -10,7 +10,7 @@ import useGetMembers from "@/features/members/api/useGetMembers"
 import MemberAvatar from "@/features/members/components/MemberAvatar"
 import useWorkspaceId from "@/features/workspaces/hooks/useWorkspaceId"
 import { Button } from "@/components/ui/button"
-import { TMember, TProject, TTask } from "@/features/types"
+
 import { useDictionary } from "@/context/DictionaryProvider"
 import useGetTasks from "@/features/tasks/api/useGetTasks"
 import useGetProjects from "@/features/projects/api/useGetProjects"
@@ -20,6 +20,7 @@ import { formatDistanceToNow } from "date-fns"
 import useCreateProjectModal from "@/features/projects/hooks/useCreateProjectModal"
 import ProjectAvatar from "@/features/projects/components/ProjectAvatar"
 import Analytics from "@/components/Analystics"
+import { IClientMember } from "@/features/types"
 
 const WorkspaceIdClient = () => {
 	const workspaceId = useWorkspaceId()
@@ -53,7 +54,7 @@ const WorkspaceIdClient = () => {
 }
 
 interface MembersListProps {
-	data: TMember[]
+	data: IClientMember[]
 	total: number
 }
 
@@ -77,7 +78,7 @@ export const MembersList = ({ data, total }: MembersListProps) => {
 				<DottedSeparator className="my-4" />
 				<ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
 					{data.map((member) => (
-						<li key={member.$id}>
+						<li key={member._id}>
 							<Card className="shadow-none rounded-lg overflow-hidden">
 								<CardContent className="p-3 flex flex-col items-center gap-x-2">
 									<MemberAvatar className="size-12" name={member.name} />
@@ -101,7 +102,7 @@ export const MembersList = ({ data, total }: MembersListProps) => {
 export default WorkspaceIdClient
 
 interface TaskListProps {
-	data: TTask[]
+	data: ITask[]
 	total: number
 }
 
@@ -124,8 +125,8 @@ export const TaskList = ({ data, total }: TaskListProps) => {
 				<DottedSeparator className="my-4" />
 				<ul className="flex flex-col gap-y-4">
 					{data.map((task) => (
-						<li key={task.$id}>
-							<Link href={`/workspaces/${workspaceId}/tasks/${task.$id}`}>
+						<li key={task._id}>
+							<Link href={`/workspaces/${workspaceId}/tasks/${task._id}`}>
 								<Card className="shadow-none rounded-lg hover:opacity-75 transition">
 									<CardContent className="p-4">
 										<p className="text-lg font-medium truncate">{task.name}</p>
@@ -157,7 +158,7 @@ export const TaskList = ({ data, total }: TaskListProps) => {
 }
 
 interface ProjectListProps {
-	data: TProject[]
+	data: IProject[]
 	total: number
 }
 
@@ -180,8 +181,8 @@ export const ProjectList = ({ data, total }: ProjectListProps) => {
 				<DottedSeparator className="my-4" />
 				<ul className="grid grid-cols-1 lg:grid-cols-2 gap-4">
 					{data.map((project) => (
-						<li key={project.$id}>
-							<Link href={`/workspaces/${workspaceId}/projects/${project.$id}`}>
+						<li key={project._id}>
+							<Link href={`/workspaces/${workspaceId}/projects/${project._id}`}>
 								<Card className="shadow-none rounded-lg hover:opacity-75 transition">
 									<CardContent className="p-4 flex items-center gap-x-2.5">
 										<ProjectAvatar

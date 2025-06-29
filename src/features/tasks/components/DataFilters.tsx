@@ -25,12 +25,12 @@ const DataFilters = ({ hideProjectFilter, disabled = false }: DataFiltersProps) 
 	const isLoading = isLoadingProjects || isLoadingMembers
 
 	const projectOptions = projects?.documents.map((project) => ({
-		value: project.$id,
+		value: project._id,
 		label: project.name,
 	}))
 
 	const memberOptions = members?.documents.map((member) => ({
-		value: member.$id,
+		value: member._id,
 		label: member.name,
 	}))
 

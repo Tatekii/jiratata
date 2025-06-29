@@ -1,30 +1,15 @@
 "use server"
-
 import { redirect } from "next/navigation"
-import { headers } from "next/headers"
-import { OAuthProvider } from "node-appwrite"
-import { createAdminClient } from "./hono"
 
+// 暂时禁用 OAuth 功能，直到实现 MongoDB 版本
 export async function signUpWithGithub() {
-	const { account } = await createAdminClient()
-
-	const headerStore = await headers()
-
-	const origin = headerStore.get("origin")
-
-	const redirectUrl = await account.createOAuth2Token(OAuthProvider.Github, `${origin}/oauth`, `${origin}/signup`)
-
-	return redirect(redirectUrl)
+  // TODO: 实现基于 MongoDB 的 GitHub OAuth
+  console.log("GitHub OAuth 尚未实现")
+  return redirect("/signup?error=oauth_not_implemented")
 }
 
 export async function signUpWithGoogle() {
-	const { account } = await createAdminClient()
-
-	const headerStore = await headers()
-
-	const origin = headerStore.get("origin")
-
-	const redirectUrl = await account.createOAuth2Token(OAuthProvider.Google, `${origin}/oauth`, `${origin}/signup`)
-
-	return redirect(redirectUrl)
+  // TODO: 实现基于 MongoDB 的 Google OAuth  
+  console.log("Google OAuth 尚未实现")
+  return redirect("/signup?error=oauth_not_implemented")
 }

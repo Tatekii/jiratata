@@ -2,15 +2,15 @@ import React from "react"
 import { useRouter } from "next/navigation"
 
 import { cn } from "@/lib/utils"
-import { ETaskStatus, TMember, TProject } from "@/features/types"
+import { ETaskStatus, IMember, IProject } from "@/features/types"
 import useWorkspaceId from "@/features/workspaces/hooks/useWorkspaceId"
 import MemberAvatar from "@/features/members/components/MemberAvatar"
 import ProjectAvatar from "@/features/projects/components/ProjectAvatar"
 
 interface EventCardProps {
 	title: string
-	assignee: TMember
-	project: TProject
+	assignee: IMember
+	project: IProject
 	status: ETaskStatus
 	id: string
 }
