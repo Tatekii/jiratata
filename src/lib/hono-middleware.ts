@@ -1,9 +1,9 @@
 /**
- * middleware for hono client ONLY - 更新为MongoDB认证
+ * middleware for hono client ONLY - 使用新的数据库支持的token系统
  */
 import { createMiddleware } from "hono/factory"
 import { getCookie } from "hono/cookie"
-import { verifyToken } from "@/lib/auth-tokens"
+import { verifyAccessToken } from "@/lib/hono-jwt"
 import { User } from "@/models"
 import { connectToDatabase } from "@/lib/mongodb"
 import { AUTH_TOKEN } from "@/features/auth/constants"
@@ -17,8 +17,8 @@ export const authSessionMiddleware = createMiddleware(async (c, next) => {
 			return c.json({ error: "Unauthorized" }, 401)
 		}
 
-		// 验证JWT token
-		const decoded = verifyToken(token)
+		// 使用新的token服务验证JWT token
+		const decoded = await verifyAccessToken(token)
 		if (!decoded) {
 			return c.json({ error: "Invalid token" }, 401)
 		}

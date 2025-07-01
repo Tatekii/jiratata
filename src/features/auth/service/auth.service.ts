@@ -6,27 +6,16 @@ import { AppVariables } from "@/app/api/[[...route]]/route"
 import { authSessionMiddleware } from "@/lib/hono-middleware"
 import { setCookie, deleteCookie, getCookie } from "hono/cookie"
 import { AUTH_TOKEN, REFRESH_TOKEN } from "../constants"
-import { loginUser, registerUser, refreshAccessToken } from "@/lib/auth-tokens"
-import { JWT_EXPIRES_IN, JWT_REFRESH_EXPIRES_IN } from "@/config"
-
-// 将JWT时间字符串转换为秒数
-const parseJwtExpiry = (expiry: string): number => {
-	const match = expiry.match(/^(\d+)([dhms])$/)
-	if (!match) return 60 * 60 * 24 * 7 // 默认7天
-	
-	const [, num, unit] = match
-	const value = parseInt(num)
-	
-	switch (unit) {
-		case 's': return value
-		case 'm': return value * 60
-		case 'h': return value * 60 * 60
-		case 'd': return value * 60 * 60 * 24
-		default: return 60 * 60 * 24 * 7
-	}
-}
+import { 
+  loginUser, 
+  registerUser, 
+  refreshTokenPair,
+  revokeAllUserTokens
+} from "@/lib/hono-jwt"
+import sessionsService from "./sessions.service"
 
 const app = new Hono<{ Variables: AppVariables }>()
+	.route("/", sessionsService)
 	.get("/current", authSessionMiddleware, async (c) => {
 		const user = c.get("user")
 		return c.json({ data: user })
@@ -35,24 +24,28 @@ const app = new Hono<{ Variables: AppVariables }>()
 		const { email, password } = c.req.valid("json")
 
 		try {
-			const { user, token, refreshToken } = await loginUser({ email, password })
+			// 获取客户端信息用于token生成
+			const ipAddress = c.req.header('x-forwarded-for') || c.req.header('x-real-ip')
+			const userAgent = c.req.header('user-agent')
+			
+			const { user, tokens } = await loginUser({ email, password }, ipAddress, userAgent)
 
 			// 设置Access Token Cookie
-			setCookie(c, AUTH_TOKEN, token, {
+			setCookie(c, AUTH_TOKEN, tokens.accessToken, {
 				path: "/",
 				httpOnly: true,
 				secure: true,
 				sameSite: "strict",
-				maxAge: parseJwtExpiry(JWT_EXPIRES_IN),
+				maxAge: tokens.expiresIn,
 			})
 
 			// 设置Refresh Token Cookie
-			setCookie(c, REFRESH_TOKEN, refreshToken, {
+			setCookie(c, REFRESH_TOKEN, tokens.refreshToken, {
 				path: "/",
 				httpOnly: true,
 				secure: true,
 				sameSite: "strict",
-				maxAge: parseJwtExpiry(JWT_REFRESH_EXPIRES_IN),
+				maxAge: tokens.refreshExpiresIn,
 			})
 
 			return c.json({ success: true, data: user })
@@ -65,24 +58,28 @@ const app = new Hono<{ Variables: AppVariables }>()
 		const { email, password, name } = c.req.valid("json")
 
 		try {
-			const { user, token, refreshToken } = await registerUser({ email, password, name })
+			// 获取客户端信息用于token生成
+			const ipAddress = c.req.header('x-forwarded-for') || c.req.header('x-real-ip')
+			const userAgent = c.req.header('user-agent')
+			
+			const { user, tokens } = await registerUser({ email, password, name }, ipAddress, userAgent)
 
 			// 设置Access Token Cookie
-			setCookie(c, AUTH_TOKEN, token, {
+			setCookie(c, AUTH_TOKEN, tokens.accessToken, {
 				path: "/",
 				httpOnly: true,
 				secure: true,
 				sameSite: "strict",
-				maxAge: parseJwtExpiry(JWT_EXPIRES_IN),
+				maxAge: tokens.expiresIn,
 			})
 
 			// 设置Refresh Token Cookie
-			setCookie(c, REFRESH_TOKEN, refreshToken, {
+			setCookie(c, REFRESH_TOKEN, tokens.refreshToken, {
 				path: "/",
 				httpOnly: true,
 				secure: true,
 				sameSite: "strict",
-				maxAge: parseJwtExpiry(JWT_REFRESH_EXPIRES_IN),
+				maxAge: tokens.refreshExpiresIn,
 			})
 
 			return c.json({ success: true, data: user })
@@ -99,28 +96,32 @@ const app = new Hono<{ Variables: AppVariables }>()
 				return c.json({ error: "Refresh token not found" }, 401)
 			}
 
-			const result = await refreshAccessToken(refreshToken)
+			// 获取客户端信息
+			const ipAddress = c.req.header('x-forwarded-for') || c.req.header('x-real-ip')
+			const userAgent = c.req.header('user-agent')
+
+			const tokens = await refreshTokenPair(refreshToken, ipAddress, userAgent)
 			
-			if (!result) {
+			if (!tokens) {
 				return c.json({ error: "Invalid refresh token" }, 401)
 			}
 
 			// 设置新的Access Token Cookie
-			setCookie(c, AUTH_TOKEN, result.token, {
+			setCookie(c, AUTH_TOKEN, tokens.accessToken, {
 				path: "/",
 				httpOnly: true,
 				secure: true,
 				sameSite: "strict",
-				maxAge: parseJwtExpiry(JWT_EXPIRES_IN),
+				maxAge: tokens.expiresIn,
 			})
 
 			// 设置新的Refresh Token Cookie
-			setCookie(c, REFRESH_TOKEN, result.refreshToken, {
+			setCookie(c, REFRESH_TOKEN, tokens.refreshToken, {
 				path: "/",
 				httpOnly: true,
 				secure: true,
 				sameSite: "strict",
-				maxAge: parseJwtExpiry(JWT_REFRESH_EXPIRES_IN),
+				maxAge: tokens.refreshExpiresIn,
 			})
 
 			return c.json({ success: true })
@@ -130,10 +131,25 @@ const app = new Hono<{ Variables: AppVariables }>()
 		}
 	})
 	.post("/logout", authSessionMiddleware, async (c) => {
-		// 清除Access Token和Refresh Token
-		deleteCookie(c, AUTH_TOKEN)
-		deleteCookie(c, REFRESH_TOKEN)
-		return c.json({ success: true })
+		try {
+			const user = c.get("user")
+			
+			// 从数据库撤销用户的所有token
+			await revokeAllUserTokens(user._id.toString(), 'user_logout')
+			
+			// 清除cookie
+			deleteCookie(c, AUTH_TOKEN)
+			deleteCookie(c, REFRESH_TOKEN)
+			
+			return c.json({ success: true })
+		} catch (error) {
+			// 即使撤销失败，也要清除cookie
+			deleteCookie(c, AUTH_TOKEN)
+			deleteCookie(c, REFRESH_TOKEN)
+			
+			const errorMessage = error instanceof Error ? error.message : "Logout failed"
+			return c.json({ error: errorMessage }, 500)
+		}
 	})
 
 export default app

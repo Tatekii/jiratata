@@ -10,8 +10,8 @@ const mockVerifyToken = vi.fn()
 const mockUserFindById = vi.fn()
 const mockConnectToDatabase = vi.fn()
 
-vi.mock('@/lib/auth', () => ({
-  verifyToken: mockVerifyToken,
+vi.mock('@/lib/hono-jwt', () => ({
+  verifyAccessToken: mockVerifyToken,
 }))
 
 vi.mock('@/models', () => ({

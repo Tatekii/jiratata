@@ -7,7 +7,7 @@ import { describe, it, expect, beforeEach, vi } from "vitest"
 import { testClient } from "hono/testing"
 import { Hono } from "hono"
 import authApp from "@/features/auth/service/auth.service"
-import * as authLib from "@/lib/auth-tokens"
+import * as authLib from "@/lib/hono-jwt"
 import { connectToDatabase } from "@/lib/mongodb"
 
 // Mock外部依赖

@@ -1,6 +1,6 @@
 import "server-only"
 import { cookies } from "next/headers"
-import { verifyToken } from "@/lib/auth-tokens"
+import { verifyAccessToken } from "@/lib/hono-jwt"
 import { IMongoUser, User } from "@/models"
 import { connectToDatabase } from "@/lib/mongodb"
 import { AUTH_TOKEN } from "../constants"
@@ -16,7 +16,7 @@ export const getCurrent = async (): Promise<IMongoUser | null> => {
 		}
 
 		// 验证JWT token
-		const decoded = verifyToken(token)
+		const decoded = verifyAccessToken(token)
 		if (!decoded) {
 			return null
 		}
