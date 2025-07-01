@@ -3,7 +3,7 @@
  */
 import { Hono } from "hono"
 import { handle } from "hono/vercel"
-import authService from "@/features/auth/service"
+import authService from "@/features/auth/service/auth.service"
 import workspaceService from "@/features/workspaces/service"
 import memberService from "@/features/members/service"
 import projectService from "@/features/projects/service"

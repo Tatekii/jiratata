@@ -35,8 +35,9 @@ const fileSchema = new mongoose.Schema<IFile>({
   },
 });
 
-// 确保这是第一次编译模型
-export const File = mongoose.models.File || mongoose.model<IFile>('File', fileSchema);
+// 确保这是第一次编译模型 - 已存在则复用，否则新建
+export const File = (mongoose.models.File as mongoose.Model<IFile>) || 
+  mongoose.model<IFile>('File', fileSchema);
 
 // 注意：对于大型文件，应考虑使用 GridFS
 // 这个简单模型适用于小文件，如头像和图标

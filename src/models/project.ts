@@ -33,7 +33,8 @@ const projectSchema = new mongoose.Schema<IMongoProject>(
 // 为项目创建索引，提高查询性能
 projectSchema.index({ workspaceId: 1 })
 
-// 确保这是第一次编译模型
-export const Project = mongoose.models.Project || mongoose.model<IMongoProject>('Project', projectSchema);
+// 确保这是第一次编译模型 - 已存在则复用，否则新建
+export const Project = (mongoose.models.Project as mongoose.Model<IMongoProject>) || 
+  mongoose.model<IMongoProject>('Project', projectSchema);
 
 export default Project

@@ -5,6 +5,7 @@ import { IClientUser } from "@/features/types"
 
 // 用户模型接口
 export interface IMongoUser extends IClientUser, mongoose.Document<string> {
+	password: string
 	comparePassword(candidatePassword: string): Promise<boolean>
 }
 
@@ -67,6 +68,7 @@ userSchema.methods.comparePassword = async function (candidatePassword: string):
 }
 
 // 确保这是第一次编译模型
-export const User = mongoose.models.User || mongoose.model<IMongoUser>('User', userSchema);
+export const User =
+	(mongoose.models.User as mongoose.Model<IMongoUser>) || mongoose.model<IMongoUser>("User", userSchema)
 
 export default User

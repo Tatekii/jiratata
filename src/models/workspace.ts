@@ -40,7 +40,8 @@ const workspaceSchema = new mongoose.Schema<IMongoWorkspace>(
 workspaceSchema.index({ userId: 1 })
 workspaceSchema.index({ inviteCode: 1 }, { unique: true })
 
-// 确保这是第一次编译模型
-export const Workspace = mongoose.models.Workspace || mongoose.model<IMongoWorkspace>('Workspace', workspaceSchema);
+// 确保这是第一次编译模型 - 已存在则复用，否则新建
+export const Workspace = (mongoose.models.Workspace as mongoose.Model<IMongoWorkspace>) || 
+  mongoose.model<IMongoWorkspace>('Workspace', workspaceSchema);
 
 export default Workspace

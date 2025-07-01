@@ -24,7 +24,6 @@ interface IClientBase {
 export interface IClientUser extends IClientBase {
 	name: string
 	email: string
-	password: string
 }
 
 export interface IClientMember extends IClientBase {

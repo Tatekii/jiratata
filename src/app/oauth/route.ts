@@ -1,6 +1,6 @@
 // src/app/oauth/route.js
 
-import { AUTH_COOKIE } from "@/features/auth/constans"
+import { AUTH_TOKEN } from "@/features/auth/constants"
 import { createAdminClient } from "@/lib/hono"
 import { cookies } from "next/headers"
 import { NextRequest, NextResponse } from "next/server"
@@ -15,7 +15,7 @@ export async function GET(request: NextRequest) {
 
 	const cookieStore = await cookies()
 
-	cookieStore.set(AUTH_COOKIE, session.secret, {
+	cookieStore.set(AUTH_TOKEN, session.secret, {
 		path: "/",
 		httpOnly: true,
 		sameSite: "strict",

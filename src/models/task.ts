@@ -65,7 +65,8 @@ taskSchema.index({ projectId: 1 })
 taskSchema.index({ projectId: 1, status: 1 })
 taskSchema.index({ assigneeId: 1, status: 1 })
 
-// 确保这是第一次编译模型
-export const Task = mongoose.models.Task || mongoose.model<IMongoTask>('Task', taskSchema);
+// 确保这是第一次编译模型 - 已存在则复用，否则新建
+export const Task = (mongoose.models.Task as mongoose.Model<IMongoTask>) || 
+  mongoose.model<IMongoTask>('Task', taskSchema);
 
 export default Task

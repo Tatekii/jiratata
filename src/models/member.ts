@@ -37,7 +37,8 @@ const memberSchema = new mongoose.Schema<IMongoMember>(
 // 为成员创建复合索引，确保用户在一个工作区内只有一个成员记录
 memberSchema.index({ workspaceId: 1, userId: 1 }, { unique: true })
 
-// 确保这是第一次编译模型
-export const Member = mongoose.models.Member || mongoose.model<IMongoMember>('Member', memberSchema);
+// 确保这是第一次编译模型 - 已存在则复用，否则新建
+export const Member = (mongoose.models.Member as mongoose.Model<IMongoMember>) || 
+  mongoose.model<IMongoMember>('Member', memberSchema);
 
 export default Member

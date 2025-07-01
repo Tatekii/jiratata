@@ -3,15 +3,15 @@
  */
 import { createMiddleware } from "hono/factory"
 import { getCookie } from "hono/cookie"
-import { verifyToken } from "@/lib/auth"
+import { verifyToken } from "@/lib/auth-tokens"
 import { User } from "@/models"
 import { connectToDatabase } from "@/lib/mongodb"
-import { AUTH_COOKIE } from "@/features/auth/constans"
+import { AUTH_TOKEN } from "@/features/auth/constants"
 
 export const authSessionMiddleware = createMiddleware(async (c, next) => {
 	try {
 		// 从cookie获取JWT token
-		const token = getCookie(c, AUTH_COOKIE)
+		const token = getCookie(c, AUTH_TOKEN)
 		
 		if (!token) {
 			return c.json({ error: "Unauthorized" }, 401)

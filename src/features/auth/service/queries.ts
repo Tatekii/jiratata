@@ -1,15 +1,15 @@
 import "server-only"
 import { cookies } from "next/headers"
-import { verifyToken } from "@/lib/auth"
+import { verifyToken } from "@/lib/auth-tokens"
 import { IMongoUser, User } from "@/models"
 import { connectToDatabase } from "@/lib/mongodb"
-import { AUTH_COOKIE } from "../constans"
+import { AUTH_TOKEN } from "../constants"
 
 export const getCurrent = async (): Promise<IMongoUser | null> => {
 	try {
 		// 从cookie获取JWT token
 		const cookieStore = await cookies()
-		const token = cookieStore.get(AUTH_COOKIE)?.value
+		const token = cookieStore.get(AUTH_TOKEN)?.value
 
 		if (!token) {
 			return null
