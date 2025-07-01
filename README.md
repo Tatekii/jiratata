@@ -1,21 +1,25 @@
 # 非常magic的jira clone
 
+> Current branch is WIP👷
+
 ![amazing](sample.png)
 
-## client
+## Client
 - `Next`
 
-## server
+## Server
 - `Hono`
-- `apprite SDK`
 
-## Appwrite Collections
-### user
+## Database
+
+### 🟥`appwrite`
+
+#### user
 | Attr | Type | Required | Desc |
 | :----:| :----: | :----: | :----: |
 | $id | string | Y | 自动创建id |
 
-### workspaces
+#### workspaces
 | Attr | Type | Required | Desc |
 | :----:| :----: | :----: | :----: |
 | name | string | Y | 工作区名 |
@@ -24,7 +28,7 @@
 | inviteCode | string | Y | 邀请码 |
 | $id | string | Y | 自动创建id |
 
-### members
+#### members
 | Attr | Type | Required | Desc |
 | :----:| :----: | :----: | :----: |
 | userId | string | Y | 用户id($id) |
@@ -32,7 +36,7 @@
 | role | emum | Y | 成员角色 |
 | $id | string | Y | 自动创建id |
 
-### projects
+#### projects
 | Attr | Type | Required | Desc |
 | :----:| :----: | :----: | :----: |
 | name | string | Y | 名称 |
@@ -40,7 +44,7 @@
 | imageUrl | string |  | 项目图标 |
 | $id | string | Y | 自动创建id |
 
-### tasks
+#### tasks
 | Attr | Type | Required | Desc |
 | :----:| :----: | :----: | :----: |
 | name | string | Y | 名称 |
@@ -54,11 +58,107 @@
 | $id | string | Y | 自动创建id |
 
 
-## Project Structure
-1. [lang]
-在第一层路径控制多语言，并通过next middleware切换
-1. (dashboard)和(standalone)
-控制不同路径深度使用带控制面板侧边栏的layout
+
+### 🟩mongoDB`
+
+#### users
+| Attr | Type | Required | Desc |
+| :----:| :----: | :----: | :----: |
+| name | string | Y | 用户名 |
+| email | string | Y | 邮箱地址（唯一） |
+| password | string | Y | 密码（加密存储，默认不返回） |
+| createdAt | Date | Y | 创建时间（自动） |
+| updatedAt | Date | Y | 更新时间（自动） |
+| _id | ObjectId | Y | MongoDB自动生成ID |
+
+#### workspaces
+| Attr | Type | Required | Desc |
+| :----:| :----: | :----: | :----: |
+| name | string | Y | 工作区名称 |
+| userId | ObjectId | Y | 创建者用户ID（ref: User） |
+| imageUrl | string |  | 工作区图标URL |
+| inviteCode | string | Y | 邀请码（唯一） |
+| createdAt | Date | Y | 创建时间（自动） |
+| updatedAt | Date | Y | 更新时间（自动） |
+| _id | ObjectId | Y | MongoDB自动生成ID |
+
+#### members
+| Attr | Type | Required | Desc |
+| :----:| :----: | :----: | :----: |
+| userId | ObjectId | Y | 用户ID（ref: User） |
+| workspaceId | ObjectId | Y | 工作区ID（ref: Workspace） |
+| role | enum | Y | 成员角色（ADMIN/MEMBER/GUEST） |
+| createdAt | Date | Y | 创建时间（自动） |
+| updatedAt | Date | Y | 更新时间（自动） |
+| _id | ObjectId | Y | MongoDB自动生成ID |
+
+#### projects
+| Attr | Type | Required | Desc |
+| :----:| :----: | :----: | :----: |
+| name | string | Y | 项目名称 |
+| workspaceId | ObjectId | Y | 工作区ID（ref: Workspace） |
+| imageUrl | string |  | 项目图标URL |
+| createdAt | Date | Y | 创建时间（自动） |
+| updatedAt | Date | Y | 更新时间（自动） |
+| _id | ObjectId | Y | MongoDB自动生成ID |
+
+#### tasks
+| Attr | Type | Required | Desc |
+| :----:| :----: | :----: | :----: |
+| name | string | Y | 任务名称 |
+| description | string |  | 任务描述 |
+| workspaceId | ObjectId | Y | 工作区ID（ref: Workspace） |
+| projectId | ObjectId | Y | 项目ID（ref: Project） |
+| dueDate | Date | Y | 截止日期 |
+| assigneeId | ObjectId | Y | 负责人ID（ref: Member） |
+| status | enum | Y | 任务状态（BACKLOG/TODO/IN_PROGRESS/IN_REVIEW/DONE） |
+| position | number | Y | 任务位置（排序用） |
+| createdAt | Date | Y | 创建时间（自动） |
+| updatedAt | Date | Y | 更新时间（自动） |
+| _id | ObjectId | Y | MongoDB自动生成ID |
+
+#### tokens
+| Attr | Type | Required | Desc |
+| :----:| :----: | :----: | :----: |
+| userId | ObjectId | Y | 用户ID（ref: User） |
+| type | enum | Y | Token类型（access/refresh/email_verification/password_reset/magic_link） |
+| status | enum | Y | Token状态（active/revoked/expired/used） |
+| jti | string | Y | JWT唯一标识符 |
+| tokenHash | string | Y | Token哈希值 |
+| expiresAt | Date | Y | 过期时间 |
+| sessionId | string |  | 会话ID |
+| ipAddress | string |  | IP地址 |
+| userAgent | string |  | 用户代理 |
+| deviceInfo | object |  | 设备信息（device/os/browser） |
+| revokedAt | Date |  | 撤销时间 |
+| revokedBy | ObjectId |  | 撤销者ID |
+| revokedReason | string |  | 撤销原因 |
+| lastUsedAt | Date |  | 最后使用时间 |
+| parentTokenId | ObjectId |  | 父Token ID |
+| createdAt | Date | Y | 创建时间（自动） |
+| updatedAt | Date | Y | 更新时间（自动） |
+| _id | ObjectId | Y | MongoDB自动生成ID |
+
+#### files
+| Attr | Type | Required | Desc |
+| :----:| :----: | :----: | :----: |
+| filename | string | Y | 文件名 |
+| contentType | string | Y | 文件MIME类型 |
+| size | number | Y | 文件大小（字节） |
+| data | Buffer | Y | 文件数据 |
+| uploadDate | Date | Y | 上传时间 |
+| _id | ObjectId | Y | MongoDB自动生成ID |
+
+
+
+
 
 ## TODO
 1. 自定义task状态
+2. 实现文件上传的GridFS支持（替代当前的Buffer存储）
+3. 添加数据库连接池优化
+4. 实现Token自动清理的定时任务
+5. 添加数据库迁移脚本
+6. 优化查询性能（添加更多复合索引）
+7. 实现软删除功能
+8. 添加数据备份策略
