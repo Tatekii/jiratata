@@ -3,7 +3,7 @@ import path from 'path'
 
 export default defineConfig({
   test: {
-    environment: 'node', // 改为node环境以支持服务端测试
+    environment: 'jsdom', // 改为jsdom环境以支持React hooks测试
     setupFiles: ['./src/test/setup.ts'],
     globals: true,
     coverage: {
