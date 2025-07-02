@@ -16,7 +16,7 @@ export const getCurrent = async (): Promise<IMongoUser | null> => {
 		}
 
 		// 验证JWT token
-		const decoded = verifyAccessToken(token)
+		const decoded = await verifyAccessToken(token)
 		if (!decoded) {
 			return null
 		}

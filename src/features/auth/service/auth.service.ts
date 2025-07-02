@@ -1,6 +1,6 @@
 import "server-only"
 import { Hono } from "hono"
-import { localeMiddleware, localeValidatorMiddleware } from "@/app/api/[[...route]]/middlewares"
+import { localeMiddleware, localeValidatorMiddleware } from "@/lib/hono-middleware"
 import { buildLoginSchema, buildRegisterSchema } from "../schema"
 import { AppVariables } from "@/app/api/[[...route]]/route"
 import { authSessionMiddleware } from "@/lib/hono-middleware"

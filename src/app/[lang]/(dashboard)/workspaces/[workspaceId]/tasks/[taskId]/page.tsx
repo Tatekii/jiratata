@@ -1,4 +1,4 @@
-import { getCurrent } from "@/features/auth/service/queries"
+import { getCurrent } from "@/features/auth/service/auth.queries"
 import { redirect } from "next/navigation"
 import TaskIdClient from "./client"
 

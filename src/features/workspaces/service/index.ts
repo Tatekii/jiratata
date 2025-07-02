@@ -4,7 +4,7 @@ import "server-only"
  */
 import { Hono } from "hono"
 import { authSessionMiddleware } from "@/lib/hono-middleware"
-import { localeMiddleware, localeValidatorMiddleware } from "@/app/api/[[...route]]/middlewares"
+import { localeMiddleware, localeValidatorMiddleware } from "@/lib/hono-middleware"
 import { buildCreateWorkspaceSchema, buildUpdateWorkspaceSchema } from "../schema"
 import { AppVariables } from "@/app/api/[[...route]]/route"
 import { Task, Workspace } from "@/models"
