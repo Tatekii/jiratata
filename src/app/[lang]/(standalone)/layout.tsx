@@ -3,11 +3,11 @@ import Image from "next/image";
 import Link from "next/link";
 
 
-interface StandloneLayoutProps {
+interface StandAloneLayoutProps {
   children: React.ReactNode;
 };
 
-const StandloneLayout = ({ children }: StandloneLayoutProps) => {
+const StandAloneLayout = ({ children }: StandAloneLayoutProps) => {
   return ( 
     <main className="bg-neutral-100 min-h-screen">
       <div className="mx-auto max-w-screen-2xl p-4">
@@ -25,4 +25,4 @@ const StandloneLayout = ({ children }: StandloneLayoutProps) => {
   );
 }
  
-export default StandloneLayout;
+export default StandAloneLayout;

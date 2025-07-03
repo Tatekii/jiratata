@@ -54,7 +54,7 @@ const CommonNameImageForm = ({
 
 	return (
 		<Form {...form}>
-			<form onSubmit={form.handleSubmit(onSubmit)}>
+			<form onSubmit={form.handleSubmit(onSubmit)} data-testid="common-name-image-form">
 				<div className="flex flex-col gap-y-4">
 					<FormField
 						control={form.control}
@@ -63,7 +63,7 @@ const CommonNameImageForm = ({
 							<FormItem>
 								<FormLabel>{nameText}</FormLabel>
 								<FormControl>
-									<Input {...field} placeholder={enternameText} />
+									<Input {...field} placeholder={enternameText} data-testid="name-input" />
 								</FormControl>
 								<FormMessage />
 							</FormItem>
@@ -105,6 +105,7 @@ const CommonNameImageForm = ({
 											ref={inputRef}
 											onChange={handleImageChange}
 											disabled={isPending}
+											data-testid="image-input"
 										/>
 										{field.value ? (
 											<Button
@@ -119,6 +120,7 @@ const CommonNameImageForm = ({
 														inputRef.current.value = ""
 													}
 												}}
+												data-testid="image-delete-button"
 											>
 												{dic.delete}
 											</Button>
@@ -130,6 +132,7 @@ const CommonNameImageForm = ({
 												size="xs"
 												className="w-fit mt-2"
 												onClick={() => inputRef.current?.click()}
+												data-testid="image-upload-button"
 											>
 												{dic.upload}
 											</Button>
@@ -149,10 +152,11 @@ const CommonNameImageForm = ({
 						onClick={onCancel}
 						disabled={isPending}
 						className={cn(!onCancel && "invisible")}
+						data-testid="form-cancel-button"
 					>
 						{cancelText}
 					</Button>
-					<Button disabled={isPending} type="submit" size="lg">
+					<Button disabled={isPending} type="submit" size="lg" data-testid="form-submit-button">
 						{submitText}
 					</Button>
 				</div>

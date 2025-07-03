@@ -27,7 +27,7 @@ export default function LocaleSwitcher() {
 	)
 
 	return (
-		<Select defaultValue={lang} onValueChange={(locale: Locale) => handleChangeLang(locale)}>
+		<Select defaultValue={lang} onValueChange={(locale: Locale) => handleChangeLang(locale)} data-testid="locale-switcher">
 			<SelectTrigger className="w-[100px] h-10">
 				<SelectValue placeholder={"i18n"} />
 			</SelectTrigger>

@@ -40,7 +40,7 @@ const SignUpCard = () => {
 	return (
 		<Card className="w-full h-full md:w-[487px] border-none shadow-none" data-testid="signup-card">
 			<CardHeader className="flex items-center justify-center text-center p-7">
-				<CardTitle className="text-2xl">{dic.auth.signup}</CardTitle>
+				<CardTitle className="text-2xl" data-testid="signup-title">{dic.auth.signup}</CardTitle>
 				<CardDescription>
 					{dic.auth.agreetermnotice + " "}
 					<Link href="/privacy">
@@ -57,14 +57,14 @@ const SignUpCard = () => {
 			</div>
 			<CardContent className="p-7">
 				<Form {...form}>
-					<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+					<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4" data-testid="signup-form">
 						<FormField
 							name="name"
 							control={form.control}
 							render={({ field }) => (
 								<FormItem>
 									<FormControl>
-										<Input {...field} type="text" placeholder={dic.auth.form.enterusername} />
+										<Input {...field} type="text" placeholder={dic.auth.form.enterusername} data-testid="signup-name-input" />
 									</FormControl>
 									<FormMessage />
 								</FormItem>
@@ -76,7 +76,7 @@ const SignUpCard = () => {
 							render={({ field }) => (
 								<FormItem>
 									<FormControl>
-										<Input {...field} type="email" placeholder={dic.auth.form.enteremail} />
+										<Input {...field} type="email" placeholder={dic.auth.form.enteremail} data-testid="signup-email-input" />
 									</FormControl>
 									<FormMessage />
 								</FormItem>
@@ -88,7 +88,7 @@ const SignUpCard = () => {
 							render={({ field }) => (
 								<FormItem>
 									<FormControl>
-										<Input {...field} type="password" placeholder={dic.auth.form.enterpassword} />
+										<Input {...field} type="password" placeholder={dic.auth.form.enterpassword} data-testid="signup-password-input" />
 									</FormControl>
 									<FormMessage />
 								</FormItem>
@@ -104,13 +104,14 @@ const SignUpCard = () => {
 											{...field}
 											type="password"
 											placeholder={dic.auth.form.enterconfirmpassword}
+											data-testid="signup-confirm-password-input"
 										/>
 									</FormControl>
 									<FormMessage />
 								</FormItem>
 							)}
 						/>
-						<Button disabled={isPending} size="lg" className="w-full">
+						<Button disabled={isPending} size="lg" className="w-full" data-testid="signup-submit-button">
 							{dic.auth.signup}
 						</Button>
 					</form>
@@ -126,10 +127,10 @@ const SignUpCard = () => {
 				<DottedSeparator />
 			</div>
 			<CardContent className="p-7 flex items-center justify-center">
-				<p>
+				<p data-testid="signin-prompt">
 					{dic.auth.haveaccount}?
 					<Link href="/signin">
-						<span className="text-blue-700">&nbsp;{dic.auth.signin}</span>
+						<span className="text-blue-700" data-testid="signin-link">&nbsp;{dic.auth.signin}</span>
 					</Link>
 				</p>
 			</CardContent>

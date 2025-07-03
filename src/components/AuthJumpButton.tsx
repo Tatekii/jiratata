@@ -4,7 +4,7 @@ import { useDictionary } from "@/context/DictionaryProvider"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 
-const AuthJumpButtom = () => {
+const AuthJumpButton = () => {
 	const dic = useDictionary()
 	const path = usePathname()
 
@@ -12,10 +12,10 @@ const AuthJumpButtom = () => {
 	const btnText = isSignup ? dic.auth.signin : dic.auth.signup
 
 	return (
-		<Button asChild variant={"secondary"}>
+		<Button asChild variant={"secondary"} data-testid="auth-jump-button">
 			<Link href={isSignup ? "/signin" : "signup"}>{btnText}</Link>
 		</Button>
 	)
 }
 
-export default AuthJumpButtom
+export default AuthJumpButton

@@ -32,7 +32,7 @@ export const UserButton = () => {
 
 	return (
 		<DropdownMenu modal={false}>
-			<DropdownMenuTrigger className="outline-none relative">
+			<DropdownMenuTrigger className="outline-none relative" data-testid="user-button">
 				<Avatar className="size-10 hover:opacity-75 transition border border-neutral-300">
 					<AvatarFallback className="bg-neutral-200 font-medium text-neutral-500 flex items-center justify-center">
 						{avatarFallback}
@@ -61,6 +61,7 @@ export const UserButton = () => {
 				<DropdownMenuItem
 					onClick={() => logout()}
 					className="h-10 flex items-center justify-center text-amber-700 font-medium cursor-pointer"
+					data-testid="logout-button"
 				>
 					<LogOut className="size-4 mr-2" />
 					{dic.auth.logout}

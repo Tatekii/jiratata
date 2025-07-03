@@ -9,11 +9,11 @@ import memberService from "@/features/members/service"
 import projectService from "@/features/projects/service"
 import taskService from "@/features/tasks/service"
 import { TDictionary } from "@/context/DictionaryProvider"
-import { IMongoUser } from "@/models"
+import { IClientUser } from "@/features/types"
 
 export type AppVariables = {
 	dic: TDictionary
-	user: IMongoUser
+	user: IClientUser
 }
 
 const app = new Hono<{ Variables: AppVariables }>().basePath("/api")
