@@ -29,13 +29,14 @@ const OAuthCard: FC<IOauthProps> = ({ isPending }) => {
 	}, [])
 
 	return (
-		<CardContent className="flex flex-col gap-4 p-7">
+		<CardContent className="flex flex-col gap-4 p-7" data-testid="oauth-card">
 			<Button
 				onClick={() => handleOAuth(signUpWithGoogle)}
 				disabled={isPending || loading}
 				variant="secondary"
 				size="lg"
 				className="w-full"
+				data-testid="google-oauth-button"
 			>
 				<FcGoogle className="mr-2 size-5" />
 				{loading ? <Loader2 className="animate-spin" /> : <>Google {dic.auth.signin}</>}
@@ -46,6 +47,7 @@ const OAuthCard: FC<IOauthProps> = ({ isPending }) => {
 				variant="secondary"
 				size="lg"
 				className="w-full"
+				data-testid="github-oauth-button"
 			>
 				<FaGithub className="mr-2 size-5" />
 				{loading ? <Loader2 className="animate-spin" /> : <>Github {dic.auth.signin}</>}

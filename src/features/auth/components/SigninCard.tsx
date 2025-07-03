@@ -37,23 +37,23 @@ const SignInCard: FC = () => {
 	}
 
 	return (
-		<Card className="w-full max-w-screen-sm h-full md:w-[487px] border-none shadow-none">
+		<Card className="w-full max-w-screen-sm h-full md:w-[487px] border-none shadow-none" data-testid="signin-card">
 			<CardHeader className="flex items-center justify-center text-center p-7">
-				<CardTitle className="text-2xl">{dic.auth.welcomeback}!</CardTitle>
+				<CardTitle className="text-2xl" data-testid="signin-title">{dic.auth.welcomeback}!</CardTitle>
 			</CardHeader>
 			<div className="px-7">
 				<DottedSeparator />
 			</div>
 			<CardContent className="p-7">
 				<Form {...form}>
-					<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+					<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4" data-testid="signin-form">
 						<FormField
 							name="email"
 							control={form.control}
 							render={({ field }) => (
 								<FormItem>
 									<FormControl>
-										<Input {...field} type="email" placeholder={dic.auth.form.enteremail} />
+										<Input {...field} type="email" placeholder={dic.auth.form.enteremail} data-testid="signin-email-input" />
 									</FormControl>
 									<FormMessage />
 								</FormItem>
@@ -65,13 +65,13 @@ const SignInCard: FC = () => {
 							render={({ field }) => (
 								<FormItem>
 									<FormControl>
-										<Input {...field} type="password" placeholder={dic.auth.form.enterpassword} />
+										<Input {...field} type="password" placeholder={dic.auth.form.enterpassword} data-testid="signin-password-input" />
 									</FormControl>
 									<FormMessage />
 								</FormItem>
 							)}
 						/>
-						<Button disabled={isPending} size="lg" className="w-full">
+						<Button disabled={isPending} size="lg" className="w-full" data-testid="signin-submit-button">
 							{dic.auth.signin}
 						</Button>
 					</form>
@@ -87,9 +87,9 @@ const SignInCard: FC = () => {
 				<DottedSeparator />
 			</div>
 			<CardContent className="p-7 flex items-center justify-center">
-				<p>
+				<p data-testid="signup-prompt">
 					{dic.auth.donthaveaccount}?
-					<Button asChild variant={"link"} className="text-base">
+					<Button asChild variant={"link"} className="text-base" data-testid="signup-link">
 						<Link href="/signup">{dic.auth.signup}</Link>
 					</Button>
 				</p>
