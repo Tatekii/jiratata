@@ -28,7 +28,7 @@ const workspaceSchema = new mongoose.Schema<IMongoWorkspace>(
 		inviteCode: {
 			type: String,
 			required: true,
-			unique: true,
+			unique: true, // already unique
 		},
 	},
 	{
@@ -38,7 +38,7 @@ const workspaceSchema = new mongoose.Schema<IMongoWorkspace>(
 
 // 为工作区创建索引，提高查询性能
 workspaceSchema.index({ userId: 1 })
-workspaceSchema.index({ inviteCode: 1 }, { unique: true })
+// inviteCode index is already created by unique: true in schema definition
 
 // 确保这是第一次编译模型 - 已存在则复用，否则新建
 export const Workspace = (mongoose.models.Workspace as mongoose.Model<IMongoWorkspace>) || 
