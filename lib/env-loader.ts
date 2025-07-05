@@ -62,7 +62,7 @@ export function loadEnv(env?: Environment, options: {
 
   // 如果不是静默模式，输出加载信息
   if (!options.silent && process.env.NODE_ENV !== 'production') {
-    console.log(`🔧 Environment loaded: ${environment}`)
+    // console.log(`🔧 Environment loaded: ${environment}`)
     if (result.error) {
       console.warn('⚠️ dotenv-flow error:', result.error)
     }
