@@ -10,7 +10,6 @@ import { AppVariables } from "@/app/api/[[...route]]/route"
 import { EMemberRole } from "@/features/types"
 import {
 	getWorkspaceMembers,
-	getMemberByWorkspaceAndUser,
 	getMemberById,
 	updateMemberRole,
 	removeMember,
@@ -35,13 +34,14 @@ const app = new Hono<{ Variables: AppVariables }>()
 			}
 
 			// 查询请求发起用户是否在该工作区
-			const isMember = await isMemberOfWorkspace(workspaceId, user._id!.toString())
+			const isMember = await isMemberOfWorkspace(workspaceId, user._id.toString())
+			
 			if (!isMember) {
 				return c.json({ error: "Unauthorized" }, 401)
 			}
 
 			// 列出该工作区所有成员
-			const members = (await getWorkspaceMembers(workspaceId)) || []
+			const members = await getWorkspaceMembers(workspaceId)
 
 			// 直接返回MongoDB格式的数据
 			return c.json({
@@ -83,7 +83,7 @@ const app = new Hono<{ Variables: AppVariables }>()
 			}
 
 			// 防止删除自己
-			if (targetMember.userId._id.toString() === user._id!.toString()) {
+			if (targetMember.user._id.toString() === user._id!.toString()) {
 				return c.json({ error: "不能删除自己" }, 400)
 			}
 
@@ -136,7 +136,7 @@ const app = new Hono<{ Variables: AppVariables }>()
 				}
 
 				// 防止修改自己的角色
-				if (targetMember.userId._id.toString() === user._id!.toString()) {
+				if (targetMember.user._id.toString() === user._id!.toString()) {
 					return c.json({ error: "不能修改自己的角色" }, 400)
 				}
 

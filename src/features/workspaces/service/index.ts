@@ -12,13 +12,16 @@ import {
 	getUserWorkspaces,
 	createWorkspace,
 	getMemberByWorkspaceAndUser,
-	getWorkspaceByInviteCode,
 	updateWorkspace,
 	deleteWorkspace,
 	resetWorkspaceInviteCode,
 	joinWorkspaceByInviteCode,
+	getWorkspaceById,
 } from "../utils"
 import mongoose from "mongoose"
+import { zValidator } from "@hono/zod-validator"
+import { z } from "zod"
+import { EMemberRole } from "@/features/types"
 
 const app = new Hono<{ Variables: AppVariables }>()
 	// 获取用户的所有工作区
@@ -64,10 +67,29 @@ const app = new Hono<{ Variables: AppVariables }>()
 			}
 
 			return c.json({ data: workspace })
-
 		} catch (error) {
 			console.error("获取工作区详情失败:", error)
 			return c.json({ error: "获取工作区详情失败" }, 500)
+		}
+	})
+	// 查看工作区简介
+	.get("/:workspaceId/info", authSessionMiddleware, async (c) => {
+		try {
+			const { workspaceId } = c.req.param()
+
+			// 验证ObjectId格式
+			if (!mongoose.Types.ObjectId.isValid(workspaceId)) {
+				return c.json({ error: "无效的工作区ID" }, 400)
+			}
+
+			const workspace = await getWorkspaceById(workspaceId)
+
+			return c.json({
+				data: workspace,
+			})
+		} catch (error) {
+			console.error("获取工作区简介失败:", error)
+			return c.json({ error: "获取工作区简介失败" }, 500)
 		}
 	})
 
@@ -116,11 +138,13 @@ const app = new Hono<{ Variables: AppVariables }>()
 
 				// 检查用户权限
 				const member = await getMemberByWorkspaceAndUser(workspaceId, user._id!.toString())
+
 				if (!member || member.role !== "ADMIN") {
 					return c.json({ error: "无权限修改该工作区" }, 403)
 				}
 
 				const workspace = await updateWorkspace(workspaceId, updates)
+
 				if (!workspace) {
 					return c.json({ error: "工作区不存在" }, 404)
 				}
@@ -189,45 +213,45 @@ const app = new Hono<{ Variables: AppVariables }>()
 	})
 
 	// 通过邀请码加入工作区
-	.post("/join", authSessionMiddleware, localeMiddleware, async (c) => {
-		try {
-			const user = c.get("user")
-			const { code } = await c.req.json()
+	.post(
+		"/:workspaceId/join",
+		authSessionMiddleware,
+		zValidator("json", z.object({ code: z.string(), role: z.nativeEnum(EMemberRole) })),
+		async (c) => {
+			try {
+				const { workspaceId } = c.req.param()
+				const { code, role } = c.req.valid("json")
+				const user = c.get("user")
 
-			if (!code) {
-				return c.json({ error: "邀请码不能为空" }, 400)
+				// 验证ObjectId格式
+				if (!mongoose.Types.ObjectId.isValid(workspaceId)) {
+					return c.json({ error: "无效的工作区ID" }, 400)
+				}
+
+				// 通过邀请码加入工作区（所有验证都在这个函数内完成）
+				const workspace = await joinWorkspaceByInviteCode(workspaceId, code, user._id!.toString(), role)
+
+				return c.json({ data: workspace })
+			} catch (error) {
+				console.error("加入工作区失败:", error)
+
+				// 处理特定错误
+				if (error instanceof Error) {
+					if (error.message === "工作区不存在") {
+						return c.json({ error: "工作区不存在" }, 404)
+					}
+					if (error.message === "邀请码无效") {
+						return c.json({ error: "Invalid invite code" }, 400)
+					}
+					if (error.message === "用户已经是该工作区的成员") {
+						return c.json({ error: "Already a member" }, 400)
+					}
+				}
+
+				return c.json({ error: "加入工作区失败" }, 500)
 			}
-
-			const workspace = await joinWorkspaceByInviteCode(code, user._id!.toString())
-
-			return c.json({ data: workspace })
-		} catch (error) {
-			const errorMessage = error instanceof Error ? error.message : "加入工作区失败"
-			return c.json({ error: errorMessage }, 400)
 		}
-	})
-
-	// 获取工作区信息（通过邀请码）
-	.get("/join/:inviteCode", async (c) => {
-		try {
-			const { inviteCode } = c.req.param()
-
-			const workspace = await getWorkspaceByInviteCode(inviteCode)
-			if (!workspace) {
-				return c.json({ error: "无效的邀请码" }, 404)
-			}
-
-			return c.json({
-				data: {
-					name: workspace.name,
-					imageUrl: workspace.imageUrl,
-				},
-			})
-		} catch (error) {
-			console.error("获取邀请工作区信息失败:", error)
-			return c.json({ error: "获取工作区信息失败" }, 500)
-		}
-	})
+	)
 
 	// 获取工作区分析数据
 	.get("/:workspaceId/analytics", authSessionMiddleware, async (c) => {

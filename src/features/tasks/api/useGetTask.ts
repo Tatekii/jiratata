@@ -2,6 +2,8 @@ import { useQuery } from "@tanstack/react-query"
 
 import { client } from "@/lib/rpc"
 import { useDictionary } from "@/context/DictionaryProvider"
+import { extractDataFromResponse } from "@/lib/utils"
+import { IClientTask } from "@/features/types"
 
 interface UseGetTaskProps {
 	taskId: string
@@ -22,9 +24,7 @@ const useGetTask = ({ taskId }: UseGetTaskProps) => {
 				throw new Error(dic.tasks.fetch.error)
 			}
 
-			const { data } = await response.json()
-
-			return data
+			return extractDataFromResponse<IClientTask>(await response.json())
 		},
 	})
 

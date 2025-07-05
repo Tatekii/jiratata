@@ -20,7 +20,8 @@ import { formatDistanceToNow } from "date-fns"
 import useCreateProjectModal from "@/features/projects/hooks/useCreateProjectModal"
 import ProjectAvatar from "@/features/projects/components/ProjectAvatar"
 import Analytics from "@/components/Analystics"
-import { IClientMember } from "@/features/types"
+import { IClientProject, IClientTaskWithDetail } from "@/features/types"
+import { IClientMemberWithUserInfo } from "@/features/members/utils"
 
 const WorkspaceIdClient = () => {
 	const workspaceId = useWorkspaceId()
@@ -45,7 +46,7 @@ const WorkspaceIdClient = () => {
 		<div className="h-full flex flex-col space-y-4">
 			<Analytics data={analytics} />
 			<div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
-				<TaskList data={tasks.documents} total={tasks.total} />
+				<TaskList data={tasks.documents} total={tasks.total} enable={projects.documents.length > 0} />
 				<ProjectList data={projects.documents} total={projects.total} />
 				<MembersList data={members.documents} total={members.total} />
 			</div>
@@ -54,7 +55,7 @@ const WorkspaceIdClient = () => {
 }
 
 interface MembersListProps {
-	data: IClientMember[]
+	data: IClientMemberWithUserInfo[]
 	total: number
 }
 
@@ -81,10 +82,12 @@ export const MembersList = ({ data, total }: MembersListProps) => {
 						<li key={member._id}>
 							<Card className="shadow-none rounded-lg overflow-hidden">
 								<CardContent className="p-3 flex flex-col items-center gap-x-2">
-									<MemberAvatar className="size-12" name={member.name} />
+									<MemberAvatar className="size-12" name={member.user.name} />
 									<div className="flex flex-col items-center overflow-hidden">
-										<p className="text-lg font-medium line-clamp-1">{member.name}</p>
-										<p className="text-sm text-muted-foreground line-clamp-1">{member.email}</p>
+										<p className="text-lg font-medium line-clamp-1">{member.user.name}</p>
+										<p className="text-sm text-muted-foreground line-clamp-1">
+											{member.user.email}
+										</p>
 									</div>
 								</CardContent>
 							</Card>
@@ -102,11 +105,12 @@ export const MembersList = ({ data, total }: MembersListProps) => {
 export default WorkspaceIdClient
 
 interface TaskListProps {
-	data: ITask[]
+	data: IClientTaskWithDetail[]
 	total: number
+	enable: boolean
 }
 
-export const TaskList = ({ data, total }: TaskListProps) => {
+export const TaskList = ({ data, total, enable }: TaskListProps) => {
 	const workspaceId = useWorkspaceId()
 	const { open: createTask } = useCreateTaskModal()
 	const dic = useDictionary()
@@ -118,8 +122,8 @@ export const TaskList = ({ data, total }: TaskListProps) => {
 					<p className="text-lg font-semibold">
 						{dic.tasks.name} ({total})
 					</p>
-					<Button variant="muted" size="icon" onClick={createTask}>
-						<PlusIcon className="size-4 text-neutral-400" />
+					<Button size="icon" onClick={createTask} disabled={!enable}>
+						<PlusIcon className="size-4" />
 					</Button>
 				</div>
 				<DottedSeparator className="my-4" />
@@ -158,7 +162,7 @@ export const TaskList = ({ data, total }: TaskListProps) => {
 }
 
 interface ProjectListProps {
-	data: IProject[]
+	data: IClientProject[]
 	total: number
 }
 

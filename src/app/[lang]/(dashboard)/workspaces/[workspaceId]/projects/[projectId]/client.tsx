@@ -13,7 +13,7 @@ import useProjectId from "@/features/projects/hooks/useProjectId"
 import { useDictionary } from "@/context/DictionaryProvider"
 import TaskViewSwitcher from "@/features/tasks/components/TaskViewSwitcher"
 import Analytics from "@/components/Analystics"
-import useGetProjectAnalytics from "@/features/projects/api/useGetProjectAnalystics"
+import useGetProjectAnalytics from "@/features/projects/api/useGetProjectAnalytics"
 
 const ProjectIdClient = () => {
 	const dic = useDictionary()

@@ -1,10 +1,10 @@
 /**
  * MongoDB版本的任务服务辅助函数
  */
-import { Task, Member, IMongoTask, IMongoUser, IMongoProject, IMongoMember } from "@/models"
+import { Task, Member } from "@/models"
 import { connectToDatabase } from "@/lib/mongodb"
 import mongoose from "mongoose"
-import { TaskStatusType } from "../types"
+import { TaskStatusType, IClientTaskWithDetail } from "../types"
 
 // 从models导入查询接口类型
 interface TaskQuery {
@@ -43,16 +43,8 @@ interface TaskUpdateData {
 	projectId?: mongoose.Types.ObjectId
 }
 
-interface IMongoTaskWithDetail extends Omit<IMongoTask, "assigneeId" | "projectId"> {
-	assigneeId: {
-		userId: Pick<IMongoUser, "name" | "email">
-		role: Pick<IMongoMember, "role">
-	}
-	projectId: Pick<IMongoProject, "name" | "imageUrl">
-}
-
 // 获取任务列表
-export const getTasks = async (query: TaskQuery): Promise<IMongoTaskWithDetail[] | null> => {
+export const getTasks = async (query: TaskQuery) => {
 	await connectToDatabase()
 
 	const filter: TaskFilter = {
@@ -89,22 +81,93 @@ export const getTasks = async (query: TaskQuery): Promise<IMongoTaskWithDetail[]
 		}
 	}
 
-	return await Task.find(filter)
-		.populate<{
-			assigneeId: {
-				userId: Pick<IMongoUser, "name" | "email">
-				role: Pick<IMongoMember, "role">
-			}
-		}>({
-			path: "assigneeId",
-			select: "userId role",
-			populate: {
-				path: "userId",
-				select: "name email",
+	const result = await Task.aggregate<IClientTaskWithDetail>([
+		// 匹配过滤条件
+		{ $match: filter },
+
+		// 关联项目信息
+		{
+			$lookup: {
+				from: "projects",
+				localField: "projectId",
+				foreignField: "_id",
+				as: "project",
 			},
-		})
-		.populate<{ projectId: Pick<IMongoProject, "name" | "imageUrl"> }>("projectId", "name imageUrl")
-		.sort({ position: 1, createdAt: -1 })
+		},
+
+		// 关联分配者成员信息
+		{
+			$lookup: {
+				from: "members",
+				localField: "assigneeId",
+				foreignField: "_id",
+				as: "assigneeMember",
+			},
+		},
+
+		// 关联分配者用户信息
+		{
+			$lookup: {
+				from: "users",
+				localField: "assigneeMember.userId",
+				foreignField: "_id",
+				as: "assigneeUser",
+			},
+		},
+
+		// 重构输出结构
+		{
+			$project: {
+				_id: 1,
+				name: 1,
+				description: 1,
+				status: 1,
+				dueDate: 1,
+				position: 1,
+				workspaceId: 1,
+				projectId: 1,
+				assigneeId: 1,
+				createdAt: 1,
+				updatedAt: 1,
+
+				// 重构 project 字段
+				project: {
+					$let: {
+						vars: { proj: { $arrayElemAt: ["$project", 0] } },
+						in: {
+							_id: "$$proj._id",
+							name: "$$proj.name",
+							imageUrl: "$$proj.imageUrl",
+						},
+					},
+				},
+
+				// 重构 assignee 字段
+				assignee: {
+					$let: {
+						vars: {
+							member: { $arrayElemAt: ["$assigneeMember", 0] },
+							user: { $arrayElemAt: ["$assigneeUser", 0] },
+						},
+						in: {
+							_id: "$$member._id",
+							userId: "$$member.userId",
+							role: "$$member.role",
+							name: {
+								$ifNull: ["$$user.name", "$$user.email"],
+							},
+							email: "$$user.email",
+						},
+					},
+				},
+			},
+		},
+
+		// 排序
+		{ $sort: { position: 1, createdAt: -1 } },
+	])
+
+	return result
 }
 
 // 创建任务
@@ -141,27 +204,6 @@ export const createTask = async (data: {
 	return await task.save()
 }
 
-// 获取单个任务
-export const getTaskById = async (taskId: string): Promise<IMongoTaskWithDetail | null> => {
-	await connectToDatabase()
-
-	return await Task.findById(taskId)
-		.populate<{
-			assigneeId: {
-				userId: Pick<IMongoUser, "name" | "email">
-				role: Pick<IMongoMember, "role">
-			}
-		}>({
-			path: "assigneeId",
-			select: "userId role",
-			populate: {
-				path: "userId",
-				select: "name email",
-			},
-		})
-		.populate<{ projectId: Pick<IMongoProject, "name" | "imageUrl"> }>("projectId", "name imageUrl")
-}
-
 // 更新任务
 export const updateTask = async (
 	taskId: string,
@@ -193,16 +235,97 @@ export const updateTask = async (
 		updateData.projectId = new mongoose.Types.ObjectId(updates.projectId)
 	}
 
-	return await Task.findByIdAndUpdate(taskId, { $set: updateData }, { new: true })
-		.populate("assigneeId", "userId role")
-		.populate({
-			path: "assigneeId",
-			populate: {
-				path: "userId",
-				select: "name email",
+	const updatedTask = await Task.findByIdAndUpdate(taskId, { $set: updateData })
+
+	if (!updatedTask) {
+		return null
+	}
+
+	// 使用 aggregate 获取更新后的任务详情
+	const result = await Task.aggregate<IClientTaskWithDetail>([
+		// 匹配更新后的任务
+		{ $match: { _id: new mongoose.Types.ObjectId(taskId) } },
+
+		// 关联项目信息
+		{
+			$lookup: {
+				from: "projects",
+				localField: "projectId",
+				foreignField: "_id",
+				as: "project",
 			},
-		})
-		.populate("projectId", "name imageUrl")
+		},
+
+		// 关联分配者成员信息
+		{
+			$lookup: {
+				from: "members",
+				localField: "assigneeId",
+				foreignField: "_id",
+				as: "assigneeMember",
+			},
+		},
+
+		// 关联分配者用户信息
+		{
+			$lookup: {
+				from: "users",
+				localField: "assigneeMember.userId",
+				foreignField: "_id",
+				as: "assigneeUser",
+			},
+		},
+
+		// 重构输出结构
+		{
+			$project: {
+				_id: 1,
+				name: 1,
+				description: 1,
+				status: 1,
+				dueDate: 1,
+				position: 1,
+				workspaceId: 1,
+				projectId: 1,
+				assigneeId: 1,
+				createdAt: 1,
+				updatedAt: 1,
+
+				// 重构 project 字段
+				project: {
+					$let: {
+						vars: { proj: { $arrayElemAt: ["$project", 0] } },
+						in: {
+							_id: "$$proj._id",
+							name: "$$proj.name",
+							imageUrl: "$$proj.imageUrl",
+						},
+					},
+				},
+
+				// 重构 assignee 字段
+				assignee: {
+					$let: {
+						vars: {
+							member: { $arrayElemAt: ["$assigneeMember", 0] },
+							user: { $arrayElemAt: ["$assigneeUser", 0] },
+						},
+						in: {
+							_id: "$$member._id",
+							userId: "$$member.userId",
+							role: "$$member.role",
+							name: {
+								$ifNull: ["$$user.name", "$$user.email"],
+							},
+							email: "$$user.email",
+						},
+					},
+				},
+			},
+		},
+	])
+
+	return result[0] || null
 }
 
 // 删除任务
@@ -218,30 +341,17 @@ export const bulkUpdateTaskPositions = async (
 ) => {
 	await connectToDatabase()
 
-	const session = await mongoose.startSession()
-
 	try {
-		session.startTransaction()
-
 		for (const update of updates) {
-			await Task.findByIdAndUpdate(
-				update._id,
-				{
-					$set: {
-						status: update.status,
-						position: update.position,
-					},
+			await Task.findByIdAndUpdate(update._id, {
+				$set: {
+					status: update.status,
+					position: update.position,
 				},
-				{ session }
-			)
+			})
 		}
-
-		await session.commitTransaction()
 	} catch (error) {
-		await session.abortTransaction()
 		throw error
-	} finally {
-		session.endSession()
 	}
 }
 
@@ -260,4 +370,87 @@ export const checkTaskAccess = async (taskId: string, userId: string): Promise<b
 	})
 
 	return !!member
+}
+
+/**
+ * 使用 aggregate 管道获取任务详情（包含 project 和 assignee 信息）
+ */
+export const getTaskById = async (taskId: string) => {
+	await connectToDatabase()
+
+	const result = await Task.aggregate([
+		// 匹配指定的任务
+		{ $match: { _id: new mongoose.Types.ObjectId(taskId) } },
+
+		// 关联项目信息
+		{
+			$lookup: {
+				from: "projects", // Project 集合名
+				localField: "projectId",
+				foreignField: "_id",
+				as: "project",
+			},
+		},
+
+		// 关联分配者成员信息
+		{
+			$lookup: {
+				from: "members", // Member 集合名
+				localField: "assigneeId",
+				foreignField: "_id",
+				as: "assigneeMember",
+			},
+		},
+
+		// 关联分配者用户信息
+		{
+			$lookup: {
+				from: "users", // User 集合名
+				localField: "assigneeMember.userId",
+				foreignField: "_id",
+				as: "assigneeUser",
+			},
+		},
+
+		// 重构输出结构
+		{
+			$project: {
+				// 保留任务的所有字段
+				_id: 1,
+				name: 1,
+				description: 1,
+				status: 1,
+				dueDate: 1,
+				position: 1,
+				workspaceId: 1,
+				projectId: 1,
+				assigneeId: 1,
+				createdAt: 1,
+				updatedAt: 1,
+
+				// 重命名并重构 project 字段
+				project: {
+					$arrayElemAt: ["$project", 0],
+				},
+
+				// 重命名并重构 assignee 字段
+				assignee: {
+					$mergeObjects: [
+						{ $arrayElemAt: ["$assigneeMember", 0] },
+						{
+							name: {
+								$ifNull: [
+									{ $arrayElemAt: ["$assigneeUser.name", 0] },
+									{ $arrayElemAt: ["$assigneeUser.email", 0] },
+								],
+							},
+							email: { $arrayElemAt: ["$assigneeUser.email", 0] },
+						},
+					],
+				},
+			},
+		},
+	])
+
+	return result[0] || null
 }

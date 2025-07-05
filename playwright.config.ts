@@ -1,4 +1,6 @@
 import { defineConfig, devices } from '@playwright/test';
+import { requireEnv } from './lib/env-loader';
+import { MONGODB_URI } from '@/config';
 
 /**
  * @see https://playwright.dev/docs/test-configuration
@@ -65,7 +67,7 @@ export default defineConfig({
     timeout: 120 * 1000,
     env: {
       NODE_ENV: 'test',
-      MONGODB_URI: process.env.MONGODB_TEST_URI || 'mongodb://localhost:27017/jiratata-test',
+      MONGODB_URI: requireEnv(MONGODB_URI),
     },
   },
 });

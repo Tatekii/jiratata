@@ -25,7 +25,7 @@ const CreateTaskFormWrapper = ({ onCancel }: CreateTaskFormWrapperProps) => {
 
 	const memberOptions = members?.documents.map((project) => ({
 		id: project._id,
-		name: project.name,
+		name: project.user.name,
 	}))
 
 	const isLoading = isLoadingProjects || isLoadingMembers

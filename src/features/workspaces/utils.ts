@@ -2,14 +2,14 @@
  * MongoDB版本的工作区服务辅助函数
  */
 import { nanoid } from "nanoid"
-import { Workspace, Member, Project, Task, IMongoWorkspace, IMongoUser } from "@/models"
+import { Workspace, Member, Project, Task } from "@/models"
 import { connectToDatabase } from "@/lib/mongodb"
 import mongoose from "mongoose"
-import { EMemberRole } from "../types"
-import { IMongoMemberWithUserInfo } from "../members/utils"
+import { EMemberRole, IClientUser, IClientWorkspace, MemberRoleType } from "../types"
+import { IClientMemberWithUserInfo } from "../members/utils"
 
-interface IMongoWorkspaceWithDetail extends Omit<IMongoWorkspace, "userId"> {
-	userId: Pick<IMongoUser, "name" | "email">
+interface IClientWorkspaceWithUserInfo extends IClientWorkspace {
+	user: IClientUser
 }
 // 生成邀请码
 export const generateInviteCode = (): string => {
@@ -20,17 +20,51 @@ export const generateInviteCode = (): string => {
 export const getMemberByWorkspaceAndUser = async (
 	workspaceId: string,
 	userId: string
-): Promise<IMongoMemberWithUserInfo | null> => {
+): Promise<IClientMemberWithUserInfo | null> => {
 	await connectToDatabase()
 
-	return await Member.findOne({
-		workspaceId,
-		userId,
-	}).populate<Pick<IMongoMemberWithUserInfo, "userId">>("userId", "_id name email")
+	const result = await Member.aggregate([
+		{
+			$match: {
+				workspaceId: new mongoose.Types.ObjectId(workspaceId),
+				userId: new mongoose.Types.ObjectId(userId),
+			},
+		},
+		{
+			$lookup: {
+				from: "users", // User 集合名
+				localField: "userId",
+				foreignField: "_id",
+				as: "userInfo",
+			},
+		},
+		{
+			$project: {
+				_id: 1,
+				workspaceId: 1,
+				role: 1,
+				createdAt: 1,
+				updatedAt: 1,
+				// 重命名为 user
+				user: {
+					$let: {
+						vars: { userDoc: { $arrayElemAt: ["$userInfo", 0] } },
+						in: {
+							_id: "$$userDoc._id",
+							name: "$$userDoc.name",
+							email: "$$userDoc.email",
+						},
+					},
+				},
+			},
+		},
+	])
+
+	return result[0] || null
 }
 
 // 获取用户的所有工作区
-export const getUserWorkspaces = async (userId: string): Promise<IMongoWorkspaceWithDetail[] | null> => {
+export const getUserWorkspaces = async (userId: string): Promise<IClientWorkspaceWithUserInfo[] | null> => {
 	await connectToDatabase()
 
 	// 首先获取用户是成员的所有工作区ID
@@ -45,11 +79,52 @@ export const getUserWorkspaces = async (userId: string): Promise<IMongoWorkspace
 	const workspaceIds = memberships.map((m) => m.workspaceId)
 
 	// 获取工作区详情并按创建时间倒序排列
-	return await Workspace.find({
-		_id: { $in: workspaceIds },
-	})
-		.populate("userId", "name email")
-		.sort({ createdAt: -1 })
+	const result = await Workspace.aggregate([
+		{
+			$match: {
+				_id: { $in: workspaceIds },
+			},
+		},
+		{
+			$lookup: {
+				from: "users",
+				localField: "userId",
+				foreignField: "_id",
+				as: "userInfo",
+			},
+		},
+		{
+			$project: {
+				_id: 1,
+				name: 1,
+				imageUrl: 1,
+				inviteCode: 1,
+				createdAt: 1,
+				updatedAt: 1,
+				user: {
+					$let: {
+						vars: { userDoc: { $arrayElemAt: ["$userInfo", 0] } },
+						in: {
+							_id: "$$userDoc._id",
+							name: "$$userDoc.name",
+							email: "$$userDoc.email",
+						},
+					},
+				},
+			},
+		},
+		{
+			$sort: { createdAt: -1 },
+		},
+	])
+
+	return result
+}
+// 获取用户的所有工作区
+export const getWorkspaceById = async (workspaceId: string) => {
+	await connectToDatabase()
+
+	return await Workspace.findById(workspaceId)
 }
 
 // 创建工作区
@@ -57,7 +132,7 @@ export const createWorkspace = async (data: {
 	name: string
 	userId: string
 	imageUrl?: string
-}): Promise<IMongoWorkspaceWithDetail | null> => {
+}): Promise<IClientWorkspaceWithUserInfo | null> => {
 	await connectToDatabase()
 
 	try {
@@ -80,10 +155,44 @@ export const createWorkspace = async (data: {
 
 		await member.save()
 
-		return await Workspace.findById(savedWorkspace._id).populate<Pick<IMongoWorkspaceWithDetail, "userId">>(
-			"userId",
-			"name email"
-		)
+		const result = await Workspace.aggregate<IClientWorkspaceWithUserInfo>([
+			{
+				$match: {
+					_id: savedWorkspace._id,
+				},
+			},
+			{
+				$lookup: {
+					from: "users",
+					localField: "userId",
+					foreignField: "_id",
+					as: "userInfo",
+				},
+			},
+			{
+				$project: {
+					_id: 1,
+					name: 1,
+					imageUrl: 1,
+					inviteCode: 1,
+					createdAt: 1,
+					updatedAt: 1,
+					user: {
+						// 重命名为user
+						$let: {
+							vars: { userDoc: { $arrayElemAt: ["$userInfo", 0] } },
+							in: {
+								_id: "$$userDoc._id",
+								name: "$$userDoc.name",
+								email: "$$userDoc.email",
+							},
+						},
+					},
+				},
+			},
+		])
+
+		return result[0]
 	} catch (error) {
 		// 如果创建成员失败，尝试清理已创建的工作区
 		if (error instanceof Error && error.message.includes("Member")) {
@@ -97,16 +206,6 @@ export const createWorkspace = async (data: {
 	}
 }
 
-// 通过邀请码获取工作区
-export const getWorkspaceByInviteCode = async (inviteCode: string): Promise<IMongoWorkspaceWithDetail | null> => {
-	await connectToDatabase()
-
-	return await Workspace.findOne({ inviteCode }).populate<Pick<IMongoMemberWithUserInfo, "userId">>(
-		"userId",
-		"name email"
-	)
-}
-
 // 更新工作区
 export const updateWorkspace = async (
 	workspaceId: string,
@@ -117,44 +216,83 @@ export const updateWorkspace = async (
 ) => {
 	await connectToDatabase()
 
-	return await Workspace.findByIdAndUpdate(workspaceId, { $set: updates }, { new: true }).populate(
-		"userId",
-		"name email"
-	)
+	// 更新信息
+	await Workspace.aggregate<IClientWorkspaceWithUserInfo>([
+		{
+			$match: {
+				_id: new mongoose.Types.ObjectId(workspaceId),
+			},
+		},
+		{
+			$set: updates,
+		},
+		{
+			$merge: {
+				into: "workspaces",
+				whenMatched: "replace",
+			},
+		},
+	])
+
+	// 获取更新后的文档并关联用户信息
+	const updatedResult = await Workspace.aggregate<IClientWorkspaceWithUserInfo>([
+		{
+			$match: {
+				_id: new mongoose.Types.ObjectId(workspaceId),
+			},
+		},
+		{
+			$lookup: {
+				from: "users",
+				localField: "userId",
+				foreignField: "_id",
+				as: "userInfo",
+			},
+		},
+		{
+			$project: {
+				_id: 1,
+				name: 1,
+				imageUrl: 1,
+				inviteCode: 1,
+				createdAt: 1,
+				updatedAt: 1,
+				user: {
+					$let: {
+						vars: { userDoc: { $arrayElemAt: ["$userInfo", 0] } },
+						in: {
+							_id: "$$userDoc._id",
+							name: "$$userDoc.name",
+							email: "$$userDoc.email",
+						},
+					},
+				},
+			},
+		},
+	])
+
+	return updatedResult[0]
 }
 
 // 删除工作区（级联删除）
 export const deleteWorkspace = async (workspaceId: string) => {
 	await connectToDatabase()
 
-	const session = await mongoose.startSession()
+	const workspaceObjectId = new mongoose.Types.ObjectId(workspaceId)
 
-	try {
-		session.startTransaction()
+	// 删除相关任务
+	await Task.deleteMany({ workspaceId: workspaceObjectId })
 
-		const workspaceObjectId = new mongoose.Types.ObjectId(workspaceId)
+	// 删除相关项目
+	await Project.deleteMany({ workspaceId: workspaceObjectId })
 
-		// 删除相关任务
-		await Task.deleteMany({ workspaceId: workspaceObjectId }, { session })
+	// 删除相关成员
+	await Member.deleteMany({ workspaceId: workspaceObjectId })
 
-		// 删除相关项目
-		await Project.deleteMany({ workspaceId: workspaceObjectId }, { session })
+	// 删除工作区
+	const workspace = await Workspace.findByIdAndDelete(workspaceId)
 
-		// 删除相关成员
-		await Member.deleteMany({ workspaceId: workspaceObjectId }, { session })
-
-		// 删除工作区
-		const workspace = await Workspace.findByIdAndDelete(workspaceId, { session })
-
-		await session.commitTransaction()
-
-		return workspace
-	} catch (error) {
-		await session.abortTransaction()
-		throw error
-	} finally {
-		session.endSession()
-	}
+	return workspace
 }
 
 // 重置工作区邀请码
@@ -165,46 +303,52 @@ export const resetWorkspaceInviteCode = async (workspaceId: string) => {
 }
 
 // 通过邀请码加入工作区
-export const joinWorkspaceByInviteCode = async (inviteCode: string, userId: string) => {
+export const joinWorkspaceByInviteCode = async (
+	workspaceId: string,
+	inviteCode: string,
+	userId: string,
+	role: MemberRoleType
+): Promise<IClientWorkspace | null> => {
 	await connectToDatabase()
 
-	const session = await mongoose.startSession()
+	// 验证邀请码是否正确
+	const result = await Workspace.aggregate<IClientWorkspace>([
+		{
+			$match: {
+				_id: new mongoose.Types.ObjectId(workspaceId),
+				inviteCode
+			},
+		},
+	])
 
-	try {
-		session.startTransaction()
+	const workspace = result[0]
 
-		// 查找工作区
-		const workspace = await Workspace.findOne({ inviteCode }).session(session)
-		if (!workspace) {
-			throw new Error("无效的邀请码")
-		}
-
-		// 检查用户是否已是成员
-		const existingMember = await Member.findOne({
-			workspaceId: workspace._id,
-			userId: new mongoose.Types.ObjectId(userId),
-		}).session(session)
-
-		if (existingMember) {
-			throw new Error("您已经是该工作区的成员")
-		}
-
-		// 添加用户为成员
-		const member = new Member({
-			userId: new mongoose.Types.ObjectId(userId),
-			workspaceId: workspace._id,
-			role: EMemberRole.MEMBER,
-		})
-
-		await member.save({ session })
-
-		await session.commitTransaction()
-
-		return workspace
-	} catch (error) {
-		await session.abortTransaction()
-		throw error
-	} finally {
-		session.endSession()
+	if (!workspace) {
+		throw new Error("工作区不存在")
 	}
+
+	if (workspace.inviteCode !== inviteCode) {
+		throw new Error("邀请码无效")
+	}
+
+	// 检查用户是否已经是成员
+	const existingMember = await Member.findOne({
+		workspaceId: new mongoose.Types.ObjectId(workspaceId),
+		userId: new mongoose.Types.ObjectId(userId),
+	}).lean()
+
+	if (existingMember) {
+		throw new Error("用户已经是该工作区的成员")
+	}
+
+	// 创建新成员
+	const newMember = new Member({
+		workspaceId: new mongoose.Types.ObjectId(workspaceId),
+		userId: new mongoose.Types.ObjectId(userId),
+		role,
+	})
+
+	await newMember.save()
+
+	return workspace as unknown as IClientWorkspace
 }

@@ -70,10 +70,10 @@ const MembersList: FC<IMemberListProps> = ({ data }) => {
 				{data?.documents.map((member, index) => (
 					<Fragment key={member._id}>
 						<div className="flex items-center gap-2">
-							<MemberAvatar className="size-10" fallbackClassName="text-lg" name={member.name} />
+							<MemberAvatar className="size-10" fallbackClassName="text-lg" name={member.user.name} />
 							<div className="flex flex-col">
-								<p className="text-sm font-medium">{member.name}</p>
-								<p className="text-xs text-muted-foreground">{member.email}</p>
+								<p className="text-sm font-medium">{member.user.name}</p>
+								<p className="text-xs text-muted-foreground">{member.user.email}</p>
 							</div>
 							<DropdownMenu>
 								<DropdownMenuTrigger asChild>
@@ -108,7 +108,7 @@ const MembersList: FC<IMemberListProps> = ({ data }) => {
 										onClick={() => handleDeleteMember(member._id)}
 										disabled={isDeletingMember}
 									>
-										{dic.remove} {member.name}
+										{dic.remove} {member.user.name}
 									</DropdownMenuItem>
 								</DropdownMenuContent>
 							</DropdownMenu>

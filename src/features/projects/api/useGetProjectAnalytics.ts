@@ -2,6 +2,8 @@ import { InferResponseType } from "hono"
 import { useQuery } from "@tanstack/react-query"
 
 import { client } from "@/lib/rpc"
+import { extractDataFromResponse } from "@/lib/utils"
+import { IProjectAnalytics } from "@/features/types"
 
 interface UseGetProjectAnalyticsProps {
 	projectId: string
@@ -24,9 +26,8 @@ const useGetProjectAnalytics = ({ projectId }: UseGetProjectAnalyticsProps) => {
 				throw new Error("Failed to fetch project analytics")
 			}
 
-			const { data } = await response.json()
+			return extractDataFromResponse<IProjectAnalytics>(await response.json())
 
-			return data
 		},
 	})
 

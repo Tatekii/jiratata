@@ -23,7 +23,7 @@ import useProjectId from "@/features/projects/hooks/useProjectId"
 
 interface CreateTaskFormProps {
 	onCancel?: () => void
-	projectOptions: { id: string; name: string; imageUrl: string }[]
+	projectOptions: { id: string; name: string; imageUrl?: string }[]
 	memberOptions: { id: string; name: string }[]
 }
 
