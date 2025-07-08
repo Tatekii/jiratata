@@ -76,8 +76,8 @@ const app = new Hono<{ Variables: AppVariables }>()
 			setCookie(c, "oauth_state", "", { ...getCookieConfig(0), maxAge: 0 })
 
 			// 重定向到适当的页面
-			const redirectTo = isNewUser ? "/dashboard" : "/dashboard"
-			return c.redirect(`${redirectTo}?welcome=${isNewUser ? "true" : "false"}`)
+			const redirectTo = '/'
+			return c.redirect(`${redirectTo}`)
 		} catch (error) {
 			console.error("GitHub OAuth回调错误:", error)
 			return c.redirect(`/signup?error=oauth_callback_error&message=${encodeURIComponent(String(error))}`)

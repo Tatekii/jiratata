@@ -25,6 +25,7 @@ import { IClientMemberWithUserInfo } from "@/features/members/utils"
 
 const WorkspaceIdClient = () => {
 	const workspaceId = useWorkspaceId()
+
 	const dic = useDictionary()
 
 	const { data: analytics, isLoading: isLoadingAnalytics } = useGetWorkspaceAnalytics({ workspaceId })

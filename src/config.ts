@@ -1,7 +1,11 @@
 import "server-only"
-// 初始化环境变量
-import "./lib/env-init"
-import { getEnv, getEnvNumber, requireEnv } from "../lib/env-loader"
+/**
+ * 初始化环境变量
+ */
+import "../env/env-init"
+
+
+import { getEnv, getEnvNumber, requireEnv } from "../env/env-loader"
 
 export const APP_URI = requireEnv("NEXT_PUBLIC_APP_URL")
 // MongoDB 和应用配置
@@ -14,10 +18,10 @@ export const JWT_EXPIRES_IN = getEnv("JWT_EXPIRES_IN", "7d")
 export const JWT_REFRESH_EXPIRES_IN = getEnv("JWT_R_EXPIRES_IN", "30d")
 
 // OAuth 配置
-export const GITHUB_CLIENT_ID = getEnv("GITHUB_CLIENT_ID")
-export const GITHUB_CLIENT_SECRET = getEnv("GITHUB_CLIENT_SECRET")
-export const GOOGLE_CLIENT_ID = getEnv("GOOGLE_CLIENT_ID")
-export const GOOGLE_CLIENT_SECRET = getEnv("GOOGLE_CLIENT_SECRET")
+export const GITHUB_CLIENT_ID = requireEnv("GITHUB_CLIENT_ID")
+export const GITHUB_CLIENT_SECRET = requireEnv("GITHUB_CLIENT_SECRET")
+export const GOOGLE_CLIENT_ID = requireEnv("GOOGLE_CLIENT_ID")
+export const GOOGLE_CLIENT_SECRET = requireEnv("GOOGLE_CLIENT_SECRET")
 
 // 文件上传配置
 export const UPLOAD_DIR = getEnv("UPLOAD_DIR", "./public/uploads")

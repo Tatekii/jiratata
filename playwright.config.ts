@@ -1,5 +1,5 @@
 import { defineConfig, devices } from '@playwright/test';
-import { requireEnv } from './lib/env-loader';
+import { requireEnv } from './env/env-loader';
 import { MONGODB_URI } from '@/config';
 
 /**

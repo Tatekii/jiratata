@@ -124,6 +124,7 @@ export async function authenticateWithGitHub(
 			email: user.email,
 			createdAt: user.createdAt,
 			updatedAt: user.updatedAt,
+			avatar: user.avatar,
 		}
 
 		return { user: userResponse, tokens, isNewUser }
@@ -225,6 +226,7 @@ export async function authenticateWithGoogle(
 			email: user.email,
 			createdAt: user.createdAt,
 			updatedAt: user.updatedAt,
+			avatar: user.avatar,
 		}
 
 		return { user: userResponse, tokens, isNewUser }

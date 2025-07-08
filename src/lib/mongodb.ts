@@ -1,3 +1,4 @@
+import "server-only"
 import { MONGODB_PASSWORD, MONGODB_URI, MONGODB_USERNAME, MONGODB_DB } from "@/config"
 import mongoose from "mongoose"
 
