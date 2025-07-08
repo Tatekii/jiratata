@@ -45,8 +45,10 @@ const CreateWorkspaceForm = ({ onCancel }: CreateWorkspaceFormProps) => {
 			{ json: finalValues },
 			{
 				onSuccess: ({ data }) => {
-					form.reset()
-					router.push(`/workspaces/${data._id}`)
+					if (data) {
+						form.reset()
+						router.push(`/workspaces/${data!.user._id}`)
+					}
 				},
 			}
 		)
@@ -55,7 +57,9 @@ const CreateWorkspaceForm = ({ onCancel }: CreateWorkspaceFormProps) => {
 	return (
 		<Card className="w-full h-full border-none shadow-none" data-testid="create-workspace-card">
 			<CardHeader className="flex p-7">
-				<CardTitle className="text-xl font-bold" data-testid="create-workspace-title">{dic.workspaces.form.createTitle}</CardTitle>
+				<CardTitle className="text-xl font-bold" data-testid="create-workspace-title">
+					{dic.workspaces.form.createTitle}
+				</CardTitle>
 			</CardHeader>
 			<div className="px-7">
 				<DottedSeparator />

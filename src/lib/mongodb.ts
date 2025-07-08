@@ -86,29 +86,6 @@ export async function connectToDatabase(): Promise<mongoose.Connection> {
 	return cached.conn
 }
 
-/**
- * 获取指定数据库的连接
- * @param dbName 数据库名称，如果不提供则使用环境变量中的默认数据库
- */
-export async function getDatabaseConnection(dbName?: string): Promise<mongoose.Connection> {
-	const connection = await connectToDatabase()
-	const targetDb = dbName || MONGODB_DB
-
-	if (!targetDb) {
-		throw new Error("Database name not specified!")
-	}
-
-	// 如果当前连接的数据库就是目标数据库，直接返回
-	if (connection.db?.databaseName === targetDb) {
-		return connection
-	}
-
-	// 否则切换到指定的数据库
-	const dbConnection = console.log(`已切换到数据库: ${targetDb}`)
-
-	return dbConnection
-}
-
 // 监听连接事件
 mongoose.connection.on("error", (err) => {
 	console.error("MongoDB连接错误:", err)

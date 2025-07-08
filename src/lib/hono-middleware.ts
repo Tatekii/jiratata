@@ -20,7 +20,7 @@ export const authSessionMiddleware = createMiddleware(async (c, next) => {
 	try {
 		// 从cookie获取JWT token
 		const token = getCookie(c, AUTH_TOKEN)
-		
+
 		if (!token) {
 			return c.json({ error: "Unauthorized" }, 401)
 		}
@@ -34,7 +34,7 @@ export const authSessionMiddleware = createMiddleware(async (c, next) => {
 		// 连接数据库并获取用户信息
 		await connectToDatabase()
 		const user = await User.findById(decoded.userId)
-		
+
 		if (!user) {
 			return c.json({ error: "User not found" }, 401)
 		}
@@ -44,10 +44,11 @@ export const authSessionMiddleware = createMiddleware(async (c, next) => {
 			_id: user._id,
 			name: user.name,
 			email: user.email,
+			avatar: user.avatar,
 			createdAt: user.createdAt,
 			updatedAt: user.updatedAt,
 		})
-		
+
 		await next()
 	} catch {
 		return c.json({ error: "Unauthorized" }, 401)
@@ -82,14 +83,15 @@ export const localeValidatorMiddleware = <
 >(
 	target: Target,
 	schemaBuilder: (dic: TDictionary) => T
-) => validator(target, async (value, c) => {
-	const dic = c.get("dic")
+) =>
+	validator(target, async (value, c) => {
+		const dic = c.get("dic")
 
-	const result = await schemaBuilder(dic).safeParseAsync(value)
+		const result = await schemaBuilder(dic).safeParseAsync(value)
 
-	if (!result.success) {
-		return c.json(result, 400)
-	}
+		if (!result.success) {
+			return c.json(result, 400)
+		}
 
-	return result.data as z.infer<T>
-})
+		return result.data as z.infer<T>
+	})

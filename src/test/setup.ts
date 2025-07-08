@@ -5,9 +5,6 @@ import { vi } from 'vitest'
 Object.defineProperty(process, 'env', {
   value: {
     NODE_ENV: 'test',
-    MONGODB_URI: 'mongodb://localhost:27017/jiratata_test',
-    JWT_SECRET: 'test-secret',
-    NEXT_PUBLIC_APP_URL: 'http://localhost:3000',
   },
 })
 

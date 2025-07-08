@@ -37,7 +37,7 @@ const JoinWorkspaceForm = ({ initialValues }: JoinWorkspaceFormProps) => {
 			},
 			{
 				onSuccess: ({ data }) => {
-					router.push(`/workspaces/${data._id}`)
+					router.push(`/workspaces/${data?._id}`)
 				},
 			}
 		)

@@ -30,7 +30,7 @@ export const useJoinWorkspace = () => {
 		onSuccess: ({ data }) => {
 			toast.success(dic.workspaces.join.success)
 			queryClient.invalidateQueries({ queryKey: ["workspaces"] })
-			queryClient.invalidateQueries({ queryKey: ["workspace", data._id] })
+			queryClient.invalidateQueries({ queryKey: ["workspace", data?._id] })
 		},
 		onError: (error) => {
 			handleOnError(error, () => {

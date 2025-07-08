@@ -1,81 +1,16 @@
-import { config as dotenvFlowConfig } from 'dotenv-flow'
+import "server-only"
 
 /**
- * 环境变量加载器 - 使用 dotenv-flow
- * 支持按优先级合并多个环境变量文件
- * 文件命名规范: .env.base, .env.[dev|test|prod], .env.base.local, .env.[dev|test|prod].local
+ * 环境变量访问工具
+ * 提供类型安全的环境变量访问方法
+ * 注意: 使用前需要先导入 env-init.ts 初始化环境变量
  */
-
-// 环境类型定义
-export type Environment = 'dev' | 'test' | 'prod'
-
-/**
- * 根据 NODE_ENV 获取环境类型
- */
-export function getEnvironment(): Environment {
-  const nodeEnv = process.env.NODE_ENV
-  if (nodeEnv === 'production') return 'prod'
-  if (nodeEnv === 'test') return 'test'
-  return 'dev'
-}
-
-/**
- * 加载环境变量
- * @param env 环境类型，如果不指定则从 NODE_ENV 自动推断
- * @param options 配置选项
- */
-export function loadEnv(env?: Environment, options: {
-  path?: string
-  silent?: boolean
-  debug?: boolean
-} = {}): Record<string, string> {
-  const environment = env || getEnvironment()
-  
-  // dotenv-flow 配置
-  const result = dotenvFlowConfig({
-    // 指定环境
-    node_env: environment,
-    
-    // 默认环境（当 NODE_ENV 未设置时）
-    default_node_env: 'dev',
-    
-    // 环境变量文件模式
-    pattern: '.env[.node_env][.local]',
-    
-    // 项目根目录
-    path: options.path || process.cwd(),
-    
-    // 是否静默模式
-    silent: options.silent !== false,
-    
-    // 是否调试模式
-    debug: options.debug || false,
-    
-    // 自定义文件名模式，支持 .env.base
-    files: [
-      '.env.base',
-      `.env.${environment}`,
-      '.env.base.local',
-      `.env.${environment}.local`
-    ]
-  })
-
-  // 如果不是静默模式，输出加载信息
-  if (!options.silent && process.env.NODE_ENV !== 'production') {
-    // console.log(`🔧 Environment loaded: ${environment}`)
-    if (result.error) {
-      console.warn('⚠️ dotenv-flow error:', result.error)
-    }
-  }
-
-  return process.env as Record<string, string>
-}
 
 /**
  * 获取特定环境变量
  */
-export function getEnv(key: string, defaultValue?: string): string | undefined {
-  return process.env[key] || defaultValue
+export function getEnv(key: string, defaultValue?: string): string {
+  return process.env[key] || defaultValue || ""
 }
 
 /**
@@ -106,13 +41,14 @@ export function requireEnv(key: string): string {
 /**
  * 获取数字类型的环境变量
  */
-export function getEnvNumber(key: string, defaultValue?: number): number | undefined {
+export function getEnvNumber(key: string, defaultValue: number): number {
   const value = process.env[key]
   if (!value) return defaultValue
   
   const parsed = parseInt(value, 10)
   if (isNaN(parsed)) {
-    throw new Error(`Environment variable ${key} is not a valid number: ${value}`)
+    console.warn(`Environment variable ${key} is not a valid number: ${value}, using default: ${defaultValue}`)
+    return defaultValue
   }
   return parsed
 }
@@ -120,7 +56,7 @@ export function getEnvNumber(key: string, defaultValue?: number): number | undef
 /**
  * 获取布尔类型的环境变量
  */
-export function getEnvBoolean(key: string, defaultValue?: boolean): boolean | undefined {
+export function getEnvBoolean(key: string, defaultValue: boolean = false): boolean {
   const value = process.env[key]
   if (!value) return defaultValue
   
@@ -131,7 +67,7 @@ export function getEnvBoolean(key: string, defaultValue?: boolean): boolean | un
 /**
  * 获取数组类型的环境变量（逗号分隔）
  */
-export function getEnvArray(key: string, defaultValue?: string[]): string[] | undefined {
+export function getEnvArray(key: string, defaultValue: string[] = []): string[] {
   const value = process.env[key]
   if (!value) return defaultValue
   

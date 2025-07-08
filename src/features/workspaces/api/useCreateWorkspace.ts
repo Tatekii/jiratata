@@ -16,7 +16,6 @@ export const useCreateWorkspace = () => {
 
 	const mutation = useMutation<ResponseSuccessType, ResponseFailType, RequestType>({
 		mutationFn: async ({ json }) => {
-
 			const response = await client.api.workspaces["$post"]({ json })
 
 			if (!response.ok) {

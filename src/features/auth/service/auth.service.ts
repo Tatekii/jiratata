@@ -13,9 +13,11 @@ import {
   revokeAllUserTokens
 } from "@/lib/hono-jwt"
 import sessionsService from "./sessions.service"
+import oauthService from "./oauth.service"
 
 const app = new Hono<{ Variables: AppVariables }>()
 	.route("/", sessionsService)
+	.route("/oauth", oauthService)
 	.get("/current", authSessionMiddleware, async (c) => {
 		const user = c.get("user")
 		return c.json({ data: user })

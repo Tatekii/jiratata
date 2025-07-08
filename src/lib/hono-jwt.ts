@@ -1,3 +1,4 @@
+"use server"
 import { sign, verify, decode } from "hono/jwt"
 import { Token, TokenType, TokenStatus, IDeviceInfo } from "@/models/token"
 import type { IToken } from "@/models/token"

@@ -1,7 +1,7 @@
 "use client"
 
 import { Loader, LogOut } from "lucide-react"
-import { Avatar, AvatarFallback } from "@/components/ui/avatar"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import useLogout from "../api/useLogout"
 import useCurrent from "../api/useCurrent"
@@ -26,7 +26,7 @@ export const UserButton = () => {
 		return null
 	}
 
-	const { name, email } = user
+	const { name, email, avatar } = user
 
 	const avatarFallback = name ? name.charAt(0).toUpperCase() : email.charAt(0).toUpperCase() ?? "U"
 
@@ -34,6 +34,7 @@ export const UserButton = () => {
 		<DropdownMenu modal={false}>
 			<DropdownMenuTrigger className="outline-none relative" data-testid="user-button">
 				<Avatar className="size-10 hover:opacity-75 transition border border-neutral-300">
+					<AvatarImage src={avatar} />
 					<AvatarFallback className="bg-neutral-200 font-medium text-neutral-500 flex items-center justify-center">
 						{avatarFallback}
 					</AvatarFallback>
@@ -42,6 +43,7 @@ export const UserButton = () => {
 			<DropdownMenuContent align="end" side="bottom" className="w-60" sideOffset={10}>
 				<div className="flex flex-col items-center justify-center gap-2 px-2.5 py-4">
 					<Avatar className="size-[52px] border border-neutral-300">
+						<AvatarImage src={avatar} />
 						<AvatarFallback className="bg-neutral-200 text-xl font-medium text-neutral-500 flex items-center justify-center">
 							{avatarFallback}
 						</AvatarFallback>
