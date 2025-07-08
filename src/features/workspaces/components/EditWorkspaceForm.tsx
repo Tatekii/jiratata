@@ -11,7 +11,7 @@ import useConfirm from "@/hooks/useConfirm"
 import { DottedSeparator } from "@/components/DottedSeparator"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 
-import { EMemberRole, MemberRoleType } from "@/features/types"
+import { EMemberRole, IClientWorkspace, MemberRoleType } from "@/features/types"
 import { buildUpdateWorkspaceSchema } from "../schema"
 import { useDictionary } from "@/context/DictionaryProvider"
 import { useMemo, useState } from "react"
@@ -21,11 +21,10 @@ import { Input } from "@/components/ui/input"
 import { toast } from "sonner"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import CommonNameImageForm from "@/components/CommonNameImageForm"
-import { IMongoWorkspace } from "@/models"
 
 interface EditWorkspaceFormProps {
 	onCancel?: () => void
-	initialValues: IMongoWorkspace
+	initialValues: IClientWorkspace
 }
 
 const EditWorkspaceForm = ({ onCancel, initialValues }: EditWorkspaceFormProps) => {

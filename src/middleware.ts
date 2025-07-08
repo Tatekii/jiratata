@@ -22,7 +22,6 @@ export function getLocale(request: NextRequest): string | undefined {
 	return locale
 }
 
-
 export function middleware(request: NextRequest) {
 	const pathname = request.nextUrl.pathname
 	const search = request.nextUrl.search
@@ -49,19 +48,17 @@ export function middleware(request: NextRequest) {
 
 		// e.g. incoming request is /products
 		// The new URL is now /en-US/products
+		console.log("missing locale", pathname)
 
-		console.log('missing locale',pathname);
-		
 		return NextResponse.redirect(
 			new URL(`/${locale}${pathname.startsWith("/") ? "" : "/"}${pathname}${search}`, request.url)
 		)
 	}
+
+	return NextResponse.next()
 }
 
 export const config = {
 	// Matcher ignoring `/_next/` and `/api/`
-	matcher: [
-		"/((?!api/|_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt|image/logo.svg).*)"
-
-	]
+	matcher: ["/((?!api/|_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt|image/logo.svg).*)"],
 }

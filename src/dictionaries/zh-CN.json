@@ -2,6 +2,10 @@
 	"error": {
 		"title": "Oops,出错了"
 	},
+	"notfound": {
+		"title": "页面未找到",
+		"description": "您访问的页面不存在或已被删除"
+	},
 	"returnhome": "返回首页",
 	"auth": {
 		"signin": "登陆",

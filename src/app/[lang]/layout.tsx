@@ -1,7 +1,4 @@
 import { i18n, type Locale } from "../../lib/i18n-config"
-import type { Metadata } from "next"
-import { Inter } from "next/font/google"
-import { cn } from "@/lib/utils"
 import "../globals.css"
 import DictionaryProvider from "@/context/DictionaryProvider"
 import { getDictionary } from "@/lib/get-dictionary"
@@ -12,18 +9,11 @@ import { Toaster } from "sonner"
 import { Suspense } from "react"
 import { Version } from "@/components/Version"
 
-const inter = Inter({ subsets: ["latin"] })
-
-export const metadata: Metadata = {
-	title: "Jiratata",
-	description: "Siyn's jira clone but add i18n and customized",
-}
-
 export async function generateStaticParams() {
 	return i18n.locales.map((locale) => ({ lang: locale }))
 }
 
-export default async function RootLayout({
+export default async function LangLayout({
 	children,
 	params,
 }: Readonly<{
@@ -35,20 +25,16 @@ export default async function RootLayout({
 	const dictionary = await getDictionary(lang)
 
 	return (
-		<html lang={lang}>
-			<body className={cn(inter.className, "antialiased min-h-screen")}>
-				<LocaleProvider locale={lang}>
-					<DictionaryProvider dictionary={dictionary}>
-						<QueryProvider>
-							<Toaster />
-							<NuqsAdapter>
-								<Suspense>{children}</Suspense>
-							</NuqsAdapter>
-							<Version/>
-						</QueryProvider>
-					</DictionaryProvider>
-				</LocaleProvider>
-			</body>
-		</html>
+		<LocaleProvider locale={lang}>
+			<DictionaryProvider dictionary={dictionary}>
+				<QueryProvider>
+					<Toaster />
+					<NuqsAdapter>
+						<Suspense>{children}</Suspense>
+					</NuqsAdapter>
+					<Version />
+				</QueryProvider>
+			</DictionaryProvider>
+		</LocaleProvider>
 	)
 }

@@ -82,3 +82,8 @@ export interface IClientDocuments<T> {
 	documents: T[]
 	total: number
 }
+// OAuth提供商枚举
+export enum OAuthProvider {
+	GOOGLE = "google",
+	GITHUB = "github"
+}

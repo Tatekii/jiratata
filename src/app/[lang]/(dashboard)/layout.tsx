@@ -7,6 +7,7 @@ import { CreateWorkspaceModal } from "@/features/workspaces/components/CreateWor
 import { PropsWithChildren } from "react"
 
 const DashboardLayout = async ({ children }: PropsWithChildren) => {
+
 	return (
 		<div className="min-h-screen">
 			<CreateWorkspaceModal />

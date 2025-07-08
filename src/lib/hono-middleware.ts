@@ -15,6 +15,7 @@ import Negotiator from "negotiator"
 import { ZodObject, ZodEffects, z } from "zod"
 import { getDictionary } from "./get-dictionary"
 import { i18n, Locale } from "./i18n-config"
+import { IAuthUserInfo } from "@/app/api/[[...route]]/route"
 
 export const authSessionMiddleware = createMiddleware(async (c, next) => {
 	try {
@@ -47,7 +48,8 @@ export const authSessionMiddleware = createMiddleware(async (c, next) => {
 			avatar: user.avatar,
 			createdAt: user.createdAt,
 			updatedAt: user.updatedAt,
-		})
+			oauthProvider: user.oauthAccounts?.map((o) => o.provider),
+		} as IAuthUserInfo)
 
 		await next()
 	} catch {

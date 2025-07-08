@@ -10,10 +10,16 @@ import projectService from "@/features/projects/service"
 import taskService from "@/features/tasks/service"
 import { TDictionary } from "@/context/DictionaryProvider"
 import { IClientUser } from "@/features/types"
+import { OAuthProvider } from "@/features/types"
+
+
+export interface IAuthUserInfo extends IClientUser {
+	oauthProvider: OAuthProvider[]
+}
 
 export type AppVariables = {
 	dic: TDictionary
-	user: IClientUser
+	user: IAuthUserInfo
 }
 
 const app = new Hono<{ Variables: AppVariables }>().basePath("/api")

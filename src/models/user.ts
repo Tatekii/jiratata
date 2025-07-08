@@ -2,12 +2,7 @@ import "server-only"
 import mongoose from "mongoose"
 import bcrypt from "bcrypt"
 import { IClientUser } from "@/features/types"
-
-// OAuth提供商枚举
-export enum OAuthProvider {
-	GOOGLE = "google",
-	GITHUB = "github",
-}
+import { OAuthProvider } from "@/features/types"
 
 // OAuth账户接口
 export interface IOAuthAccount {

@@ -1,10 +1,10 @@
 import "server-only"
 import { Octokit } from "@octokit/rest"
 import { google } from "googleapis"
-import { User, OAuthProvider } from "@/models"
+import { User } from "@/models"
 import { connectToDatabase } from "@/lib/mongodb"
 import { createTokenPair, TokenGenerationResult } from "@/lib/hono-jwt"
-import { IClientUser } from "@/features/types"
+import { IClientUser, OAuthProvider } from "@/features/types"
 import { APP_URI, GITHUB_CLIENT_ID, GITHUB_CLIENT_SECRET, GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET } from "@/config"
 
 export const OAuthCallbackUrl = {
@@ -337,3 +337,4 @@ export async function exchangeGoogleCode(code: string, redirectUri: string): Pro
 		throw new Error("Google登录失败")
 	}
 }
+

@@ -1,6 +1,6 @@
 "use client"
 
-import { Loader, LogOut } from "lucide-react"
+import { Github, Loader, LogOut } from "lucide-react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import useLogout from "../api/useLogout"
@@ -8,6 +8,7 @@ import useCurrent from "../api/useCurrent"
 import { DottedSeparator } from "@/components/DottedSeparator"
 import { useDictionary } from "@/context/DictionaryProvider"
 import LocaleSwitcher from "@/components/LocaleSwitcher"
+import { OAuthProvider } from "@/features/types"
 
 export const UserButton = () => {
 	const { mutate: logout } = useLogout()
@@ -59,6 +60,10 @@ export const UserButton = () => {
 					<div>{dic.chooselang}:</div>
 					<LocaleSwitcher />
 				</div>
+				<DottedSeparator className="mb-1" />
+
+				<div>{user.oauthProvider.includes(OAuthProvider.GITHUB) ? <Github /> : null}</div>
+
 				<DottedSeparator className="mb-1" />
 				<DropdownMenuItem
 					onClick={() => logout()}
