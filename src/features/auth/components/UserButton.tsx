@@ -1,6 +1,6 @@
 "use client"
 
-import { Github, Loader, LogOut } from "lucide-react"
+import { Loader, LogOut } from "lucide-react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import useLogout from "../api/useLogout"
@@ -9,6 +9,7 @@ import { DottedSeparator } from "@/components/DottedSeparator"
 import { useDictionary } from "@/context/DictionaryProvider"
 import LocaleSwitcher from "@/components/LocaleSwitcher"
 import { OAuthProvider } from "@/features/types"
+import { FaGithub, FaGoogle } from "react-icons/fa"
 
 export const UserButton = () => {
 	const { mutate: logout } = useLogout()
@@ -49,9 +50,17 @@ export const UserButton = () => {
 							{avatarFallback}
 						</AvatarFallback>
 					</Avatar>
-					<div className="flex flex-col items-center justify-center">
+					<div className="flex flex-col items-center justify-center gap-2">
 						<p className="text-sm font-medium text-neutral-900">{name || "User"}</p>
 						<p className="text-xs text-neutral-500">{email}</p>
+						<div className="px-4 flex justify-between gap-4 text-xl">
+							{user.oauthProvider.includes(OAuthProvider.GITHUB) ? (
+								<FaGithub className="text-blue-900" />
+							) : null}
+							{user.oauthProvider.includes(OAuthProvider.GOOGLE) ? (
+								<FaGoogle className="text-red-500" />
+							) : null}
+						</div>
 					</div>
 				</div>
 				<DottedSeparator />
@@ -60,9 +69,6 @@ export const UserButton = () => {
 					<div>{dic.chooselang}:</div>
 					<LocaleSwitcher />
 				</div>
-				<DottedSeparator className="mb-1" />
-
-				<div>{user.oauthProvider.includes(OAuthProvider.GITHUB) ? <Github /> : null}</div>
 
 				<DottedSeparator className="mb-1" />
 				<DropdownMenuItem
