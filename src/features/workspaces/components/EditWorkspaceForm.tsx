@@ -57,7 +57,6 @@ const EditWorkspaceForm = ({ onCancel, initialValues }: EditWorkspaceFormProps) 
 		resolver: zodResolver(updateWorkspaceSchema),
 		defaultValues: {
 			...initialValues,
-			image: initialValues.imageUrl ?? "",
 		},
 	})
 
@@ -89,14 +88,9 @@ const EditWorkspaceForm = ({ onCancel, initialValues }: EditWorkspaceFormProps) 
 	//   };
 
 	const onSubmit = (values: z.infer<typeof updateWorkspaceSchema>) => {
-		const finalValues = {
-			...values,
-			image: values.image instanceof File ? values.image : "",
-		}
-
 		updateWorkspace(
 			{
-				json: finalValues,
+				form: values,
 				param: { workspaceId: initialValues._id },
 			},
 			{

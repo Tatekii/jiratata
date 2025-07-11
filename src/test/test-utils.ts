@@ -28,7 +28,7 @@ export const mockWorkspace = {
   _id: '67890abcdef123456789014',
   name: 'Test Workspace',
   userId: mockUser._id,
-  imageUrl: 'https://example.com/image.jpg',
+  image: 'https://example.com/image.jpg',
   inviteCode: 'ABC123DEF456',
   createdAt: new Date(),
   updatedAt: new Date(),

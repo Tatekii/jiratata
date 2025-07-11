@@ -2,20 +2,20 @@ import React from "react"
 import { useRouter } from "next/navigation"
 
 import { cn } from "@/lib/utils"
-import { ETaskStatus, IMember, IProject } from "@/features/types"
+import { ETaskStatus, IClientProject, IClientUser, TaskStatusType } from "@/features/types"
 import useWorkspaceId from "@/features/workspaces/hooks/useWorkspaceId"
 import MemberAvatar from "@/features/members/components/MemberAvatar"
 import ProjectAvatar from "@/features/projects/components/ProjectAvatar"
 
 interface EventCardProps {
 	title: string
-	assignee: IMember
-	project: IProject
-	status: ETaskStatus
+	assignee: IClientUser & Pick<IClientUser, "name" | "email">
+	project: IClientProject
+	status: TaskStatusType
 	id: string
 }
 
-const statusColorMap: Record<ETaskStatus, string> = {
+const statusColorMap: Record<TaskStatusType, string> = {
 	[ETaskStatus.BACKLOG]: "border-l-pink-500",
 	[ETaskStatus.TODO]: "border-l-red-500",
 	[ETaskStatus.IN_PROGRESS]: "border-l-yellow-500",
@@ -46,7 +46,7 @@ const EventCard = ({ title, assignee, project, status, id }: EventCardProps) => 
 				<div className="flex items-center gap-x-1">
 					<MemberAvatar name={assignee?.name} />
 					<div className="size-1 rounded-full bg-neutral-300" />
-					<ProjectAvatar name={project?.name} image={project?.imageUrl} />
+					<ProjectAvatar name={project?.name} image={project?.image} />
 				</div>
 			</div>
 		</div>

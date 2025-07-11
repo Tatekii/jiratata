@@ -97,7 +97,7 @@ export const getUserWorkspaces = async (userId: string): Promise<IClientWorkspac
 			$project: {
 				_id: 1,
 				name: 1,
-				imageUrl: 1,
+				image: 1,
 				inviteCode: 1,
 				createdAt: 1,
 				updatedAt: 1,
@@ -124,14 +124,14 @@ export const getUserWorkspaces = async (userId: string): Promise<IClientWorkspac
 export const getWorkspaceById = async (workspaceId: string) => {
 	await connectToDatabase()
 
-	return await Workspace.findById(workspaceId)
+	return await Workspace.findById(workspaceId).lean()
 }
 
 // 创建工作区
 export const createWorkspace = async (data: {
 	name: string
 	userId: string
-	imageUrl?: string
+	image?: string
 }): Promise<IClientWorkspaceWithUserInfo | null> => {
 	await connectToDatabase()
 
@@ -140,7 +140,7 @@ export const createWorkspace = async (data: {
 		const workspace = new Workspace({
 			name: data.name,
 			userId: new mongoose.Types.ObjectId(data.userId),
-			imageUrl: data.imageUrl,
+			image: data.image,
 			inviteCode: generateInviteCode(),
 		})
 
@@ -173,7 +173,7 @@ export const createWorkspace = async (data: {
 				$project: {
 					_id: 1,
 					name: 1,
-					imageUrl: 1,
+					image: 1,
 					inviteCode: 1,
 					createdAt: 1,
 					updatedAt: 1,
@@ -211,7 +211,7 @@ export const updateWorkspace = async (
 	workspaceId: string,
 	updates: {
 		name?: string
-		imageUrl?: string
+		image?: File | string // TODO image
 	}
 ) => {
 	await connectToDatabase()
@@ -253,7 +253,7 @@ export const updateWorkspace = async (
 			$project: {
 				_id: 1,
 				name: 1,
-				imageUrl: 1,
+				image: 1,
 				inviteCode: 1,
 				createdAt: 1,
 				updatedAt: 1,
@@ -316,7 +316,7 @@ export const joinWorkspaceByInviteCode = async (
 		{
 			$match: {
 				_id: new mongoose.Types.ObjectId(workspaceId),
-				inviteCode
+				inviteCode,
 			},
 		},
 	])

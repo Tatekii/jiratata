@@ -22,6 +22,7 @@ import mongoose from "mongoose"
 import { zValidator } from "@hono/zod-validator"
 import { z } from "zod"
 import { EMemberRole } from "@/features/types"
+import { compressImageFromFormData, COMPRESSION_PRESETS } from "@/lib/image-utils"
 
 const app = new Hono<{ Variables: AppVariables }>()
 	// 获取用户的所有工作区
@@ -98,17 +99,34 @@ const app = new Hono<{ Variables: AppVariables }>()
 		"/",
 		authSessionMiddleware,
 		localeMiddleware,
-		localeValidatorMiddleware("json", buildCreateWorkspaceSchema),
+		localeValidatorMiddleware("form", buildCreateWorkspaceSchema),
 		async (c) => {
 			try {
 				const user = c.get("user")
-				const { name, image } = c.req.valid("json")
+				const { name, image } = c.req.valid("form")
 
-				// FIXME image上传
+				// 处理图片压缩
+				let compressedImage: string | undefined
+				if (image) {
+					try {
+						const result = await compressImageFromFormData(
+							await c.req.formData(),
+							'image',
+							COMPRESSION_PRESETS.workspace
+						)
+						if (result) {
+							compressedImage = result
+						}
+					} catch (error) {
+						console.error("图片压缩失败:", error)
+						return c.json({ error: "图片处理失败" }, 400)
+					}
+				}
+
 				const workspace = await createWorkspace({
 					name,
 					userId: user._id!.toString(),
-					imageUrl: typeof image === "string" ? image : "",
+					image: compressedImage,
 				})
 
 				return c.json({ data: workspace })
@@ -124,12 +142,12 @@ const app = new Hono<{ Variables: AppVariables }>()
 		"/:workspaceId",
 		authSessionMiddleware,
 		localeMiddleware,
-		localeValidatorMiddleware("json", buildUpdateWorkspaceSchema),
+		localeValidatorMiddleware("form", buildUpdateWorkspaceSchema),
 		async (c) => {
 			try {
 				const user = c.get("user")
 				const { workspaceId } = c.req.param()
-				const updates = c.req.valid("json")
+				const { name, image } = c.req.valid("form")
 
 				// 验证ObjectId格式
 				if (!mongoose.Types.ObjectId.isValid(workspaceId)) {
@@ -143,7 +161,28 @@ const app = new Hono<{ Variables: AppVariables }>()
 					return c.json({ error: "无权限修改该工作区" }, 403)
 				}
 
-				const workspace = await updateWorkspace(workspaceId, updates)
+				// 处理图片压缩
+				const processedUpdates: { name?: string; image?: string } = {}
+				
+				if (name) processedUpdates.name = name
+				
+				if (image) {
+					try {
+						const result = await compressImageFromFormData(
+							await c.req.formData(),
+							'image',
+							COMPRESSION_PRESETS.workspace
+						)
+						if (result) {
+							processedUpdates.image = result
+						}
+					} catch (error) {
+						console.error("图片压缩失败:", error)
+						return c.json({ error: "图片处理失败" }, 400)
+					}
+				}
+
+				const workspace = await updateWorkspace(workspaceId, processedUpdates)
 
 				if (!workspace) {
 					return c.json({ error: "工作区不存在" }, 404)

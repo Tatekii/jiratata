@@ -1,8 +1,9 @@
 import { describe, it, expect, vi, beforeEach } from "vitest"
 import { authenticateWithGitHub, authenticateWithGoogle } from "@/lib/oauth-providers"
-import { User, OAuthProvider } from "@/models"
+import { User } from "@/models"
 import { connectToDatabase } from "@/lib/mongodb"
 import { createTokenPair } from "@/lib/hono-jwt"
+import { OAuthProvider } from "@/features/types"
 
 // Mock dependencies
 vi.mock("@/lib/mongodb", () => ({
@@ -151,7 +152,7 @@ describe("OAuth Service", () => {
 					email: "existing@example.com",
 					avatar_url: "https://avatar.url",
 				},
-			} as any)
+			})
 
 			const result = await authenticateWithGitHub("mock_token")
 

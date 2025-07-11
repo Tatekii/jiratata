@@ -13,6 +13,7 @@ import { ImageIcon } from "lucide-react"
 import { Button } from "./ui/button"
 import { cn } from "@/lib/utils"
 import { useDictionary } from "@/context/DictionaryProvider"
+import { toast } from "sonner"
 
 interface ICommonNameImageFormProps {
 	nameText: string
@@ -45,7 +46,24 @@ const CommonNameImageForm = ({
 
 	const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const file = e.target.files?.[0]
+
 		if (file) {
+			// 限制文件大小为 200kb（服务端会进一步压缩）
+			const maxSize = (1 / 5) * 1024 * 1024
+			if (file.size > maxSize) {
+				toast.error(dic.form.iconnotice)
+				e.target.value = "" // 清空选择
+				return
+			}
+
+			// 检查文件类型
+			const allowedTypes = ["image/jpeg", "image/png", "image/jpg", "image/webp"]
+			if (!allowedTypes.includes(file.type)) {
+				toast.error(dic.form.iconnotice)
+				e.target.value = ""
+				return
+			}
+
 			form.setValue("image", file)
 		}
 	}

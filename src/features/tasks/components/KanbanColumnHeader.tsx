@@ -7,15 +7,15 @@ import {
 } from "lucide-react"
 
 import { snakeCaseToTitleCase } from "@/lib/utils"
-import { ETaskStatus } from "@/features/types"
+import { ETaskStatus, TaskStatusType } from "@/features/types"
 // import useCreateTaskModal from "../hooks/useCreateTaskModal"
 
 interface KanbanColumnHeaderProps {
-	board: ETaskStatus
+	board: TaskStatusType
 	taskCount: number
 }
 
-const statusIconMap: Record<ETaskStatus, React.ReactNode> = {
+const statusIconMap: Record<TaskStatusType, React.ReactNode> = {
 	[ETaskStatus.BACKLOG]: <CircleDashedIcon className="size-[18px] text-pink-400" />,
 	[ETaskStatus.TODO]: <CircleIcon className="size-[18px] text-red-400" />,
 	[ETaskStatus.IN_PROGRESS]: <CircleDotDashedIcon className="size-[18px] text-yellow-400" />,

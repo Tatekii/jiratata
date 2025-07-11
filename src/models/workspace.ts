@@ -21,7 +21,7 @@ const workspaceSchema = new mongoose.Schema<IMongoWorkspace>(
 			ref: "User",
 			required: [true, "用户ID是必须的"],
 		},
-		imageUrl: {
+		image: {
 			type: String,
 			default: null,
 		},

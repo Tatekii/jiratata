@@ -14,14 +14,14 @@ import { DottedSeparator } from "@/components/DottedSeparator"
 import { useUpdateProject } from "../api/useUpdateProject"
 import { buildUpdateProjectSchema } from "../schema"
 import useDeleteProject from "../api/useDeleteProject"
-import { IProject } from "@/features/types"
 import useConfirm from "@/hooks/useConfirm"
 import { useDictionary } from "@/context/DictionaryProvider"
 import CommonNameImageForm from "@/components/CommonNameImageForm"
+import { IClientProject } from "@/features/types"
 
 interface EditProjectFormProps {
 	onCancel?: () => void
-	initialValues: IProject
+	initialValues: IClientProject
 }
 
 export const EditProjectForm = ({ onCancel, initialValues }: EditProjectFormProps) => {
@@ -40,7 +40,7 @@ export const EditProjectForm = ({ onCancel, initialValues }: EditProjectFormProp
 		resolver: zodResolver(updateProjectSchema),
 		defaultValues: {
 			...initialValues,
-			image: initialValues.imageUrl ?? "",
+			image: initialValues.image ?? "",
 		},
 	})
 
@@ -63,8 +63,7 @@ export const EditProjectForm = ({ onCancel, initialValues }: EditProjectFormProp
 
 	const onSubmit = (values: z.infer<typeof updateProjectSchema>) => {
 		const finalValues = {
-			...values,
-			image: values.image instanceof File ? values.image : "",
+			...values
 		}
 
 		mutate({

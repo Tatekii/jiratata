@@ -155,6 +155,7 @@ const app = new Hono<{ Variables: AppVariables }>()
 
 			// 使用 aggregate 管道获取任务详情
 			const taskData = await getTaskById(taskId)
+			
 			if (!taskData) {
 				return c.json({ error: "任务不存在" }, 404)
 			}

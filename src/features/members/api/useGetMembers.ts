@@ -2,9 +2,6 @@ import { useQuery } from "@tanstack/react-query"
 
 import { client } from "@/lib/rpc"
 import { useDictionary } from "@/context/DictionaryProvider"
-import { extractDataFromResponse } from "@/lib/utils"
-import { IClientDocuments } from "@/features/types"
-import { IClientMemberWithUserInfo } from "../utils"
 
 interface UseGetMembersProps {
 	workspaceId: string
@@ -21,7 +18,9 @@ const useGetMembers = ({ workspaceId }: UseGetMembersProps) => {
 				throw new Error(dic.members.fetch.error)
 			}
 
-			return extractDataFromResponse<IClientDocuments<IClientMemberWithUserInfo>>(await response.json())
+			const { data } = await response.json()
+
+			return data
 		},
 	})
 

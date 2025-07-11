@@ -36,13 +36,8 @@ const CreateWorkspaceForm = ({ onCancel }: CreateWorkspaceFormProps) => {
 	})
 
 	const onSubmit = (values: z.infer<typeof createWorkspaceSchema>) => {
-		const finalValues = {
-			...values,
-			image: values.image instanceof File ? values.image : "",
-		}
-
 		mutate(
-			{ json: finalValues },
+			{ form: values },
 			{
 				onSuccess: ({ data }) => {
 					if (data) {

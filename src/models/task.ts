@@ -4,11 +4,12 @@ import mongoose from "mongoose"
 
 // 任务模型接口
 export interface IMongoTask
-	extends Omit<IClientTask, "workspaceId" | "projectId" | "assigneeId">,
+	extends Omit<IClientTask, "workspaceId" | "projectId" | "assigneeId" | "dueDate">,
 		mongoose.Document<string> {
 	workspaceId: mongoose.Types.ObjectId
 	projectId: mongoose.Types.ObjectId
 	assigneeId: mongoose.Types.ObjectId
+	dueDate: Date
 }
 
 // 任务模式定义
@@ -66,7 +67,7 @@ taskSchema.index({ projectId: 1, status: 1 })
 taskSchema.index({ assigneeId: 1, status: 1 })
 
 // 确保这是第一次编译模型 - 已存在则复用，否则新建
-export const Task = (mongoose.models.Task as mongoose.Model<IMongoTask>) || 
-  mongoose.model<IMongoTask>('Task', taskSchema);
+export const Task =
+	(mongoose.models.Task as mongoose.Model<IMongoTask>) || mongoose.model<IMongoTask>("Task", taskSchema)
 
 export default Task

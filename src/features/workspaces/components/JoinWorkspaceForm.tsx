@@ -48,7 +48,7 @@ const JoinWorkspaceForm = ({ initialValues }: JoinWorkspaceFormProps) => {
 			<CardHeader className="p-7">
 				<CardTitle className="text-xl font-bold flex justify-between">
 					{dic.workspaces.join.name}{" "}
-					<WorkspaceAvatar name={initialValues?.name || ""} image={initialValues?.imageUrl} />
+					<WorkspaceAvatar name={initialValues?.name || ""} image={initialValues?.image} />
 				</CardTitle>
 				<CardDescription>
 					{dic.workspaces.join.notice} <strong>{initialValues?.name}</strong> {dic.workspaces.name}

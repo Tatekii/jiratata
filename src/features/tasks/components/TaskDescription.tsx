@@ -5,11 +5,11 @@ import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { useUpdateTask } from "../api/useUpdateTask"
 import { DottedSeparator } from "@/components/DottedSeparator"
-import { ITask } from "@/features/types"
+import { IClientTaskWithDetail } from "@/features/types"
 import { useDictionary } from "@/context/DictionaryProvider"
 
 interface TaskDescriptionProps {
-	task: ITask
+	task: IClientTaskWithDetail
 }
 
 const TaskDescription = ({ task }: TaskDescriptionProps) => {

@@ -137,7 +137,7 @@ export const getTasks = async (query: TaskQuery) => {
 						in: {
 							_id: "$$proj._id",
 							name: "$$proj.name",
-							imageUrl: "$$proj.imageUrl",
+							image: "$$proj.image",
 						},
 					},
 				},
@@ -298,7 +298,7 @@ export const updateTask = async (
 						in: {
 							_id: "$$proj._id",
 							name: "$$proj.name",
-							imageUrl: "$$proj.imageUrl",
+							image: "$$proj.image",
 						},
 					},
 				},
@@ -378,7 +378,7 @@ export const checkTaskAccess = async (taskId: string, userId: string): Promise<b
 export const getTaskById = async (taskId: string) => {
 	await connectToDatabase()
 
-	const result = await Task.aggregate([
+	const result = await Task.aggregate<IClientTaskWithDetail>([
 		// 匹配指定的任务
 		{ $match: { _id: new mongoose.Types.ObjectId(taskId) } },
 

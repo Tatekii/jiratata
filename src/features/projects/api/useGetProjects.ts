@@ -2,8 +2,6 @@ import { useQuery } from "@tanstack/react-query"
 
 import { client } from "@/lib/rpc"
 import { useDictionary } from "@/context/DictionaryProvider"
-import { extractDataFromResponse } from "@/lib/utils"
-import { IClientDocuments, IClientProject } from "@/features/types"
 
 interface UseGetProjectsProps {
 	workspaceId: string
@@ -22,7 +20,9 @@ const useGetProjects = ({ workspaceId }: UseGetProjectsProps) => {
 				throw new Error(dic.projects.fetch.error)
 			}
 
-			return extractDataFromResponse<IClientDocuments<IClientProject>>(await response.json())
+			const { data } = await response.json()
+
+			return data
 		},
 	})
 

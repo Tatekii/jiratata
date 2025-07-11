@@ -16,14 +16,14 @@ import { cn } from "@/lib/utils"
 import { useCreateTask } from "../api/useCreateTask"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { ETaskStatus } from "@/features/types"
+import { ETaskStatus, IClientProject } from "@/features/types"
 import { Button } from "@/components/ui/button"
 import { useForm } from "react-hook-form"
 import useProjectId from "@/features/projects/hooks/useProjectId"
 
 interface CreateTaskFormProps {
 	onCancel?: () => void
-	projectOptions: { id: string; name: string; imageUrl?: string }[]
+	projectOptions: Pick<IClientProject, "_id" | "name" | "image">[]
 	memberOptions: { id: string; name: string }[]
 }
 
@@ -177,12 +177,12 @@ const CreateTaskForm = ({ onCancel, projectOptions, memberOptions }: CreateTaskF
 											<FormMessage />
 											<SelectContent>
 												{projectOptions.map((project) => (
-													<SelectItem key={project.id} value={project.id}>
+													<SelectItem key={project._id} value={project._id}>
 														<div className="flex items-center gap-x-2">
 															<ProjectAvatar
 																className="size-6"
 																name={project.name}
-																image={project.imageUrl}
+																image={project.image}
 															/>
 															{project.name}
 														</div>

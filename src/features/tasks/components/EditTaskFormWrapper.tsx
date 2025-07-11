@@ -25,12 +25,12 @@ const EditTaskFormWrapper = ({ onCancel, id }: EditTaskFormWrapperProps) => {
 	const projectOptions = projects?.documents.map((project) => ({
 		id: project._id,
 		name: project.name,
-		imageUrl: project.imageUrl,
+		image: project.image,
 	}))
 
 	const memberOptions = members?.documents.map((project) => ({
 		id: project._id,
-		name: project.name,
+		name: project.user.name,
 	}))
 
 	const isLoading = isLoadingProjects || isLoadingMembers || isLoadingTask

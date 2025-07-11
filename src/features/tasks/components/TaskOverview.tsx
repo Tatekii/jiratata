@@ -1,6 +1,6 @@
 import { PencilIcon } from "lucide-react"
 import useEditTaskModal from "../hooks/useEditTaskModal"
-import { ITask } from "@/features/types"
+import { IClientTaskWithDetail } from "@/features/types"
 import { Button } from "@/components/ui/button"
 import { useDictionary } from "@/context/DictionaryProvider"
 import { DottedSeparator } from "@/components/DottedSeparator"
@@ -10,7 +10,7 @@ import TaskDate from "./TaskDate"
 import MemberAvatar from "@/features/members/components/MemberAvatar"
 
 interface TaskOverviewProps {
-	task: ITask
+	task: IClientTaskWithDetail
 }
 
 const TaskOverview = ({ task }: TaskOverviewProps) => {

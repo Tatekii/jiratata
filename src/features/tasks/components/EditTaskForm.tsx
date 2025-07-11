@@ -13,7 +13,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useUpdateTask } from "../api/useUpdateTask"
 import { buildCreateTaskSchema } from "../schemas"
 import { useDictionary } from "@/context/DictionaryProvider"
-import { ETaskStatus, ITask } from "@/features/types"
+import { ETaskStatus, IClientTask } from "@/features/types"
 import { DottedSeparator } from "@/components/DottedSeparator"
 import DatePicker from "@/components/DatePicker"
 import MemberAvatar from "@/features/members/components/MemberAvatar"
@@ -21,9 +21,9 @@ import ProjectAvatar from "@/features/projects/components/ProjectAvatar"
 
 interface EditTaskFormProps {
 	onCancel?: () => void
-	projectOptions: { id: string; name: string; imageUrl: string }[]
+	projectOptions: { id: string; name: string; image?: string }[]
 	memberOptions: { id: string; name: string }[]
-	initialValues: ITask
+	initialValues: IClientTask
 }
 
 export const EditTaskForm = ({ onCancel, projectOptions, memberOptions, initialValues }: EditTaskFormProps) => {
@@ -161,7 +161,7 @@ export const EditTaskForm = ({ onCancel, projectOptions, memberOptions, initialV
 															<ProjectAvatar
 																className="size-6"
 																name={project.name}
-																image={project.imageUrl}
+																image={project.image}
 															/>
 															{project.name}
 														</div>

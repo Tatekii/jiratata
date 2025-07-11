@@ -1,9 +1,8 @@
 import { useQuery } from "@tanstack/react-query"
 
 import { client } from "@/lib/rpc"
-import { IClientDocuments, IClientTask, IClientTaskWithDetail, TaskStatusType } from "@/features/types"
+import { TaskStatusType } from "@/features/types"
 import { useDictionary } from "@/context/DictionaryProvider"
-import { extractDataFromResponse } from "@/lib/utils"
 
 interface UseGetTasksProps {
 	workspaceId: string
@@ -34,7 +33,9 @@ const useGetTasks = ({ workspaceId, projectId, status, search, assigneeId, dueDa
 				throw new Error(dic.tasks.fetch.error)
 			}
 
-			return extractDataFromResponse<IClientDocuments<IClientTaskWithDetail>>(await response.json())
+			const { data } = await response.json()
+
+			return data
 		},
 	})
 

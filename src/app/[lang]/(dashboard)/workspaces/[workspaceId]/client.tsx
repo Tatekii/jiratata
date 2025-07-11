@@ -194,7 +194,7 @@ export const ProjectList = ({ data, total }: ProjectListProps) => {
 											className="size-12"
 											fallbackClassName="text-lg"
 											name={project.name}
-											image={project.imageUrl}
+											image={project.image}
 										/>
 										<p className="text-lg font-medium truncate">{project.name}</p>
 									</CardContent>

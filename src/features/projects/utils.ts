@@ -1,51 +1,53 @@
 /**
  * MongoDB版本的项目服务辅助函数
  */
-import { Project, Member, Task, IMongoProject } from "@/models"
+import { Project, Member, Task } from "@/models"
 import { connectToDatabase } from "@/lib/mongodb"
 import mongoose from "mongoose"
-import { ETaskStatus, IProjectAnalytics } from "../types"
+import { ETaskStatus, IClientProject, IProjectAnalytics } from "../types"
 
 // 获取工作区的所有项目
-export const getWorkspaceProjects = async (workspaceId: string): Promise<IMongoProject[] | null> => {
+export const getWorkspaceProjects = async (workspaceId: string) => {
 	await connectToDatabase()
 
-	return await Project.find({
+	return (await Project.find({
 		workspaceId,
-	}).sort({ createdAt: -1 })
+	})
+		.sort({ createdAt: -1 })
+		.lean()) as unknown as IClientProject[]
 }
 
 // 创建项目
-export const createProject = async (data: { name: string; workspaceId: string; imageUrl?: string }) => {
+export const createProject = async (data: Pick<IClientProject, "name" | "workspaceId" | "image">) => {
 	await connectToDatabase()
 
 	const project = new Project({
 		name: data.name,
 		workspaceId: new mongoose.Types.ObjectId(data.workspaceId),
-		imageUrl: data.imageUrl,
+		image: data.image,
 	})
 
-	return await project.save()
+	const savedProject = await project.save()
+	
+	return savedProject.toObject() as unknown as IClientProject
 }
 
 // 获取单个项目
-export const getProjectById = async (projectId: string): Promise<IMongoProject | null> => {
+export const getProjectById = async (projectId: string) => {
 	await connectToDatabase()
 
-	return await Project.findById(projectId)
+	return (await Project.findById(projectId).lean()) as unknown as IClientProject
 }
 
 // 更新项目
-export const updateProject = async (
-	projectId: string,
-	updates: {
-		name?: string
-		imageUrl?: string
-	}
-) => {
+export const updateProject = async (projectId: string, updates: Partial<Pick<IClientProject, "name" | "image">>) => {
 	await connectToDatabase()
 
-	return await Project.findByIdAndUpdate(projectId, { $set: updates }, { new: true })
+	return (await Project.findByIdAndUpdate(
+		projectId,
+		{ $set: updates },
+		{ new: true }
+	).lean()) as unknown as IClientProject
 }
 
 // 删除项目（级联删除任务）
@@ -74,6 +76,7 @@ export const getProjectAnalytics = async (projectId: string, userId: string): Pr
 
 	// 获取项目和成员信息
 	const project = await Project.findById(projectId)
+
 	if (!project) {
 		throw new Error("Project not found")
 	}

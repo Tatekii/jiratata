@@ -35,7 +35,7 @@ const ProjectIdClient = () => {
 		<div className="flex flex-col gap-y-4">
 			<div className="flex items-center justify-between">
 				<div className="flex items-center gap-x-2">
-					<ProjectAvatar name={project.name} image={project.imageUrl} className="size-8" />
+					<ProjectAvatar name={project.name} image={project.image} className="size-8" />
 					<p className="text-lg font-semibold">{project.name}</p>
 				</div>
 				<div>

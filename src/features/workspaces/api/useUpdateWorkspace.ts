@@ -15,8 +15,8 @@ const useUpdateWorkspace = () => {
 	const dic = useDictionary()
 
 	const mutation = useMutation<ResponseSuccessType, ResponseFailType, RequestType>({
-		mutationFn: async ({ json, param }) => {
-			const response = await client.api.workspaces[":workspaceId"]["$patch"]({ json, param })
+		mutationFn: async ({ form, param }) => {
+			const response = await client.api.workspaces[":workspaceId"]["$patch"]({ form, param })
 
 			if (!response.ok) {
 				throw await response.json()

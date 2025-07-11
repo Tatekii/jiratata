@@ -6,14 +6,14 @@ import { ArrowUpDown, MoreVertical } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { snakeCaseToTitleCase } from "@/lib/utils"
-import { ITask } from "@/features/types"
+import { IClientTaskWithDetail } from "@/features/types"
 import ProjectAvatar from "@/features/projects/components/ProjectAvatar"
 import MemberAvatar from "@/features/members/components/MemberAvatar"
 import TaskDate from "./TaskDate"
 import TaskActions from "./TaskAction"
 import { TDictionary } from "@/context/DictionaryProvider"
 
-const TaskColumns: (dic: TDictionary) => ColumnDef<ITask>[] = (dic) => [
+const TaskColumns: (dic: TDictionary) => ColumnDef<IClientTaskWithDetail>[] = (dic) => [
 	{
 		accessorKey: "name",
 		header: ({ column }) => {
@@ -45,7 +45,7 @@ const TaskColumns: (dic: TDictionary) => ColumnDef<ITask>[] = (dic) => [
 
 			return (
 				<div className="flex items-center gap-x-2 text-sm font-medium">
-					<ProjectAvatar className="size-6" name={project.name} image={project.imageUrl} />
+					<ProjectAvatar className="size-6" name={project.name} image={project.image} />
 					<p className="line-clamp-1">{project.name}</p>
 				</div>
 			)

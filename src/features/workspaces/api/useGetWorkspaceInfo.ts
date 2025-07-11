@@ -2,7 +2,6 @@ import { useQuery } from "@tanstack/react-query"
 
 import { client } from "@/lib/rpc"
 import { useDictionary } from "@/context/DictionaryProvider"
-import { extractDataFromResponse } from "@/lib/utils"
 import { IClientWorkspace } from "@/features/types"
 
 interface UseGetWorkspaceInfoProps {
@@ -23,7 +22,9 @@ export const useGetWorkspaceInfo = ({ workspaceId }: UseGetWorkspaceInfoProps) =
 				throw new Error(dic.workspaces.fetch.error)
 			}
 
-			return extractDataFromResponse<IClientWorkspace>(await response.json())
+			const { data } = await response.json()
+
+			return data as unknown as IClientWorkspace
 		},
 	})
 

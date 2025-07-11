@@ -20,7 +20,7 @@ import { DataTable } from "./DataTable"
 import TaekColumns from "./TaskColumns"
 import { useCallback, useMemo } from "react"
 import DataKanban from "./DataKanban"
-import { ETaskStatus } from "@/features/types"
+import { TaskStatusType } from "@/features/types"
 import useBulkUpdateTasks from "../api/useBulkUpdateTasks"
 import { DataCalendar } from "./DataCalendar"
 
@@ -56,7 +56,7 @@ const TaskViewSwitcher = ({ hideProjectFilter }: TaskViewSwitcherProps) => {
 	const { mutate: bulkUpdate } = useBulkUpdateTasks()
 
 	const onKanbanChange = useCallback(
-		(tasks: { _id: string; status: ETaskStatus; position: number }[]) => {
+		(tasks: { _id: string; status: TaskStatusType; position: number }[]) => {
 			bulkUpdate({
 				json: { tasks },
 			})

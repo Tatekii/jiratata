@@ -19,6 +19,8 @@ import {
 	getProjectById,
 } from "../utils"
 import mongoose from "mongoose"
+import { IClientProject } from "@/features/types"
+import { compressImageFromFormData, COMPRESSION_PRESETS } from "@/lib/image-utils"
 
 const app = new Hono<{ Variables: AppVariables }>()
 	// 创建项目
@@ -43,20 +45,30 @@ const app = new Hono<{ Variables: AppVariables }>()
 					return c.json({ error: "Unauthorized" }, 401)
 				}
 
-				// 处理图片上传（简化版本，实际项目中应该实现文件上传服务）
-				let uploadedImageUrl: string | undefined
-				if (typeof image === "string" && image) {
-					uploadedImageUrl = image
+				// 处理图片压缩
+				let compressedImage: string | undefined
+				if (image) {
+					try {
+						const result = await compressImageFromFormData(
+							await c.req.formData(),
+							'image',
+							COMPRESSION_PRESETS.project
+						)
+						compressedImage = result || undefined
+					} catch (error) {
+						console.error("图片压缩失败:", error)
+						return c.json({ error: "图片处理失败" }, 400)
+					}
 				}
-				// TODO: 实现文件上传逻辑，替代AppWrite Storage
 
 				const project = await createProject({
 					name,
 					workspaceId,
-					imageUrl: uploadedImageUrl,
+					image: compressedImage,
 				})
 
 				return c.json({ data: project })
+				
 			} catch (error) {
 				console.error("创建项目失败:", error)
 				return c.json({ error: "创建项目失败" }, 500)
@@ -77,6 +89,7 @@ const app = new Hono<{ Variables: AppVariables }>()
 
 			// 检查用户是否为工作区成员
 			const isMember = await isMemberOfWorkspace(workspaceId, user._id!.toString())
+
 			if (!isMember) {
 				return c.json({ error: "Unauthorized" }, 401)
 			}
@@ -118,11 +131,9 @@ const app = new Hono<{ Variables: AppVariables }>()
 				return c.json({ error: "Unauthorized" }, 401)
 			}
 
-			return c.json(
-				{
-					data: project,
-				}
-			)
+			return c.json({
+				data: project,
+			})
 		} catch (error) {
 			console.error("获取项目失败:", error)
 			return c.json({ error: "获取项目失败" }, 500)
@@ -139,7 +150,7 @@ const app = new Hono<{ Variables: AppVariables }>()
 			try {
 				const user = c.get("user")
 				const { projectId } = c.req.param()
-				const { name, image } = c.req.valid("form")
+				const { name, image:newImage } = c.req.valid("form")
 
 				// 验证ObjectId格式
 				if (!mongoose.Types.ObjectId.isValid(projectId)) {
@@ -152,18 +163,29 @@ const app = new Hono<{ Variables: AppVariables }>()
 					return c.json({ error: "Unauthorized" }, 401)
 				}
 
-				// 处理图片更新
-				let uploadedImageUrl: string | undefined
-				if (typeof image === "string" && image) {
-					uploadedImageUrl = image
-				}
-				// TODO: 实现文件上传逻辑
+				// 处理图片压缩
+				const updates: Partial<Pick<IClientProject, "name" | "image">> = {}
 
-				const updates: { name?: string; imageUrl?: string } = {}
 				if (name) updates.name = name
-				if (uploadedImageUrl !== undefined) updates.imageUrl = uploadedImageUrl
+
+				if (newImage) {
+					try {
+						const compressedImage = await compressImageFromFormData(
+							await c.req.formData(),
+							'image',
+							COMPRESSION_PRESETS.project
+						)
+						if (compressedImage) {
+							updates.image = compressedImage
+						}
+					} catch (error) {
+						console.error("图片压缩失败:", error)
+						return c.json({ error: "图片处理失败" }, 400)
+					}
+				}
 
 				const project = await updateProject(projectId, updates)
+
 				if (!project) {
 					return c.json({ error: "项目不存在" }, 404)
 				}
@@ -215,7 +237,7 @@ const app = new Hono<{ Variables: AppVariables }>()
 
 			// 检查用户权限
 			const hasAccess = await checkProjectAccess(projectId, user._id)
-      
+
 			if (!hasAccess) {
 				return c.json({ error: "Unauthorized" }, 401)
 			}

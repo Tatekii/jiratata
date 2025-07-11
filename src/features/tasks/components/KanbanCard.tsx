@@ -1,4 +1,4 @@
-import { ITask } from "@/features/types"
+import { IClientTaskWithDetail } from "@/features/types"
 import { MoreHorizontal } from "lucide-react"
 import TaskActions from "./TaskAction"
 import { DottedSeparator } from "@/components/DottedSeparator"
@@ -7,7 +7,7 @@ import ProjectAvatar from "@/features/projects/components/ProjectAvatar"
 import TaskDate from "./TaskDate"
 
 interface KanbanCardProps {
-	task: ITask
+	task: IClientTaskWithDetail
 }
 
 const KanbanCard = ({ task }: KanbanCardProps) => {
@@ -26,7 +26,7 @@ const KanbanCard = ({ task }: KanbanCardProps) => {
 				<TaskDate value={task.dueDate} className="text-xs" />
 			</div>
 			<div className="flex items-center gap-x-1.5">
-				<ProjectAvatar name={task.project.name} image={task.project.imageUrl} fallbackClassName="text-[10px]" />
+				<ProjectAvatar name={task.project.name} image={task.project.image} fallbackClassName="text-[10px]" />
 				<span className="text-xs font-medium">{task.project.name}</span>
 			</div>
 		</div>

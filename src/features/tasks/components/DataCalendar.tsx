@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button"
 
 import "react-big-calendar/lib/css/react-big-calendar.css"
 import "./data-calendar.css"
-import { ITask } from "@/features/types"
+import { IClientTaskWithDetail } from "@/features/types"
 import EventCard from "./EventCard"
 
 const locales = {
@@ -25,7 +25,7 @@ const localizer = dateFnsLocalizer({
 })
 
 interface DataCalendarProps {
-	data: ITask[]
+	data: IClientTaskWithDetail[]
 }
 
 interface CustomToolbarProps {

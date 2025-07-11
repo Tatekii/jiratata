@@ -20,7 +20,7 @@ const projectSchema = new mongoose.Schema<IMongoProject>(
 			ref: "Workspace",
 			required: [true, "工作区ID是必须的"],
 		},
-		imageUrl: {
+		image: {
 			type: String,
 			default: null,
 		},

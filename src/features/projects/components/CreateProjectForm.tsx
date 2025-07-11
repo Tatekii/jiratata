@@ -38,8 +38,7 @@ const CreateProjectForm = ({ onCancel }: CreateProjectFormProps) => {
 	const onSubmit = (values: z.infer<typeof createProjectSchema>) => {
 		const finalValues = {
 			...values,
-			workspaceId,
-			image: values.image instanceof File ? values.image : "",
+			workspaceId
 		}
 
 		mutate(

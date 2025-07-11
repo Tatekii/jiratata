@@ -1,17 +1,17 @@
 import React, { useCallback, useEffect, useState } from "react"
 import { DragDropContext, Droppable, Draggable, type DropResult } from "@hello-pangea/dnd"
-import { ETaskStatus, IClientTask, TaskStatusType } from "@/features/types"
+import { ETaskStatus, IClientTaskWithDetail, TaskStatusType } from "@/features/types"
 import KanbanColumnHeader from "./KanbanColumnHeader"
 import KanbanCard from "./KanbanCard"
 
 const boards = Object.values(ETaskStatus)
 
 type TasksState = {
-	[key in TaskStatusType]: IClientTask[]
+	[key in TaskStatusType]: IClientTaskWithDetail[]
 }
 
 interface DataKanbanProps {
-	data: IClientTask[]
+	data: IClientTaskWithDetail[]
 	onChange: (tasks: { _id: string; status: TaskStatusType; position: number }[]) => void
 }
 

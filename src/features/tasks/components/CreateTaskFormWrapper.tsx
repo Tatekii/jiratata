@@ -17,12 +17,6 @@ const CreateTaskFormWrapper = ({ onCancel }: CreateTaskFormWrapperProps) => {
 	const { data: projects, isLoading: isLoadingProjects } = useGetProjects({ workspaceId })
 	const { data: members, isLoading: isLoadingMembers } = useGetMembers({ workspaceId })
 
-	const projectOptions = projects?.documents.map((project) => ({
-		id: project._id,
-		name: project.name,
-		imageUrl: project.imageUrl,
-	}))
-
 	const memberOptions = members?.documents.map((project) => ({
 		id: project._id,
 		name: project.user.name,
@@ -41,7 +35,7 @@ const CreateTaskFormWrapper = ({ onCancel }: CreateTaskFormWrapperProps) => {
 	}
 
 	return (
-		<CreateTaskForm onCancel={onCancel} projectOptions={projectOptions ?? []} memberOptions={memberOptions ?? []} />
+		<CreateTaskForm onCancel={onCancel} projectOptions={projects?.documents ?? []} memberOptions={memberOptions ?? []} />
 	)
 }
 

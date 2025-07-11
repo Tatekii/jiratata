@@ -29,6 +29,7 @@ vi.mock('@/features/auth/constans', () => ({
 }))
 
 describe('authSessionMiddleware 专项测试', () => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let authSessionMiddleware: any
 
   beforeEach(async () => {

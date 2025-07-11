@@ -2,7 +2,7 @@ import { FolderIcon, ListChecksIcon, UserIcon } from "lucide-react"
 
 import { Select, SelectContent, SelectItem, SelectSeparator, SelectTrigger, SelectValue } from "@/components/ui/select"
 
-import { ETaskStatus } from "@/features/types"
+import { ETaskStatus, TaskStatusType } from "@/features/types"
 import useGetMembers from "@/features/members/api/useGetMembers"
 import useGetProjects from "@/features/projects/api/useGetProjects"
 import useWorkspaceId from "@/features/workspaces/hooks/useWorkspaceId"
@@ -31,13 +31,13 @@ const DataFilters = ({ hideProjectFilter, disabled = false }: DataFiltersProps) 
 
 	const memberOptions = members?.documents.map((member) => ({
 		value: member._id,
-		label: member.name,
+		label: member.user.name,
 	}))
 
 	const [{ status, assigneeId, projectId, dueDate }, setFilters] = useTaskFilters()
 
 	const onStatusChange = (value: string) => {
-		setFilters({ status: value === "all" ? null : (value as ETaskStatus) })
+		setFilters({ status: value === "all" ? null : (value as TaskStatusType) })
 	}
 
 	const onAssigneeChange = (value: string) => {
@@ -60,6 +60,7 @@ const DataFilters = ({ hideProjectFilter, disabled = false }: DataFiltersProps) 
 					</div>
 				</SelectTrigger>
 				<SelectContent>
+					{/* 全部筛选在这 */}
 					<SelectItem value="all">{dic.tasks.filter.allstatus}</SelectItem>
 					<SelectSeparator />
 					<SelectItem value={ETaskStatus.BACKLOG}>{dic.tasks.status.backlog}</SelectItem>

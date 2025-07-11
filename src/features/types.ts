@@ -17,8 +17,8 @@ export type TaskStatusType = (typeof ETaskStatus)[keyof typeof ETaskStatus]
 
 interface IClientBase {
 	_id: string
-	createdAt: Date
-	updatedAt: Date
+	createdAt: string
+	updatedAt: string
 }
 
 export interface IClientUser extends IClientBase {
@@ -35,14 +35,14 @@ export interface IClientMember extends IClientBase {
 
 export interface IClientWorkspace extends IClientBase {
 	name: string
-	imageUrl?: string
+	image?: string
 	inviteCode: string
 	userId: string
 }
 
 export interface IClientProject extends IClientBase {
 	name: string
-	imageUrl?: string
+	image?: string
 	workspaceId: string
 }
 
@@ -53,16 +53,13 @@ export interface IClientTask extends IClientBase {
 	assigneeId: string
 	projectId: string
 	position: number
-	dueDate: Date
+	dueDate: string
 	description?: string
 }
 
 export interface IClientTaskWithDetail extends IClientTask {
 	project: IClientProject
-	assignee: IClientMember & {
-		name: string
-		email: string
-	}
+	assignee: IClientMember & Pick<IClientUser, "name" | "email">
 }
 
 export interface IProjectAnalytics {
@@ -85,5 +82,5 @@ export interface IClientDocuments<T> {
 // OAuth提供商枚举
 export enum OAuthProvider {
 	GOOGLE = "google",
-	GITHUB = "github"
+	GITHUB = "github",
 }

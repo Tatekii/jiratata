@@ -43,7 +43,7 @@
 	"settings": "设置",
 	"myprojects": "项目",
 	"myprojectsdesc": "管理您的所有项目",
-	"form": { "required": "不能为空", "minium1": "长度至少为1位", "iconnotice": "JPG, PNG, SVG or jpeg,不超过1mb" },
+	"form": { "required": "不能为空", "minium1": "长度至少为1位", "iconnotice": "JPG, PNG, SVG or jpeg,不超过100kb" },
 	"workspaces": {
 		"form": {
 			"createTitle": "创建新的工作区",
