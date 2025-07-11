@@ -1,7 +1,6 @@
 "use client"
 
 import Link from "next/link"
-import { usePathname } from "next/navigation"
 import { RiAddCircleFill } from "react-icons/ri"
 
 import { cn } from "@/lib/utils"
@@ -11,15 +10,17 @@ import useCreateProjectModal from "@/features/projects/hooks/useCreateProjectMod
 import useGetProjects from "@/features/projects/api/useGetProjects"
 import { useDictionary } from "@/context/DictionaryProvider"
 import { AiOutlineLoading } from "react-icons/ai"
+import { projectRoutes } from "@/lib/route-utils"
+import { useProjectRouteMatch } from "@/hooks/useRouteMatch"
 
 const ProjectsSwitcher = () => {
-	const pathname = usePathname()
 	const { open } = useCreateProjectModal()
 	const workspaceId = useWorkspaceId()
 	const { data, isLoading } = useGetProjects({
 		workspaceId,
 	})
 	const dic = useDictionary()
+	const { isProjectActive } = useProjectRouteMatch(workspaceId)
 
 	return (
 		<div className="flex flex-col gap-y-2">
@@ -39,8 +40,8 @@ const ProjectsSwitcher = () => {
 			{data?.documents.length ? (
 				<>
 					{data?.documents.map((project) => {
-						const href = `/workspaces/${workspaceId}/projects/${project._id}`
-						const isActive = pathname === href
+						const href = projectRoutes.detail(workspaceId, project._id)
+						const isActive = isProjectActive(project._id)
 
 						return (
 							<Link href={href} key={project._id}>

@@ -7,6 +7,7 @@ import useWorkspaceId from "@/features/workspaces/hooks/useWorkspaceId"
 import useConfirm from "@/hooks/useConfirm"
 import useDeleteTask from "../api/useDeleteTask"
 import { Button } from "@/components/ui/button"
+import { projectRoutes, workspaceRoutes } from "@/lib/route-utils"
 
 interface TaskBreadcrumbsProps {
 	project: IClientProject
@@ -22,23 +23,21 @@ const TaskBreadcrumbs = ({ project, task }: TaskBreadcrumbsProps) => {
 
 	const handleDeleteTask = async () => {
 		const ok = await confirm()
-		if (!ok) return
-
-		mutate(
-			{ param: { taskId: task._id } },
-			{
-				onSuccess: () => {
-					router.push(`/workspaces/${workspaceId}/tasks`)
-				},
-			}
-		)
+		if (!ok) return			mutate(
+				{ param: { taskId: task._id } },
+				{
+					onSuccess: () => {
+						router.push(workspaceRoutes.tasks(workspaceId))
+					},
+				}
+			)
 	}
 
 	return (
 		<div className="flex items-center gap-x-2">
 			<ConfirmDialog />
 			<ProjectAvatar name={project.name} image={project.image} className="size-6 lg:size-8" />
-			<Link href={`/workspaces/${workspaceId}/projects/${project._id}`}>
+			<Link href={projectRoutes.detail(workspaceId, project._id)}>
 				<p className="text-sm lg:text-lg font-semibold text-muted-foreground hover:opacity-75 transition">
 					{project.name}
 				</p>

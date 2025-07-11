@@ -8,6 +8,7 @@ import { cn } from "@/lib/utils"
 import { useDictionary } from "@/context/DictionaryProvider"
 import { usePathname } from "next/navigation"
 import useWorkspaceId from "@/features/workspaces/hooks/useWorkspaceId"
+import { workspaceRoutes } from "@/lib/route-utils"
 
 const routes = [
 	{
@@ -44,7 +45,7 @@ const Navigation = () => {
 	return (
 		<ul className="flex flex-col">
 			{routes.map((item) => {
-				const fullHref = `/workspaces/${workspaceId}${item.href}`
+				const fullHref = `${workspaceRoutes.home(workspaceId)}${item.href}`
 				// 使用endwith，跳过多语言地址段
 				const isActive = pathname.endsWith(fullHref)
 				const Icon = isActive ? item.activeIcon : item.icon
