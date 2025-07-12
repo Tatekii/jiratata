@@ -6,6 +6,7 @@ import { PageLoader } from "@/components/PageLoader"
 import useGetTask from "@/features/tasks/api/useGetTask"
 import TaskBreadcrumbs from "@/features/tasks/components/TaskBreadcrumbs"
 import TaskDescription from "@/features/tasks/components/TaskDescription"
+import { TaskDetail } from "@/features/tasks/components/TaskDetail"
 import TaskOverview from "@/features/tasks/components/TaskOverview"
 import useTaskId from "@/features/tasks/hooks/useTaskId"
 
@@ -25,10 +26,12 @@ const TaskIdClient = () => {
 		<div className="flex flex-col">
 			<TaskBreadcrumbs project={data.project} task={data} />
 			<DottedSeparator className="my-6" />
-			<div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+			{/* <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
 				<TaskOverview task={data} />
 				<TaskDescription task={data} />
-			</div>
+			</div> */}
+
+			<TaskDetail task={data} />
 		</div>
 	)
 }

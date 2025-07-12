@@ -2,10 +2,11 @@ import { Loader } from "lucide-react"
 
 import { Card, CardContent } from "@/components/ui/card"
 import useWorkspaceId from "@/features/workspaces/hooks/useWorkspaceId"
-import useGetProjects from "@/features/projects/api/useGetProjects"
 import useGetMembers from "@/features/members/api/useGetMembers"
 import { EditTaskForm } from "./EditTaskForm"
 import useGetTask from "../api/useGetTask"
+import useGetTasks from "../api/useGetTasks"
+import { useMemo } from "react"
 
 interface EditTaskFormWrapperProps {
 	onCancel: () => void
@@ -19,21 +20,15 @@ const EditTaskFormWrapper = ({ onCancel, id }: EditTaskFormWrapperProps) => {
 		taskId: id,
 	})
 
-	const { data: projects, isLoading: isLoadingProjects } = useGetProjects({ workspaceId })
+	// const { data: projects, isLoading: isLoadingProjects } = useGetProjects({ workspaceId })
 	const { data: members, isLoading: isLoadingMembers } = useGetMembers({ workspaceId })
+	const { data: allWorkspaceTasks, isLoading: isTasksLoading } = useGetTasks({ workspaceId })
 
-	const projectOptions = projects?.documents.map((project) => ({
-		id: project._id,
-		name: project.name,
-		image: project.image,
-	}))
+	const isLoading = isLoadingMembers || isTasksLoading || isLoadingTask
 
-	const memberOptions = members?.documents.map((project) => ({
-		id: project._id,
-		name: project.user.name,
-	}))
-
-	const isLoading = isLoadingProjects || isLoadingMembers || isLoadingTask
+	const tasks = useMemo(() => {
+		return allWorkspaceTasks?.documents?.filter((t) => t.projectId === initialValues?.projectId && t._id !== initialValues._id)
+	}, [allWorkspaceTasks, initialValues])
 
 	if (isLoading) {
 		return (
@@ -53,8 +48,8 @@ const EditTaskFormWrapper = ({ onCancel, id }: EditTaskFormWrapperProps) => {
 		<EditTaskForm
 			onCancel={onCancel}
 			initialValues={initialValues}
-			projectOptions={projectOptions ?? []}
-			memberOptions={memberOptions ?? []}
+			memberOptions={members?.documents}
+			availableTasks={tasks}
 		/>
 	)
 }

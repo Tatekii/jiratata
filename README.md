@@ -3,6 +3,7 @@
 > Current branch is WIP👷
 
 ![amazing](sample.png)
+![amazing](sample2.png)
 
 ## Features
 

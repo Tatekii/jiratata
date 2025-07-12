@@ -33,11 +33,13 @@ const TaskBreadcrumbs = ({ project, task }: TaskBreadcrumbsProps) => {
 			)
 	}
 
+	const fullHref = `${projectRoutes.detail(workspaceId, project._id)}`
+
 	return (
 		<div className="flex items-center gap-x-2">
 			<ConfirmDialog />
 			<ProjectAvatar name={project.name} image={project.image} className="size-6 lg:size-8" />
-			<Link href={projectRoutes.detail(workspaceId, project._id)}>
+			<Link href={fullHref}>
 				<p className="text-sm lg:text-lg font-semibold text-muted-foreground hover:opacity-75 transition">
 					{project.name}
 				</p>

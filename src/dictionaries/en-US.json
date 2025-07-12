@@ -46,6 +46,7 @@
 	"form": {
 		"required": "Required",
 		"minium1": "Minimum of 1 characters required",
+		"invalidNumber": "InvalidNumber",
 		"iconnotice": "JPG, PNG, SVG or jpeg, max 100 kb"
 	},
 	"workspaces": {

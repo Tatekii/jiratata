@@ -1,15 +1,14 @@
 import "server-only"
-import { ETaskStatus, IClientTask } from "@/features/types"
+import { ETaskPriority, ETaskStatus, ETaskType, IClientTask } from "@/features/types"
 import mongoose from "mongoose"
 
 // 任务模型接口
 export interface IMongoTask
-	extends Omit<IClientTask, "workspaceId" | "projectId" | "assigneeId" | "dueDate">,
-		mongoose.Document<string> {
+	extends Omit<IClientTask, "workspaceId" | "projectId" | "assigneeId" | "parentTaskId"> {
 	workspaceId: mongoose.Types.ObjectId
 	projectId: mongoose.Types.ObjectId
-	assigneeId: mongoose.Types.ObjectId
-	dueDate: Date
+	assigneeId?: mongoose.Types.ObjectId
+	parentTaskId?: mongoose.Types.ObjectId // 父任务（支持子任务）
 }
 
 // 任务模式定义
@@ -49,6 +48,29 @@ const taskSchema = new mongoose.Schema<IMongoTask>(
 			default: ETaskStatus.BACKLOG,
 			required: [true, "任务状态是必须的"],
 		},
+		priority: {
+			type: String,
+			enum: Object.values(ETaskPriority),
+			default: "MEDIUM",
+		},
+		estimatedHours: {
+			type: Number,
+			min: 0,
+		},
+		loggedHours: {
+			type: Number,
+			default: 0,
+			min: 0,
+		},
+		parentTaskId: {
+			type: mongoose.Schema.Types.ObjectId,
+			ref: "Task",
+		},
+		taskType: {
+			type: String,
+			enum: Object.values(ETaskType),
+			default: "TASK",
+		},
 		position: {
 			type: Number,
 			required: [true, "任务位置是必须的"],
@@ -65,6 +87,12 @@ taskSchema.index({ workspaceId: 1 })
 taskSchema.index({ projectId: 1 })
 taskSchema.index({ projectId: 1, status: 1 })
 taskSchema.index({ assigneeId: 1, status: 1 })
+taskSchema.index({ priority: 1 })
+taskSchema.index({ parentTaskId: 1 })
+taskSchema.index({ taskType: 1 })
+taskSchema.index({ dueDate: 1 })
+taskSchema.index({ createdAt: -1 })
+taskSchema.index({ status: 1, priority: 1 })
 
 // 确保这是第一次编译模型 - 已存在则复用，否则新建
 export const Task =

@@ -42,10 +42,15 @@ const Navigation = () => {
 	const dic = useDictionary()
 	const pathname = usePathname()
 
+	if (!workspaceId) {
+		return null
+	}
+	
 	return (
 		<ul className="flex flex-col">
 			{routes.map((item) => {
 				const fullHref = `${workspaceRoutes.home(workspaceId)}${item.href}`
+
 				// 使用endwith，跳过多语言地址段
 				const isActive = pathname.endsWith(fullHref)
 				const Icon = isActive ? item.activeIcon : item.icon

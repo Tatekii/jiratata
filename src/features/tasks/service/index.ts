@@ -7,12 +7,20 @@ import { Hono } from "hono"
 import { zValidator } from "@hono/zod-validator"
 import { authSessionMiddleware } from "@/lib/hono-middleware"
 import { localeMiddleware, localeValidatorMiddleware } from "@/lib/hono-middleware"
-import { buildCreateTaskSchema, buildUpdateTaskSchema } from "../schemas"
+import { buildCreateTaskSchema, buildSearchTaskSchema, buildUpdateTaskSchema } from "../schemas"
 import { AppVariables } from "@/app/api/[[...route]]/route"
 import { isMemberOfWorkspace } from "@/features/members/utils"
-import { getTasks, createTask, updateTask, deleteTask, bulkUpdateTaskPositions, checkTaskAccess, getTaskById } from "../utils"
+import {
+	getTasks,
+	createTask,
+	updateTask,
+	deleteTask,
+	bulkUpdateTaskPositions,
+	checkTaskAccess,
+	getTaskById,
+} from "../utils"
 import mongoose from "mongoose"
-import { ETaskStatus, TaskStatusType } from "@/features/types"
+import { ETaskStatus } from "@/features/types"
 
 const app = new Hono<{ Variables: AppVariables }>()
 	// 删除任务
@@ -48,42 +56,26 @@ const app = new Hono<{ Variables: AppVariables }>()
 	.get(
 		"/",
 		authSessionMiddleware,
-		zValidator(
-			"query",
-			z.object({
-				workspaceId: z.string(),
-				projectId: z.string().nullish(),
-				assigneeId: z.string().nullish(),
-				status: z.nativeEnum(ETaskStatus).nullish(),
-				search: z.string().nullish(),
-				dueDate: z.string().nullish(),
-			})
-		),
+		localeMiddleware,
+		localeValidatorMiddleware("query", buildSearchTaskSchema),
 		async (c) => {
 			try {
 				const user = c.get("user")
 				const query = c.req.valid("query")
 
 				// 验证ObjectId格式
-				if (!mongoose.Types.ObjectId.isValid(query.workspaceId)) {
+				if (query.workspaceId && !mongoose.Types.ObjectId.isValid(query.workspaceId)) {
 					return c.json({ error: "无效的工作区ID" }, 400)
 				}
 
 				// 检查用户是否为工作区成员
 				const isMember = await isMemberOfWorkspace(query.workspaceId, user._id!.toString())
+
 				if (!isMember) {
 					return c.json({ error: "Unauthorized" }, 401)
 				}
 
-				const tasks =
-					(await getTasks({
-						workspaceId: query.workspaceId,
-						projectId: query.projectId || undefined,
-						assigneeId: query.assigneeId || undefined,
-						status: query.status || undefined,
-						search: query.search || undefined,
-						dueDate: query.dueDate || undefined,
-					})) || []
+				const tasks = (await getTasks(query)) || []
 
 				// 直接返回MongoDB格式的数据
 				return c.json({
@@ -108,32 +100,27 @@ const app = new Hono<{ Variables: AppVariables }>()
 		async (c) => {
 			try {
 				const user = c.get("user")
-				const { name, description, status, workspaceId, projectId, assigneeId, dueDate } = c.req.valid("json")
+				const jsonData = c.req.valid("json")
 
 				// 验证ObjectId格式
 				if (
-					!mongoose.Types.ObjectId.isValid(workspaceId) ||
-					!mongoose.Types.ObjectId.isValid(projectId) ||
-					!mongoose.Types.ObjectId.isValid(assigneeId)
+					!mongoose.Types.ObjectId.isValid(jsonData.workspaceId) ||
+					!mongoose.Types.ObjectId.isValid(jsonData.projectId)
 				) {
 					return c.json({ error: "无效的ID格式" }, 400)
 				}
 
+				if (jsonData.assigneeId && !mongoose.Types.ObjectId.isValid(jsonData.assigneeId)) {
+					return c.json({ error: "无效的ID格式" }, 400)
+				}
+
 				// 检查用户是否为工作区成员
-				const isMember = await isMemberOfWorkspace(workspaceId, user._id!.toString())
+				const isMember = await isMemberOfWorkspace(jsonData.workspaceId, user._id!.toString())
 				if (!isMember) {
 					return c.json({ error: "Unauthorized" }, 401)
 				}
 
-				const task = await createTask({
-					name,
-					description,
-					workspaceId,
-					projectId,
-					assigneeId,
-					status,
-					dueDate: new Date(dueDate),
-				})
+				const task = await createTask(jsonData)
 
 				return c.json({ data: task })
 			} catch (error) {
@@ -155,7 +142,7 @@ const app = new Hono<{ Variables: AppVariables }>()
 
 			// 使用 aggregate 管道获取任务详情
 			const taskData = await getTaskById(taskId)
-			
+
 			if (!taskData) {
 				return c.json({ error: "任务不存在" }, 404)
 			}
@@ -167,7 +154,7 @@ const app = new Hono<{ Variables: AppVariables }>()
 			}
 
 			return c.json({
-				data: taskData
+				data: taskData,
 			})
 		} catch (error) {
 			console.error("获取任务详情失败:", error)
@@ -198,22 +185,8 @@ const app = new Hono<{ Variables: AppVariables }>()
 					return c.json({ error: "Unauthorized" }, 401)
 				}
 
-				const updateData: {
-					name?: string
-					description?: string
-					status?: TaskStatusType
-					assigneeId?: string
-					projectId?: string
-					dueDate?: Date
-				} = {}
-				if (updates.name !== undefined) updateData.name = updates.name
-				if (updates.description !== undefined) updateData.description = updates.description
-				if (updates.status !== undefined) updateData.status = updates.status
-				if (updates.assigneeId !== undefined) updateData.assigneeId = updates.assigneeId
-				if (updates.projectId !== undefined) updateData.projectId = updates.projectId
-				if (updates.dueDate !== undefined) updateData.dueDate = new Date(updates.dueDate)
-
-				const task = await updateTask(taskId, updateData)
+				// TODO FIXME
+				const task = await updateTask(taskId, updates)
 				if (!task) {
 					return c.json({ error: "任务不存在" }, 404)
 				}

@@ -8,6 +8,8 @@ import workspaceService from "@/features/workspaces/service"
 import memberService from "@/features/members/service"
 import projectService from "@/features/projects/service"
 import taskService from "@/features/tasks/service"
+import attachmentService from "@/features/attachments/service"
+import commentService from "@/features/comments/service"
 import { TDictionary } from "@/context/DictionaryProvider"
 import { IClientUser } from "@/features/types"
 import { OAuthProvider } from "@/features/types"
@@ -31,6 +33,8 @@ const routes = app
 	.route("/members", memberService)
 	.route("/projects", projectService)
 	.route("/tasks", taskService)
+	.route("/attachments", attachmentService)
+	.route("/comments", commentService)
 
 export const GET = handle(app)
 export const POST = handle(app)

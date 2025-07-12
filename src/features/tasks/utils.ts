@@ -1,27 +1,20 @@
 /**
  * MongoDB版本的任务服务辅助函数
  */
-import { Task, Member } from "@/models"
+import { Task, Member, IMongoTask } from "@/models"
 import { connectToDatabase } from "@/lib/mongodb"
 import mongoose from "mongoose"
-import { TaskStatusType, IClientTaskWithDetail } from "../types"
-
-// 从models导入查询接口类型
-interface TaskQuery {
-	workspaceId: string
-	projectId?: string
-	assigneeId?: string
-	status?: TaskStatusType
-	search?: string
-	dueDate?: string
-}
+import { TaskStatusType, IClientTaskWithDetail, IClientTask, IClientBase } from "../types"
 
 // 任务过滤器类型
-interface TaskFilter {
+interface TaskFilter
+	extends Omit<
+		Partial<IMongoTask>,
+		keyof IClientBase | "projectId" | "dueDate" | "name" | "description"
+	> {
 	workspaceId: mongoose.Types.ObjectId
 	projectId?: mongoose.Types.ObjectId
-	assigneeId?: mongoose.Types.ObjectId
-	status?: TaskStatusType
+	parentTaskId?: mongoose.Types.ObjectId
 	$or?: Array<{
 		name?: { $regex: string; $options: string }
 		description?: { $regex: string; $options: string }
@@ -32,16 +25,8 @@ interface TaskFilter {
 	}
 }
 
-// 任务更新数据类型
-interface TaskUpdateData {
-	name?: string
-	description?: string
-	status?: TaskStatusType
-	dueDate?: Date
-	position?: number
-	assigneeId?: mongoose.Types.ObjectId
-	projectId?: mongoose.Types.ObjectId
-}
+// 从models导入查询接口类型
+type TaskQuery = Partial<Omit<IClientTask, keyof IClientBase>> & { search?: string }
 
 // 获取任务列表
 export const getTasks = async (query: TaskQuery) => {
@@ -61,6 +46,18 @@ export const getTasks = async (query: TaskQuery) => {
 
 	if (query.status) {
 		filter.status = query.status
+	}
+
+	if (query.priority) {
+		filter.priority = query.priority
+	}
+
+	if (query.taskType) {
+		filter.taskType = query.taskType
+	}
+
+	if (query.parentTaskId) {
+		filter.parentTaskId = new mongoose.Types.ObjectId(query.parentTaskId)
 	}
 
 	if (query.search) {
@@ -115,6 +112,58 @@ export const getTasks = async (query: TaskQuery) => {
 			},
 		},
 
+		// 关联父任务信息
+		{
+			$lookup: {
+				from: "tasks",
+				localField: "parentTaskId",
+				foreignField: "_id",
+				as: "parentTask",
+			},
+		},
+
+		// 关联附件数量
+		{
+			$lookup: {
+				from: "attachments",
+				let: { taskId: "$_id" },
+				pipeline: [
+					{
+						$match: {
+							$expr: {
+								$and: [
+									{ $eq: ["$entityId", "$$taskId"] },
+									{ $eq: ["$entityType", "TASK"] },
+									{ $eq: ["$isDeleted", false] },
+								],
+							},
+						},
+					},
+					{ $count: "count" },
+				],
+				as: "attachmentCount",
+			},
+		},
+
+		// 关联评论数量
+		{
+			$lookup: {
+				from: "comments",
+				let: { taskId: "$_id" },
+				pipeline: [
+					{
+						$match: {
+							$expr: {
+								$and: [{ $eq: ["$taskId", "$$taskId"] }, { $eq: ["$isDeleted", false] }],
+							},
+						},
+					},
+					{ $count: "count" },
+				],
+				as: "commentCount",
+			},
+		},
+
 		// 重构输出结构
 		{
 			$project: {
@@ -127,6 +176,11 @@ export const getTasks = async (query: TaskQuery) => {
 				workspaceId: 1,
 				projectId: 1,
 				assigneeId: 1,
+				priority: 1,
+				estimatedHours: 1,
+				loggedHours: 1,
+				parentTaskId: 1,
+				taskType: 1,
 				createdAt: 1,
 				updatedAt: 1,
 
@@ -171,15 +225,7 @@ export const getTasks = async (query: TaskQuery) => {
 }
 
 // 创建任务
-export const createTask = async (data: {
-	name: string
-	description?: string
-	workspaceId: string
-	projectId: string
-	assigneeId: string
-	status: TaskStatusType
-	dueDate: Date
-}) => {
+export const createTask = async (data: Omit<IClientTask, keyof IClientBase | "position" | "loggedHours">) => {
 	await connectToDatabase()
 
 	// 获取该状态下任务的最大position
@@ -190,49 +236,49 @@ export const createTask = async (data: {
 
 	const position = lastTask ? lastTask.position + 1000 : 1000
 
-	const task = new Task({
-		name: data.name,
-		description: data.description,
+	const newTaskData: Omit<IMongoTask, keyof IClientBase> = {
+		...data,
+		position,
+		loggedHours: 0,
 		workspaceId: new mongoose.Types.ObjectId(data.workspaceId),
 		projectId: new mongoose.Types.ObjectId(data.projectId),
-		assigneeId: new mongoose.Types.ObjectId(data.assigneeId),
-		status: data.status,
-		dueDate: data.dueDate,
-		position,
+		assigneeId: data.assigneeId ? new mongoose.Types.ObjectId(data.assigneeId) : undefined,
+		parentTaskId: data.parentTaskId ? new mongoose.Types.ObjectId(data.parentTaskId) : undefined,
+	}
+
+	const task = new Task(newTaskData)
+
+	const savedTask = await task.save()
+
+	// 记录活动日志
+	await logActivity({
+		entityType: "TASK",
+		entityId: new mongoose.Types.ObjectId(savedTask._id),
+		action: "created",
+		actorId: new mongoose.Types.ObjectId(data.assigneeId), // 使用 assigneeId 作为创建者
+		workspaceId: new mongoose.Types.ObjectId(data.workspaceId),
+		changes: [
+			{ field: "status", oldValue: null, newValue: data.status },
+			{ field: "assignee", oldValue: null, newValue: data.assigneeId },
+		],
 	})
 
-	return await task.save()
+	return savedTask
 }
 
+// 任务更新数据类型
+type TaskUpdateData = Omit<Partial<IMongoTask>, keyof IClientBase | "workspaceId" | "projectId">
 // 更新任务
 export const updateTask = async (
 	taskId: string,
-	updates: {
-		name?: string
-		description?: string
-		status?: TaskStatusType
-		assigneeId?: string
-		projectId?: string
-		dueDate?: Date
-		position?: number
-	}
+	updates: Omit<Partial<IClientTask>, keyof IClientBase | "workspaceId" | "projectId">
 ) => {
 	await connectToDatabase()
 
-	const updateData: TaskUpdateData = {}
-
-	if (updates.name !== undefined) updateData.name = updates.name
-	if (updates.description !== undefined) updateData.description = updates.description
-	if (updates.status !== undefined) updateData.status = updates.status
-	if (updates.dueDate !== undefined) updateData.dueDate = updates.dueDate
-	if (updates.position !== undefined) updateData.position = updates.position
-
-	if (updates.assigneeId) {
-		updateData.assigneeId = new mongoose.Types.ObjectId(updates.assigneeId)
-	}
-
-	if (updates.projectId) {
-		updateData.projectId = new mongoose.Types.ObjectId(updates.projectId)
+	const updateData: TaskUpdateData = {
+		...updates,
+		assigneeId: updates.assigneeId ? new mongoose.Types.ObjectId(updates.assigneeId) : undefined,
+		parentTaskId: updates.parentTaskId ? new mongoose.Types.ObjectId(updates.parentTaskId) : undefined,
 	}
 
 	const updatedTask = await Task.findByIdAndUpdate(taskId, { $set: updateData })
@@ -288,6 +334,11 @@ export const updateTask = async (
 				workspaceId: 1,
 				projectId: 1,
 				assigneeId: 1,
+				priority: 1,
+				estimatedHours: 1,
+				loggedHours: 1,
+				parentTaskId: 1,
+				taskType: 1,
 				createdAt: 1,
 				updatedAt: 1,
 
@@ -453,4 +504,28 @@ export const getTaskById = async (taskId: string) => {
 	])
 
 	return result[0] || null
+}
+
+// 记录活动日志的辅助函数
+export const logActivity = async (data: {
+	entityType: "TASK" | "PROJECT" | "COMMENT" | "ATTACHMENT"
+	entityId: mongoose.Types.ObjectId
+	action: string
+	actorId: mongoose.Types.ObjectId
+	workspaceId: mongoose.Types.ObjectId
+	targetUserId?: mongoose.Types.ObjectId
+	changes?: Array<{
+		field: string
+		oldValue: unknown
+		newValue: unknown
+	}>
+	metadata?: Record<string, unknown>
+}) => {
+	try {
+		const ActivityLog = (await import("@/models")).ActivityLog
+		const log = new ActivityLog(data)
+		await log.save()
+	} catch (error) {
+		console.error("Failed to log activity:", error)
+	}
 }
