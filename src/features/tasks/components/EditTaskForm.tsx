@@ -23,11 +23,11 @@ import { IClientMemberWithUserInfo } from "@/features/members/utils"
 
 interface EditTaskFormProps {
 	onCancel?: () => void
-	// NOTE 不允许中途切换项目
+	// NOTE: Project cannot be changed during editing
 	// projectOptions: { id: string; name: string; image?: string }[]
 	initialValues: IClientTaskWithDetail
-	memberOptions?: IClientMemberWithUserInfo[] // 本工作区的成员
-	availableTasks?: IClientTaskWithDetail[] // 可选择的父任务列表
+	memberOptions?: IClientMemberWithUserInfo[] // Workspace members
+	availableTasks?: IClientTaskWithDetail[] // Available parent task options
 }
 
 export const EditTaskForm = ({
@@ -93,11 +93,11 @@ EditTaskFormProps) => {
 								name="description"
 								render={({ field }) => (
 									<FormItem>
-										<FormLabel>描述</FormLabel>
+										<FormLabel>{dic.tasks.form.description}</FormLabel>
 										<FormControl>
 											<Textarea
 												{...field}
-												placeholder="输入任务描述..."
+												placeholder={dic.tasks.form.descriptionPlaceholder}
 												className="resize-none"
 												rows={3}
 											/>
@@ -178,20 +178,20 @@ EditTaskFormProps) => {
 									name="priority"
 									render={({ field }) => (
 										<FormItem>
-											<FormLabel>优先级</FormLabel>
+											<FormLabel>{dic.tasks.form.priority}</FormLabel>
 											<Select defaultValue={field.value} onValueChange={field.onChange}>
 												<FormControl>
 													<SelectTrigger>
-														<SelectValue placeholder="选择优先级" />
+														<SelectValue placeholder={dic.tasks.form.priorityPlaceholder} />
 													</SelectTrigger>
 												</FormControl>
 												<FormMessage />
 												<SelectContent>
-													<SelectItem value={ETaskPriority.HIGHEST}>最高</SelectItem>
-													<SelectItem value={ETaskPriority.HIGH}>高</SelectItem>
-													<SelectItem value={ETaskPriority.MEDIUM}>中</SelectItem>
-													<SelectItem value={ETaskPriority.LOW}>低</SelectItem>
-													<SelectItem value={ETaskPriority.LOWEST}>最低</SelectItem>
+													<SelectItem value={ETaskPriority.HIGHEST}>{dic.tasks.priority.highest}</SelectItem>
+													<SelectItem value={ETaskPriority.HIGH}>{dic.tasks.priority.high}</SelectItem>
+													<SelectItem value={ETaskPriority.MEDIUM}>{dic.tasks.priority.medium}</SelectItem>
+													<SelectItem value={ETaskPriority.LOW}>{dic.tasks.priority.low}</SelectItem>
+													<SelectItem value={ETaskPriority.LOWEST}>{dic.tasks.priority.lowest}</SelectItem>
 												</SelectContent>
 											</Select>
 										</FormItem>
@@ -202,18 +202,18 @@ EditTaskFormProps) => {
 									name="taskType"
 									render={({ field }) => (
 										<FormItem>
-											<FormLabel>任务类型</FormLabel>
+											<FormLabel>{dic.tasks.form.taskType}</FormLabel>
 											<Select defaultValue={field.value} onValueChange={field.onChange}>
 												<FormControl>
 													<SelectTrigger>
-														<SelectValue placeholder="选择类型" />
+														<SelectValue placeholder={dic.tasks.form.taskTypePlaceholder} />
 													</SelectTrigger>
 												</FormControl>
 												<FormMessage />
 												<SelectContent>
-													<SelectItem value={ETaskType.TASK}>任务</SelectItem>
-													<SelectItem value={ETaskType.BUG}>缺陷</SelectItem>
-													<SelectItem value={ETaskType.STORY}>用户故事</SelectItem>
+													<SelectItem value={ETaskType.TASK}>{dic.tasks.type.task}</SelectItem>
+													<SelectItem value={ETaskType.BUG}>{dic.tasks.type.bug}</SelectItem>
+													<SelectItem value={ETaskType.STORY}>{dic.tasks.type.story}</SelectItem>
 												</SelectContent>
 											</Select>
 										</FormItem>
@@ -225,16 +225,16 @@ EditTaskFormProps) => {
 								name="parentTaskId"
 								render={({ field }) => (
 									<FormItem>
-										<FormLabel>父任务 (可选)</FormLabel>
+										<FormLabel>{dic.tasks.form.parentTask}</FormLabel>
 										<Select value={field.value || ""} onValueChange={field.onChange}>
 											<FormControl>
 												<SelectTrigger>
-													<SelectValue placeholder="选择父任务..." />
+													<SelectValue placeholder={dic.tasks.form.parentTaskPlaceholder} />
 												</SelectTrigger>
 											</FormControl>
 											<FormMessage />
 											<SelectContent>
-												<SelectItem value=" ">无父任务</SelectItem>
+												<SelectItem value=" ">{dic.tasks.form.noParentTask}</SelectItem>
 												{availableTasks?.map((task) => (
 													<SelectItem key={task._id} value={task._id}>
 														<div className="flex items-center gap-x-2">
@@ -256,7 +256,7 @@ EditTaskFormProps) => {
 									name="estimatedHours"
 									render={({ field }) => (
 										<FormItem>
-											<FormLabel>预估工时（小时）</FormLabel>
+											<FormLabel>{dic.tasks.form.estimatedHours}</FormLabel>
 											<FormControl>
 												<Input
 													{...field}
@@ -280,7 +280,7 @@ EditTaskFormProps) => {
 									name="loggedHours"
 									render={({ field }) => (
 										<FormItem>
-											<FormLabel>已记录工时（小时）</FormLabel>
+											<FormLabel>{dic.tasks.form.loggedHours}</FormLabel>
 											<FormControl>
 												<Input
 													value={field.value || ""}

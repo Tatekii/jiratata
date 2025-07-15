@@ -26,7 +26,7 @@ import DatePicker from "@/components/DatePicker"
 interface CreateTaskFormProps {
 	onCancel?: () => void
 	projectOptions: Pick<IClientProject, "_id" | "name" | "image">[]
-	memberOptions?: { id: string; name: string }[] // 添加用户选择选项
+	memberOptions?: { id: string; name: string }[] // Member selection options
 }
 
 const CreateTaskForm = ({ onCancel, projectOptions, memberOptions = [] }: CreateTaskFormProps) => {
@@ -99,7 +99,7 @@ const CreateTaskForm = ({ onCancel, projectOptions, memberOptions = [] }: Create
 								name="dueDate"
 								render={({ field }) => (
 									<FormItem>
-										<FormLabel>到期日期</FormLabel>
+										<FormLabel>{dic.tasks.form.dueDate}</FormLabel>
 										<FormControl>
 											<DatePicker
 												{...field}
@@ -116,20 +116,20 @@ const CreateTaskForm = ({ onCancel, projectOptions, memberOptions = [] }: Create
 									name="priority"
 									render={({ field }) => (
 										<FormItem>
-											<FormLabel>优先级</FormLabel>
+											<FormLabel>{dic.tasks.form.priority}</FormLabel>
 											<Select defaultValue={field.value} onValueChange={field.onChange}>
 												<FormControl>
 													<SelectTrigger>
-														<SelectValue placeholder="选择优先级" />
+														<SelectValue placeholder={dic.tasks.form.priorityPlaceholder} />
 													</SelectTrigger>
 												</FormControl>
 												<FormMessage />
 												<SelectContent>
-													<SelectItem value={ETaskPriority.HIGHEST}>最高</SelectItem>
-													<SelectItem value={ETaskPriority.HIGH}>高</SelectItem>
-													<SelectItem value={ETaskPriority.MEDIUM}>中</SelectItem>
-													<SelectItem value={ETaskPriority.LOW}>低</SelectItem>
-													<SelectItem value={ETaskPriority.LOWEST}>最低</SelectItem>
+													<SelectItem value={ETaskPriority.HIGHEST}>{dic.tasks.priority.highest}</SelectItem>
+													<SelectItem value={ETaskPriority.HIGH}>{dic.tasks.priority.high}</SelectItem>
+													<SelectItem value={ETaskPriority.MEDIUM}>{dic.tasks.priority.medium}</SelectItem>
+													<SelectItem value={ETaskPriority.LOW}>{dic.tasks.priority.low}</SelectItem>
+													<SelectItem value={ETaskPriority.LOWEST}>{dic.tasks.priority.lowest}</SelectItem>
 												</SelectContent>
 											</Select>
 										</FormItem>
@@ -140,20 +140,20 @@ const CreateTaskForm = ({ onCancel, projectOptions, memberOptions = [] }: Create
 									name="status"
 									render={({ field }) => (
 										<FormItem>
-											<FormLabel>状态</FormLabel>
+											<FormLabel>{dic.tasks.form.status}</FormLabel>
 											<Select defaultValue={field.value} onValueChange={field.onChange}>
 												<FormControl>
 													<SelectTrigger>
-														<SelectValue placeholder="选择状态" />
+														<SelectValue placeholder={dic.tasks.form.statusPlaceholder} />
 													</SelectTrigger>
 												</FormControl>
 												<FormMessage />
 												<SelectContent>
-													<SelectItem value={ETaskStatus.BACKLOG}>待办</SelectItem>
-													<SelectItem value={ETaskStatus.TODO}>待做</SelectItem>
-													<SelectItem value={ETaskStatus.IN_PROGRESS}>进行中</SelectItem>
-													<SelectItem value={ETaskStatus.IN_REVIEW}>审核中</SelectItem>
-													<SelectItem value={ETaskStatus.DONE}>已完成</SelectItem>
+													<SelectItem value={ETaskStatus.BACKLOG}>{dic.tasks.status.backlog}</SelectItem>
+													<SelectItem value={ETaskStatus.TODO}>{dic.tasks.status.todo}</SelectItem>
+													<SelectItem value={ETaskStatus.IN_PROGRESS}>{dic.tasks.status.inprogress}</SelectItem>
+													<SelectItem value={ETaskStatus.IN_REVIEW}>{dic.tasks.status.inreview}</SelectItem>
+													<SelectItem value={ETaskStatus.DONE}>{dic.tasks.status.done}</SelectItem>
 												</SelectContent>
 											</Select>
 										</FormItem>
@@ -198,11 +198,11 @@ const CreateTaskForm = ({ onCancel, projectOptions, memberOptions = [] }: Create
 								name="assigneeId"
 								render={({ field }) => (
 									<FormItem>
-										<FormLabel>分配给</FormLabel>
+										<FormLabel>{dic.tasks.form.assignee}</FormLabel>
 										<Select defaultValue={field.value} onValueChange={field.onChange}>
 											<FormControl>
 												<SelectTrigger>
-													<SelectValue placeholder="选择分配人员..." />
+													<SelectValue placeholder={dic.tasks.form.assigneePlaceholder} />
 												</SelectTrigger>
 											</FormControl>
 											<FormMessage />
@@ -222,19 +222,19 @@ const CreateTaskForm = ({ onCancel, projectOptions, memberOptions = [] }: Create
 								name="taskType"
 								render={({ field }) => (
 									<FormItem>
-										<FormLabel>任务类型</FormLabel>
+										<FormLabel>{dic.tasks.form.taskType}</FormLabel>
 										<Select defaultValue={field.value} onValueChange={field.onChange}>
 											<FormControl>
 												<SelectTrigger>
-													<SelectValue placeholder="选择类型" />
+													<SelectValue placeholder={dic.tasks.form.taskTypePlaceholder} />
 												</SelectTrigger>
 											</FormControl>
 											<FormMessage />
 											<SelectContent>
-												<SelectItem value={ETaskType.TASK}>任务</SelectItem>
-												<SelectItem value={ETaskType.BUG}>缺陷</SelectItem>
-												<SelectItem value={ETaskType.STORY}>用户故事</SelectItem>
-												<SelectItem value={ETaskType.SUBTASK}>子任务</SelectItem>
+												<SelectItem value={ETaskType.TASK}>{dic.tasks.type.task}</SelectItem>
+												<SelectItem value={ETaskType.BUG}>{dic.tasks.type.bug}</SelectItem>
+												<SelectItem value={ETaskType.STORY}>{dic.tasks.type.story}</SelectItem>
+												<SelectItem value={ETaskType.SUBTASK}>{dic.tasks.type.subtask}</SelectItem>
 											</SelectContent>
 										</Select>
 									</FormItem>
@@ -245,16 +245,16 @@ const CreateTaskForm = ({ onCancel, projectOptions, memberOptions = [] }: Create
 								name="parentTaskId"
 								render={({ field }) => (
 									<FormItem>
-										<FormLabel>父任务 (可选)</FormLabel>
+										<FormLabel>{dic.tasks.form.parentTask}</FormLabel>
 										<Select value={field.value || ""} onValueChange={field.onChange}>
 											<FormControl>
 												<SelectTrigger>
-													<SelectValue placeholder="选择父任务..." />
+													<SelectValue placeholder={dic.tasks.form.parentTaskPlaceholder} />
 												</SelectTrigger>
 											</FormControl>
 											<FormMessage />
 											<SelectContent>
-												<SelectItem value="-1">无父任务</SelectItem>
+												<SelectItem value="-1">{dic.tasks.form.noParentTask}</SelectItem>
 												{projectTasks?.documents.map((task) => (
 													<SelectItem key={task._id} value={task._id}>
 														<div className="flex items-center gap-x-2">
@@ -277,11 +277,11 @@ const CreateTaskForm = ({ onCancel, projectOptions, memberOptions = [] }: Create
 							name="description"
 							render={({ field }) => (
 								<FormItem>
-									<FormLabel>任务描述</FormLabel>
+									<FormLabel>{dic.tasks.form.taskDescription}</FormLabel>
 									<FormControl>
 										<Textarea
 											{...field}
-											placeholder="请输入任务描述"
+											placeholder={dic.tasks.form.taskDescriptionPlaceholder}
 											className="resize-none"
 											rows={4}
 										/>
@@ -295,7 +295,7 @@ const CreateTaskForm = ({ onCancel, projectOptions, memberOptions = [] }: Create
 							name="estimatedHours"
 							render={({ field }) => (
 								<FormItem>
-									<FormLabel>预估工时（小时）</FormLabel>
+									<FormLabel>{dic.tasks.form.estimatedHours}</FormLabel>
 									<FormControl>
 										<Input {...field} type="number" min="0" step="0.5" placeholder="0" />
 									</FormControl>

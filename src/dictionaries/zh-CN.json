@@ -175,15 +175,32 @@
 			"due": "到期日",
 			"assign": "负责人",
 			"project": "项目",
-			"status": "状态"
+			"status": "状态",
+			"description": "描述",
+			"descriptionPlaceholder": "输入任务描述...",
+			"dueDate": "到期日期",
+			"priority": "优先级",
+			"priorityPlaceholder": "选择优先级",
+			"statusPlaceholder": "选择状态",
+			"assignee": "分配给",
+			"assigneePlaceholder": "选择分配人员...",
+			"taskType": "任务类型",
+			"taskTypePlaceholder": "选择类型",
+			"parentTask": "父任务 (可选)",
+			"parentTaskPlaceholder": "选择父任务...",
+			"noParentTask": "无父任务",
+			"estimatedHours": "预估工时（小时）",
+			"loggedHours": "已记录工时（小时）",
+			"taskDescription": "任务描述",
+			"taskDescriptionPlaceholder": "请输入任务描述"
 		},
 		"jump": {
 			"task": "任务详情",
 			"project": "进入项目"
 		},
-
 		"edit": {
-			"title": "编辑任务"
+			"title": "编辑任务",
+			"editTask": "编辑任务"
 		},
 		"dangerzone": {
 			"name": "危险区",
@@ -198,7 +215,12 @@
 			"inreview": "审阅中",
 			"inprogress": "进行中",
 			"done": "完成",
-			"backlog": "归档"
+			"backlog": "归档",
+			"todoStatus": "待做",
+			"inProgressStatus": "进行中",
+			"inReviewStatus": "待审核",
+			"doneStatus": "已完成",
+			"backlogStatus": "待处理"
 		},
 		"filter": {
 			"allstatus": "所有状态",
@@ -212,6 +234,52 @@
 		"description": {
 			"title": "任务描述",
 			"empty": "无描述"
+		},
+		"priority": {
+			"highest": "最高",
+			"high": "高",
+			"medium": "中",
+			"low": "低",
+			"lowest": "最低"
+		},
+		"type": {
+			"task": "任务",
+			"bug": "缺陷",
+			"story": "用户故事",
+			"subtask": "子任务"
+		},
+		"detail": {
+			"statusLabel": "状态",
+			"dueTimeLabel": "截止时间",
+			"timeNotSet": "时间未设定",
+			"priority": "优先级",
+			"progress": "进度",
+			"taskDescription": "任务描述",
+			"noDescription": "无",
+			"assignee": "负责人",
+			"unassigned": "未分配",
+			"notAssigned": "暂未分配",
+			"project": "所属项目",
+			"noProject": "无项目",
+			"noRelatedProject": "无关联项目",
+			"projectId": "项目 ID",
+			"timeSchedule": "时间安排",
+			"hoursStatistics": "工时统计",
+			"estimatedHours": "预估工时",
+			"loggedHours": "已记录工时",
+			"remainingHours": "剩余工时",
+			"taskHierarchy": "任务层级",
+			"parentTask": "父任务",
+			"createdAt": "创建于",
+			"updatedAt": "更新于",
+			"tabContent": "选项卡内容",
+			"tabContentTodo": "保留为TODO",
+			"comments": "评论",
+			"commentsContent": "评论内容TODO",
+			"attachments": "附件",
+			"activity": "活动",
+			"activityLog": "活动日志",
+			"activityLogComingSoon": "活动日志功能即将推出"
 		}
 	},
 	"cancel": "取消",

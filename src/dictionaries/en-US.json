@@ -175,14 +175,32 @@
 			"due": "Due Date",
 			"assign": "Assignee",
 			"project": "Project",
-			"status": "Status"
+			"status": "Status",
+			"description": "Description",
+			"descriptionPlaceholder": "Enter task description...",
+			"dueDate": "Due Date",
+			"priority": "Priority",
+			"priorityPlaceholder": "Select priority",
+			"statusPlaceholder": "Select status",
+			"assignee": "Assign to",
+			"assigneePlaceholder": "Select assignee...",
+			"taskType": "Task Type",
+			"taskTypePlaceholder": "Select type",
+			"parentTask": "Parent Task (Optional)",
+			"parentTaskPlaceholder": "Select parent task...",
+			"noParentTask": "No parent task",
+			"estimatedHours": "Estimated Hours",
+			"loggedHours": "Logged Hours",
+			"taskDescription": "Task Description",
+			"taskDescriptionPlaceholder": "Enter task description"
 		},
 		"jump": {
 			"task": "Task Detail",
 			"project": "Open Project"
 		},
 		"edit": {
-			"title": "Edit Task"
+			"title": "Edit Task",
+			"editTask": "Edit Task"
 		},
 		"dangerzone": {
 			"name": "Danger Zone",
@@ -197,7 +215,12 @@
 			"inreview": "In Review",
 			"inprogress": "In Progress",
 			"done": "Done",
-			"backlog": "Backlog"
+			"backlog": "Backlog",
+			"todoStatus": "Todo",
+			"inProgressStatus": "In Progress",
+			"inReviewStatus": "In Review",
+			"doneStatus": "Done",
+			"backlogStatus": "Backlog"
 		},
 		"filter": {
 			"allstatus": "All status",
@@ -211,6 +234,52 @@
 		"description": {
 			"title": "Description",
 			"empty": "No description set"
+		},
+		"priority": {
+			"highest": "Highest",
+			"high": "High",
+			"medium": "Medium",
+			"low": "Low",
+			"lowest": "Lowest"
+		},
+		"type": {
+			"task": "Task",
+			"bug": "Bug",
+			"story": "Story",
+			"subtask": "Subtask"
+		},
+		"detail": {
+			"statusLabel": "Status",
+			"dueTimeLabel": "Due Time",
+			"timeNotSet": "Time not set",
+			"priority": "Priority",
+			"progress": "Progress",
+			"taskDescription": "Task Description",
+			"noDescription": "None",
+			"assignee": "Assignee",
+			"unassigned": "Unassigned",
+			"notAssigned": "Not assigned",
+			"project": "Project",
+			"noProject": "No project",
+			"noRelatedProject": "No related project",
+			"projectId": "Project ID",
+			"timeSchedule": "Time Schedule",
+			"hoursStatistics": "Hours Statistics",
+			"estimatedHours": "Estimated Hours",
+			"loggedHours": "Logged Hours",
+			"remainingHours": "Remaining Hours",
+			"taskHierarchy": "Task Hierarchy",
+			"parentTask": "Parent Task",
+			"createdAt": "Created at",
+			"updatedAt": "Updated at",
+			"tabContent": "Tab Content",
+			"tabContentTodo": "Reserved as TODO",
+			"comments": "Comments",
+			"commentsContent": "Comments content TODO",
+			"attachments": "Attachments",
+			"activity": "Activity",
+			"activityLog": "Activity Log",
+			"activityLogComingSoon": "Activity log feature coming soon"
 		}
 	},
 	"cancel": "Cancel",

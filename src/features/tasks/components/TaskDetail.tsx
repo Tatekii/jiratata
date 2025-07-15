@@ -28,6 +28,7 @@ import { TaskAttachments } from "./TaskAttachments"
 import MemberAvatar from "@/features/members/components/MemberAvatar"
 import ProjectAvatar from "@/features/projects/components/ProjectAvatar"
 import useEditTaskModal from "../hooks/useEditTaskModal"
+import { useDictionary } from "@/context/DictionaryProvider"
 
 interface TaskDetailProps {
 	task: IClientTaskWithDetail
@@ -37,6 +38,7 @@ export const TaskDetail = ({ task }: TaskDetailProps) => {
 	const [activeTab, setActiveTab] = useState("overview")
 
 	const { open } = useEditTaskModal()
+	const dic = useDictionary()
 
 	const getPriorityColor = (priority: string) => {
 		switch (priority) {
@@ -88,27 +90,27 @@ export const TaskDetail = ({ task }: TaskDetailProps) => {
 	const getTaskTypeLabel = (type: string) => {
 		switch (type) {
 			case ETaskType.BUG:
-				return "缺陷"
+				return dic.tasks.type.bug
 			case ETaskType.STORY:
-				return "用户故事"
+				return dic.tasks.type.story
 			case ETaskType.TASK:
 			default:
-				return "任务"
+				return dic.tasks.type.task
 		}
 	}
 
 	const getStatusLabel = (status: string) => {
 		switch (status) {
 			case ETaskStatus.TODO:
-				return "待办"
+				return dic.tasks.status.todoStatus
 			case ETaskStatus.IN_PROGRESS:
-				return "进行中"
+				return dic.tasks.status.inProgressStatus
 			case ETaskStatus.IN_REVIEW:
-				return "待审核"
+				return dic.tasks.status.inReviewStatus
 			case ETaskStatus.DONE:
-				return "已完成"
+				return dic.tasks.status.doneStatus
 			case ETaskStatus.BACKLOG:
-				return "待处理"
+				return dic.tasks.status.backlogStatus
 			default:
 				return status
 		}
@@ -117,15 +119,15 @@ export const TaskDetail = ({ task }: TaskDetailProps) => {
 	const getPriorityLabel = (priority: string) => {
 		switch (priority) {
 			case ETaskPriority.HIGHEST:
-				return "最高"
+				return dic.tasks.priority.highest
 			case ETaskPriority.HIGH:
-				return "高"
+				return dic.tasks.priority.high
 			case ETaskPriority.MEDIUM:
-				return "中"
+				return dic.tasks.priority.medium
 			case ETaskPriority.LOW:
-				return "低"
+				return dic.tasks.priority.low
 			case ETaskPriority.LOWEST:
-				return "最低"
+				return dic.tasks.priority.lowest
 			default:
 				return priority
 		}
@@ -133,12 +135,12 @@ export const TaskDetail = ({ task }: TaskDetailProps) => {
 
 	return (
 		<div className="max-w-5xl mx-auto space-y-8">
-			{/* 任务头部信息卡片 - 顶级视觉层次 */}
+			{/* Task header card - Top visual hierarchy */}
 			<Card className="shadow-lg bg-gradient-to-br from-white to-gray-50/50">
 				<CardHeader className="pb-6">
 					<div className="flex items-start justify-between">
 						<div className="space-y-3">
-							{/* 任务标识和类型 */}
+							{/* Task ID and type */}
 							<div className="flex items-center gap-3">
 								<Badge
 									variant="outline"
@@ -153,10 +155,10 @@ export const TaskDetail = ({ task }: TaskDetailProps) => {
 									</code>
 								</div>
 							</div>
-							{/* 任务标题 */}
+							{/* Task title */}
 							<h1 className="text-3xl font-bold text-gray-900 leading-tight max-w-2xl">{task.name}</h1>
 						</div>
-						{/* 操作按钮组 */}
+						{/* Action buttons */}
 						<div className="flex items-center gap-3">
 							<Button
 								onClick={() => open(task._id)}
@@ -164,7 +166,7 @@ export const TaskDetail = ({ task }: TaskDetailProps) => {
 								className="bg-blue-600 hover:bg-blue-700 text-white shadow-sm"
 							>
 								<Edit className="w-4 h-4 mr-2" />
-								编辑任务
+								{dic.tasks.edit.editTask}
 							</Button>
 							<Button variant="ghost" size="sm" className="hover:bg-gray-100">
 								<MoreHorizontal className="w-4 h-4" />
@@ -174,12 +176,12 @@ export const TaskDetail = ({ task }: TaskDetailProps) => {
 				</CardHeader>
 
 				<CardContent className="space-y-8">
-					{/* 状态指标栏 */}
+					{/* Status indicators */}
 					<div className="flex items-center gap-6 p-4 bg-white rounded-lg border border-gray-100 shadow-sm">
 						<div className="flex items-center gap-3">
 							<div className="p-2 rounded-full bg-blue-50">{getStatusIcon(task.status)}</div>
 							<div>
-								<p className="text-xs text-gray-500 font-medium uppercase tracking-wide">状态</p>
+								<p className="text-xs text-gray-500 font-medium uppercase tracking-wide">{dic.tasks.detail.statusLabel}</p>
 								<Badge variant="secondary" className="mt-1 font-medium">
 									{getStatusLabel(task.status)}
 								</Badge>
@@ -193,7 +195,7 @@ export const TaskDetail = ({ task }: TaskDetailProps) => {
 								{getPriorityIcon(task.priority || ETaskPriority.MEDIUM)}
 							</div>
 							<div>
-								<p className="text-xs text-gray-500 font-medium uppercase tracking-wide">优先级</p>
+								<p className="text-xs text-gray-500 font-medium uppercase tracking-wide">{dic.tasks.detail.priority}</p>
 								<Badge
 									variant="outline"
 									className={`mt-1 font-medium ${getPriorityColor(
@@ -205,7 +207,7 @@ export const TaskDetail = ({ task }: TaskDetailProps) => {
 							</div>
 						</div>
 
-						{/* 进度指示器 */}
+						{/* Progress indicator */}
 						{task.estimatedHours && task.loggedHours !== undefined && (
 							<>
 								<div className="w-px h-12 bg-gray-200" />
@@ -215,7 +217,7 @@ export const TaskDetail = ({ task }: TaskDetailProps) => {
 									</div>
 									<div>
 										<p className="text-xs text-gray-500 font-medium uppercase tracking-wide">
-											进度
+											{dic.tasks.detail.progress}
 										</p>
 										<div className="flex items-center gap-2 mt-1">
 											<div className="w-16 h-2 bg-gray-200 rounded-full overflow-hidden">
@@ -239,28 +241,28 @@ export const TaskDetail = ({ task }: TaskDetailProps) => {
 						)}
 					</div>
 
-					{/* 任务描述 */}
+					{/* Task description */}
 					<div className="space-y-3">
 						<h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
 							<div className="w-1 h-5 bg-blue-500 rounded-full" />
-							任务描述
+							{dic.tasks.detail.taskDescription}
 						</h3>
 						<div className="bg-gray-50 rounded-lg p-4 border border-gray-100">
 							<p className="text-gray-700 leading-relaxed whitespace-pre-wrap">
-								{task.description || "无"}
+								{task.description || dic.tasks.detail.noDescription}
 							</p>
 						</div>
 					</div>
 
-					{/* 核心信息网格 */}
+					{/* Core information grid */}
 					<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-						{/* 分配信息 */}
+						{/* Assignment info */}
 						<Card className="bg-white border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
 							<CardContent className="p-5">
 								<div className="flex items-center justify-between mb-3">
-									<h4 className="font-semibold text-gray-900">负责人</h4>
+									<h4 className="font-semibold text-gray-900">{dic.tasks.detail.assignee}</h4>
 									<div className="p-1.5 rounded-full bg-blue-50">
-										<MemberAvatar className="w-5 h-5" name={task.assignee?.name || "未分配"} />
+										<MemberAvatar className="w-5 h-5" name={task.assignee?.name || dic.tasks.detail.unassigned} />
 									</div>
 								</div>
 								{task.assignee ? (
@@ -274,20 +276,20 @@ export const TaskDetail = ({ task }: TaskDetailProps) => {
 										</div>
 									</div>
 								) : (
-									<p className="text-gray-400 italic">暂未分配</p>
+									<p className="text-gray-400 italic">{dic.tasks.detail.notAssigned}</p>
 								)}
 							</CardContent>
 						</Card>
 
-						{/* 项目信息 */}
+						{/* Project info */}
 						<Card className="bg-white border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
 							<CardContent className="p-5">
 								<div className="flex items-center justify-between mb-3">
-									<h4 className="font-semibold text-gray-900">所属项目</h4>
+									<h4 className="font-semibold text-gray-900">{dic.tasks.detail.project}</h4>
 									<div className="p-1.5 rounded-full bg-green-50">
 										<ProjectAvatar
 											className="w-5 h-5"
-											name={task.project?.name || "无项目"}
+											name={task.project?.name || dic.tasks.detail.noProject}
 											image={task.project?.image}
 										/>
 									</div>
@@ -302,21 +304,21 @@ export const TaskDetail = ({ task }: TaskDetailProps) => {
 										<div>
 											<p className="font-medium text-gray-900">{task.project.name}</p>
 											<p className="text-xs text-gray-500">
-												项目 ID: {task.project._id.slice(-6)}
+												{dic.tasks.detail.projectId}: {task.project._id.slice(-6)}
 											</p>
 										</div>
 									</div>
 								) : (
-									<p className="text-gray-400 italic">无关联项目</p>
+									<p className="text-gray-400 italic">{dic.tasks.detail.noRelatedProject}</p>
 								)}
 							</CardContent>
 						</Card>
 
-						{/* 时间信息 */}
+						{/* Time info */}
 						<Card className="bg-white border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
 							<CardContent className="p-5">
 								<div className="flex items-center justify-between mb-3">
-									<h4 className="font-semibold text-gray-900">时间安排</h4>
+									<h4 className="font-semibold text-gray-900">{dic.tasks.detail.timeSchedule}</h4>
 									<div className="p-1.5 rounded-full bg-orange-50">
 										<Calendar className="w-5 h-5 text-orange-600" />
 									</div>
@@ -324,40 +326,40 @@ export const TaskDetail = ({ task }: TaskDetailProps) => {
 								<div className="space-y-3">
 									{task.dueDate && (
 										<div className="flex justify-between">
-											<span className="text-sm text-gray-500">截止时间</span>
+											<span className="text-sm text-gray-500">{dic.tasks.detail.dueTimeLabel}</span>
 											<span className="text-sm font-medium">
 												{new Date(task.dueDate).toLocaleDateString("zh-CN")}
 											</span>
 										</div>
 									)}
 									{!task.dueDate && (
-										<p className="text-gray-400 italic text-sm">时间未设定</p>
+										<p className="text-gray-400 italic text-sm">{dic.tasks.detail.timeNotSet}</p>
 									)}
 								</div>
 							</CardContent>
 						</Card>
 					</div>
 
-					{/* 工时统计 */}
+					{/* Work hours statistics */}
 					<Card className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-100">
 						<CardContent className="p-6">
 							<h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
 								<Clock className="w-5 h-5 text-blue-600" />
-								工时统计
+								{dic.tasks.detail.hoursStatistics}
 							</h3>
 							<div className="grid grid-cols-1 md:grid-cols-3 gap-6">
 								<div className="text-center">
 									<div className="text-2xl font-bold text-blue-600 mb-1">
 										{task.estimatedHours || 0}h
 									</div>
-									<p className="text-sm text-gray-600">预估工时</p>
+									<p className="text-sm text-gray-600">{dic.tasks.detail.estimatedHours}</p>
 								</div>
 
 								<div className="text-center">
 									<div className="text-2xl font-bold text-green-600 mb-1">
 										{task.loggedHours || 0}h
 									</div>
-									<p className="text-sm text-gray-600">已记录工时</p>
+									<p className="text-sm text-gray-600">{dic.tasks.detail.loggedHours}</p>
 								</div>
 								<div className="text-center">
 									<div className="text-2xl font-bold text-orange-600 mb-1">
@@ -366,22 +368,22 @@ export const TaskDetail = ({ task }: TaskDetailProps) => {
 											: 0}
 										h
 									</div>
-									<p className="text-sm text-gray-600">剩余工时</p>
+									<p className="text-sm text-gray-600">{dic.tasks.detail.remainingHours}</p>
 								</div>
 							</div>
 						</CardContent>
 					</Card>
 
-					{/* 层级关系 */}
+					{/* Hierarchy relationships */}
 					{task.parentTask && (
 						<Card className="bg-white border border-gray-100 shadow-sm">
 							<CardContent className="p-6">
 								<h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
 									<div className="w-1 h-5 bg-purple-500 rounded-full" />
-									任务层级
+									{dic.tasks.detail.taskHierarchy}
 								</h3>
 								<div>
-									<p className="text-sm font-medium text-gray-500 mb-2">父任务</p>
+									<p className="text-sm font-medium text-gray-500 mb-2">{dic.tasks.detail.parentTask}</p>
 									<div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
 										{getStatusIcon(task.parentTask.status)}
 										<div>
@@ -394,20 +396,20 @@ export const TaskDetail = ({ task }: TaskDetailProps) => {
 						</Card>
 					)}
 
-					{/* 元数据信息 */}
+					{/* Metadata info */}
 					<div className="border-t border-gray-200 pt-6">
 						<div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-500">
 							<div className="flex items-center gap-2">
 								<div className="w-2 h-2 bg-green-400 rounded-full" />
 								<span>
-									创建于{" "}
+									{dic.tasks.detail.createdAt}{" "}
 									{formatDistanceToNow(new Date(task.createdAt), { addSuffix: true, locale: zhCN })}
 								</span>
 							</div>
 							<div className="flex items-center gap-2">
 								<div className="w-2 h-2 bg-blue-400 rounded-full" />
 								<span>
-									更新于{" "}
+									{dic.tasks.detail.updatedAt}{" "}
 									{formatDistanceToNow(new Date(task.updatedAt), { addSuffix: true, locale: zhCN })}
 								</span>
 							</div>
@@ -417,14 +419,14 @@ export const TaskDetail = ({ task }: TaskDetailProps) => {
 			</Card>
 
 			{/* 
-			选项卡内容
-			保留为TODO
+			{dic.tasks.detail.tabContent}
+			{dic.tasks.detail.tabContentTodo}
 			*/}
 			<Tabs value={activeTab} onValueChange={setActiveTab}>
 				<TabsList className="grid w-full grid-cols-3">
 					<TabsTrigger value="comments">
 						<MessageCircle className="w-4 h-4 mr-2" />
-						评论
+						{dic.tasks.detail.comments}
 						{/* {task.comments && (
 							<Badge variant="secondary" className="ml-2 text-xs">
 								{task.comments.length}
@@ -433,7 +435,7 @@ export const TaskDetail = ({ task }: TaskDetailProps) => {
 					</TabsTrigger>
 					<TabsTrigger value="attachments">
 						<Paperclip className="w-4 h-4 mr-2" />
-						附件
+						{dic.tasks.detail.attachments}
 						{/* {task.attachments && (
 							<Badge variant="secondary" className="ml-2 text-xs">
 								{task.attachments.length}
@@ -442,7 +444,7 @@ export const TaskDetail = ({ task }: TaskDetailProps) => {
 					</TabsTrigger>
 					<TabsTrigger value="activity">
 						<Activity className="w-4 h-4 mr-2" />
-						活动
+						{dic.tasks.detail.activity}
 					</TabsTrigger>
 				</TabsList>
 
@@ -459,7 +461,7 @@ export const TaskDetail = ({ task }: TaskDetailProps) => {
 						<CardHeader>
 							<CardTitle className="flex items-center gap-2">
 								<Activity className="w-5 h-5" />
-								活动日志
+								{dic.tasks.detail.activityLog}
 							</CardTitle>
 						</CardHeader>
 						<CardContent>
@@ -467,7 +469,7 @@ export const TaskDetail = ({ task }: TaskDetailProps) => {
 								<div className="flex justify-center">
 									<Activity className="w-12 h-12 mb-2 opacity-30" />
 								</div>
-								<p>活动日志功能即将推出</p>
+								<p>{dic.tasks.detail.activityLogComingSoon}</p>
 							</div>
 						</CardContent>
 					</Card>
